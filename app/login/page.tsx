@@ -16,16 +16,16 @@ const LoginPage = async () => {
       <div className="mx-auto flex h-full max-w-[550px] flex-col justify-center p-8">
         <Image
           src="/login.svg"
-          alt="Finance App"
+          alt="Fivest"
           height={39}
           width={173}
           className="mb-8"
         />
         <h1 className="mb-3 text-4xl font-bold">Bem Vindo!</h1>
         <p className="mb-8 text-muted-foreground">
-          A Finance App é uma plataforma que ajuda seus usuários a gerenciar
-          suas finanças pessoais, com foco em investimentos e controle de
-          despesas mensais.
+          A Fivest é uma plataforma que ajuda seus usuários a gerenciar suas
+          finanças pessoais, com foco em investimentos e controle de despesas
+          mensais.
         </p>
         <p className="mb-8 text-muted-foreground">
           A plataforma utiliza Inteligência Artificial (IA) para analisar os
