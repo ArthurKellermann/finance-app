@@ -7,11 +7,9 @@ import { redirect } from "next/navigation";
 
 const LoginPage = async () => {
   const { userId } = await auth();
-
   if (userId) {
     redirect("/");
   }
-
   return (
     <div className="grid h-full grid-cols-2">
       {/* Left */}
@@ -24,19 +22,19 @@ const LoginPage = async () => {
           className="mb-8"
         />
         <h1 className="mb-3 text-4xl font-bold">Bem Vindo!</h1>
-        <p className="text-muted-foreground mb-8">
+        <p className="mb-8 text-muted-foreground">
           A Finance App é uma plataforma que ajuda seus usuários a gerenciar
           suas finanças pessoais, com foco em investimentos e controle de
           despesas mensais.
         </p>
-        <p className="text-muted-foreground mb-8">
+        <p className="mb-8 text-muted-foreground">
           A plataforma utiliza Inteligência Artificial (IA) para analisar os
           extratos bancários e transações dos usuários, identificar
           oportunidades de economia e sugerir investimentos personalizados com
           base no perfil financeiro, objetivos e aporte disponível.
         </p>
         <SignInButton>
-          <Button className="mt-8 w-full" variant="outline">
+          <Button variant="outline">
             <LogInIcon className="mr-2" />
             Fazer login ou criar conta
           </Button>
