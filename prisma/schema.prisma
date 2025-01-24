@@ -17,12 +17,13 @@ model Transaction {
   date          DateTime
   createdAt     DateTime                 @default(now())
   updatedAt     DateTime                 @updatedAt
+  userId        String
 
   @@map("transactions")
 }
 
 enum TransactionType {
-  DEPOIST
+  DEPOSIT
   EXPENSE
   INVESTMENT
 }
