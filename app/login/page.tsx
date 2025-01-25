@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Button } from "../_components/ui/button";
 import { LogInIcon } from "lucide-react";
 import { SignInButton } from "@clerk/nextjs";
@@ -14,14 +13,14 @@ const LoginPage = async () => {
     <div className="grid h-full grid-cols-2">
       {/* Left */}
       <div className="mx-auto flex h-full max-w-[550px] flex-col justify-center p-8">
-        <Image
-          src="/login.svg"
-          alt="Fivest"
-          height={39}
+        {/* <Image
+          src="/logo.svg"
           width={173}
+          height={39}
+          alt="Fivest"
           className="mb-8"
-        />
-        <h1 className="mb-3 text-4xl font-bold">Bem Vindo!</h1>
+        /> */}
+        <h1 className="mb-3 text-4xl font-bold">Bem-vindo</h1>
         <p className="mb-8 text-muted-foreground">
           A Fivest é uma plataforma que ajuda seus usuários a gerenciar suas
           finanças pessoais, com foco em investimentos e controle de despesas
@@ -40,15 +39,14 @@ const LoginPage = async () => {
           </Button>
         </SignInButton>
       </div>
-
       {/* Right */}
       <div className="relative h-full w-full">
-        <Image
+        {/* <Image
           src="/login.png"
-          alt="Faça Login"
+          alt="Faça login"
           fill
           className="object-cover"
-        />
+        /> */}
       </div>
     </div>
   );

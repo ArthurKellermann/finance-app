@@ -1,4 +1,5 @@
 "use client";
+
 import { UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
@@ -6,12 +7,11 @@ import { usePathname } from "next/navigation";
 
 const Navbar = () => {
   const pathname = usePathname();
-
   return (
     <nav className="flex justify-between border-b border-solid px-8 py-4">
-      {/* Left */}
+      {/* ESQUERDA */}
       <div className="flex items-center gap-10">
-        <Image src="/logo.svg" alt="Fivest" height={39} width={173} />
+        <Image src="/logo.svg" width={173} height={39} alt="Finance AI" />
         <Link
           href="/"
           className={
@@ -21,16 +21,6 @@ const Navbar = () => {
           }
         >
           Dashboard
-        </Link>
-        <Link
-          href="/portfolio"
-          className={
-            pathname === "/portfolio"
-              ? "font-bold text-primary"
-              : "text-muted-foreground"
-          }
-        >
-          Carteira
         </Link>
         <Link
           href="/transactions"
@@ -43,26 +33,6 @@ const Navbar = () => {
           Transações
         </Link>
         <Link
-          href="/market"
-          className={
-            pathname === "/market"
-              ? "font-bold text-primary"
-              : "text-muted-foreground"
-          }
-        >
-          Mercado
-        </Link>
-        <Link
-          href="/conections"
-          className={
-            pathname === "/conections"
-              ? "font-bold text-primary"
-              : "text-muted-foreground"
-          }
-        >
-          Conexões
-        </Link>
-        <Link
           href="/subscription"
           className={
             pathname === "/subscription"
@@ -73,8 +43,7 @@ const Navbar = () => {
           Assinatura
         </Link>
       </div>
-
-      {/* Right */}
+      {/* DIREITA */}
       <UserButton showName />
     </nav>
   );
