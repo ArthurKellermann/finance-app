@@ -22,7 +22,7 @@ const SummaryCards = async ({
 }: SummaryCards) => {
   return (
     <div className="space-y-6">
-      {/* PRIMEIRO CARD */}
+      {/* First Card */}
 
       <SummaryCard
         icon={<WalletIcon size={16} />}
@@ -31,7 +31,7 @@ const SummaryCards = async ({
         size="large"
       />
 
-      {/* OUTROS CARDS */}
+      {/* Other Cards */}
       <div className="grid grid-cols-3 gap-6">
         <SummaryCard
           icon={<PiggyBankIcon size={16} />}

@@ -3,6 +3,7 @@ import { LogInIcon } from "lucide-react";
 import { SignInButton } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import Image from "next/image";
 
 const LoginPage = async () => {
   const { userId } = await auth();
@@ -13,13 +14,13 @@ const LoginPage = async () => {
     <div className="grid h-full grid-cols-2">
       {/* Left */}
       <div className="mx-auto flex h-full max-w-[550px] flex-col justify-center p-8">
-        {/* <Image
+        <Image
           src="/logo.svg"
           width={173}
           height={39}
           alt="Fivest"
           className="mb-8"
-        /> */}
+        />
         <h1 className="mb-3 text-4xl font-bold">Bem-vindo</h1>
         <p className="mb-8 text-muted-foreground">
           A Fivest é uma plataforma que ajuda seus usuários a gerenciar suas
@@ -41,12 +42,12 @@ const LoginPage = async () => {
       </div>
       {/* Right */}
       <div className="relative h-full w-full">
-        {/* <Image
+        <Image
           src="/login.png"
           alt="Faça login"
           fill
           className="object-cover"
-        /> */}
+        />
       </div>
     </div>
   );
