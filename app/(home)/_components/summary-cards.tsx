@@ -5,48 +5,25 @@ import {
   WalletIcon,
 } from "lucide-react";
 import SummaryCard from "./summary-card";
-import { db } from "@/app/_lib/prisma";
 
-interface SummaryCardsProps {
+interface SummaryCards {
   month: string;
+  balance: number;
+  depositsTotal: number;
+  investmentsTotal: number;
+  expensesTotal: number;
 }
 
-const SummaryCards = async ({ month }: SummaryCardsProps) => {
-  const where = {
-    date: {
-      gte: new Date(`2025-${month}-01`),
-      lt: new Date(`2025-${month}-31`),
-    },
-  };
-  const depositsTotal = Number(
-    (
-      await db.transaction.aggregate({
-        where: { ...where, type: "DEPOSIT" },
-        _sum: { amount: true },
-      })
-    )?._sum?.amount,
-  );
-  const investmentsTotal = Number(
-    (
-      await db.transaction.aggregate({
-        where: { ...where, type: "INVESTMENT" },
-        _sum: { amount: true },
-      })
-    )?._sum?.amount,
-  );
-  const expensesTotal = Number(
-    (
-      await db.transaction.aggregate({
-        where: { ...where, type: "EXPENSE" },
-        _sum: { amount: true },
-      })
-    )?._sum?.amount,
-  );
-  const balance = depositsTotal - investmentsTotal - expensesTotal;
-
+const SummaryCards = async ({
+  balance,
+  depositsTotal,
+  expensesTotal,
+  investmentsTotal,
+}: SummaryCards) => {
   return (
     <div className="space-y-6">
-      {/*First Card*/}
+      {/* First Card */}
+
       <SummaryCard
         icon={<WalletIcon size={16} />}
         title="Saldo"
@@ -54,7 +31,7 @@ const SummaryCards = async ({ month }: SummaryCardsProps) => {
         size="large"
       />
 
-      {/*Second Card*/}
+      {/* Others */}
       <div className="grid grid-cols-3 gap-6">
         <SummaryCard
           icon={<PiggyBankIcon size={16} />}

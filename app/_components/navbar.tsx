@@ -23,16 +23,6 @@ const Navbar = () => {
           Dashboard
         </Link>
         <Link
-          href="/transactions"
-          className={
-            pathname === "/transactions"
-              ? "font-bold text-primary"
-              : "text-muted-foreground"
-          }
-        >
-          Transações
-        </Link>
-        <Link
           href="/portfolio"
           className={
             pathname === "/portfolio"
@@ -41,6 +31,16 @@ const Navbar = () => {
           }
         >
           Carteira
+        </Link>
+        <Link
+          href="/transactions"
+          className={
+            pathname === "/transactions"
+              ? "font-bold text-primary"
+              : "text-muted-foreground"
+          }
+        >
+          Transações
         </Link>
         <Link
           href="/market"
