@@ -12,6 +12,7 @@ import canUserAddTransaction from "../_data/can-user-add-transaction";
 import AiReportButton from "./_components/ai-reports-button";
 import { Button } from "../_components/ui/button";
 import { Calendar } from "lucide-react";
+import MyInvestmentsPieChart from "./_components/my-investments-pie-chart";
 
 interface HomeProps {
   searchParams: {
@@ -65,6 +66,17 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
             />
             <div className="grid h-full grid-cols-3 grid-rows-1 gap-6 overflow-hidden">
               <TransactionsPieChart {...dashboard} />
+              <MyInvestmentsPieChart
+                investmentsPercentage={{
+                  "Tesouro Direto": 20,
+                  "Renda Fixa": 15,
+                  "Renda Variável": 25,
+                  FIIs: 10,
+                  ETFs: 15,
+                  Criptomoedas: 5,
+                  "Previdência Privada": 10,
+                }}
+              />
             </div>
           </div>
           <div className="flex-row space-y-6">
