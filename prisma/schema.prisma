@@ -49,3 +49,52 @@ enum TransactionPaymentMethod {
   PIX
   OTHER
 }
+
+model CreditCard {
+  id                String           @id @default(uuid())
+  description       String
+  status            CreditCardStatus
+  limit             Float
+  spent             Float
+  type              CreditCardType
+  bank              Banks
+  statementCloseDay Int
+  dueDay            Int
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  userId            String
+
+  @@map("credit_cards")
+}
+
+enum CreditCardType {
+  VISA
+  MASTERCARD
+  ELO
+  AMERICAN_EXPRESS
+  HIPERCARD
+  OTHER
+}
+
+enum CreditCardStatus {
+  ACTIVE
+  SUSPENDED
+  BLOCKED
+  EXPIRED
+  CANCELLED
+}
+
+enum Banks {
+  BRADESCO
+  ITAU
+  CAIXA_ECONOMICA
+  SANTANDER
+  BANCO_DO_BRASIL
+  HSBC
+  BANRISUL
+  BNB
+  BTG_PACTUAL
+  ORIGINAL
+  INTER
+  PAN
+}

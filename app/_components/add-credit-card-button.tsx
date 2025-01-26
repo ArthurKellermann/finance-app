@@ -1,9 +1,9 @@
 "use client";
 
-import { ArrowDownUpIcon } from "lucide-react";
+import { CreditCardIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { useState } from "react";
-import UpsertTransactionDialog from "./upsert-transaction-dialog";
+import UpsertCreditCardDialog from "./upsert-credit-card-dialog";
 import {
   Tooltip,
   TooltipContent,
@@ -11,13 +11,13 @@ import {
   TooltipTrigger,
 } from "./ui/tooltip";
 
-interface AddTransactionButtonProps {
-  userCanAddTransaction?: boolean;
+interface AddCreditCardButtonProps {
+  userCanAddCreditCard?: boolean;
 }
 
-const AddTransactionButton = ({
-  userCanAddTransaction,
-}: AddTransactionButtonProps) => {
+const AddCreditCardButton = ({
+  userCanAddCreditCard,
+}: AddCreditCardButtonProps) => {
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
 
   return (
@@ -28,19 +28,19 @@ const AddTransactionButton = ({
             <Button
               className="rounded-full font-bold"
               onClick={() => setDialogIsOpen(true)}
-              disabled={!userCanAddTransaction}
+              disabled={!userCanAddCreditCard}
             >
-              Adicionar transação
-              <ArrowDownUpIcon />
+              Adicionar
+              <CreditCardIcon />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            {!userCanAddTransaction &&
-              "Você atingiu o limite de transações. Atualize seu plano para criar transações ilimitadas."}
+            {!userCanAddCreditCard &&
+              "Você atingiu o limite de cartões de crédito. Atualize seu plano para adicionar mais."}
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
-      <UpsertTransactionDialog
+      <UpsertCreditCardDialog
         isOpen={dialogIsOpen}
         setIsOpen={setDialogIsOpen}
       />
@@ -48,4 +48,4 @@ const AddTransactionButton = ({
   );
 };
 
-export default AddTransactionButton;
+export default AddCreditCardButton;

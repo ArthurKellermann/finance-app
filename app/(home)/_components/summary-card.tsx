@@ -1,9 +1,8 @@
 "use client";
-import { useState } from "react";
 import AddTransactionButton from "@/app/_components/add-transaction-button";
 import { Card, CardContent, CardHeader } from "@/app/_components/ui/card";
-import { ReactNode } from "react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { ReactNode, useState } from "react";
 
 interface SummaryCardProps {
   icon: ReactNode;
@@ -27,7 +26,6 @@ const SummaryCard = ({
   };
 
   const maskedAmount = "********";
-
   return (
     <Card>
       <CardHeader className="flex-row items-center gap-4">
@@ -43,7 +41,7 @@ const SummaryCard = ({
           </div>
         )}
       </CardHeader>
-      <CardContent className="flex items-center justify-between">
+      <CardContent className="flex justify-between">
         <p
           className={`font-bold ${size === "small" ? "text-2xl" : "text-4xl"}`}
         >
@@ -55,12 +53,8 @@ const SummaryCard = ({
             : maskedAmount}
         </p>
 
-        {size === "large" && userCanAddTransaction && (
-          <div>
-            <AddTransactionButton
-              userCanAddTransactions={userCanAddTransaction}
-            />
-          </div>
+        {size === "large" && (
+          <AddTransactionButton userCanAddTransaction={userCanAddTransaction} />
         )}
       </CardContent>
     </Card>

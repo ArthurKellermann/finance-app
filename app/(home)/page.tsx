@@ -13,7 +13,7 @@ import AiReportButton from "./_components/ai-reports-button";
 import { Button } from "../_components/ui/button";
 import { Calendar } from "lucide-react";
 import MyInvestmentsPieChart from "./_components/my-investments-pie-chart";
-import CreditCards, { creditCards } from "./_components/credit-cards";
+import CreditCards from "./_components/credit-cards";
 
 interface HomeProps {
   searchParams: {
@@ -87,7 +87,7 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
           <div className="flex-row space-y-6">
             <LastTransactions lastTransactions={dashboard.lastTransactions} />
 
-            <CreditCards creditCards={creditCards} />
+            <CreditCards creditCards={dashboard.creditCards} />
           </div>
         </div>
       </div>
