@@ -9,7 +9,7 @@ import NavbarSidebar from "./navbar-sidebar";
 const Navbar = () => {
   const pathname = usePathname();
   return (
-    <div className="flex justify-between border-b border-solid px-8 py-4">
+    <div className="flex justify-between border-2 bg-popover px-8 py-4 shadow-md">
       {/* Left */}
       <div className="flex items-center gap-10">
         <Link href="/">
