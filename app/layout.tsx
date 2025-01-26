@@ -20,7 +20,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${mulish.className} text-foreground antialiased`}>
+      <body
+        className={`${mulish.className} bg-primary text-foreground antialiased`}
+      >
         <ClerkProvider localization={ptBR}>
           <div className="flex h-full flex-col overflow-hidden">{children}</div>
         </ClerkProvider>

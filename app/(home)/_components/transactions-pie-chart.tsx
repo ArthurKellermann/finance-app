@@ -62,7 +62,7 @@ const TransactionsPieChart = ({
   return (
     <Card className="flex flex-col p-6">
       <CardContent className="flex-1 pb-0">
-        <h3 className="mb-4 text-center text-lg font-semibold">
+        <h3 className="text-center text-lg font-semibold">
           Distribuição de Transações
         </h3>
 

@@ -92,7 +92,7 @@ const MyInvestmentsPieChart = ({
   return (
     <Card className="flex flex-col p-6">
       <CardContent className="flex-1 pb-0">
-        <h3 className="mb-4 text-center text-lg font-semibold">
+        <h3 className="text-center text-lg font-semibold">
           Meus Investimentos
         </h3>
 
@@ -128,7 +128,7 @@ const MyInvestmentsPieChart = ({
             ))}
         </div>
 
-        <Button variant="link" className="mt-4 w-full">
+        <Button variant="link" className="mt-3 w-full">
           <Link href="/portfolio">Ver carteira</Link>
         </Button>
       </CardContent>
