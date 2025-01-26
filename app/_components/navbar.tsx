@@ -4,6 +4,7 @@ import { UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Menu } from "lucide-react";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -74,7 +75,11 @@ const Navbar = () => {
         </Link>
       </div>
       {/* Right */}
-      <UserButton showName />
+      <div className="flex space-x-4">
+        <UserButton showName />
+
+        <Menu />
+      </div>
     </div>
   );
 };
