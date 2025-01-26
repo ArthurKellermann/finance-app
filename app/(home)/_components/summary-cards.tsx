@@ -1,4 +1,5 @@
 import {
+  CreditCardIcon,
   PiggyBankIcon,
   TrendingDownIcon,
   TrendingUpIcon,
@@ -35,7 +36,7 @@ const SummaryCards = async ({
       />
 
       {/* Other Cards */}
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-4 gap-6">
         <SummaryCard
           icon={<PiggyBankIcon size={16} />}
           title="Investido"
@@ -49,6 +50,11 @@ const SummaryCards = async ({
         <SummaryCard
           icon={<TrendingDownIcon size={16} className="text-red-500" />}
           title="Despesas"
+          amount={expensesTotal}
+        />
+        <SummaryCard
+          icon={<CreditCardIcon size={16} />}
+          title="Cartão de Crédito"
           amount={expensesTotal}
         />
       </div>

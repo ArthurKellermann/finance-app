@@ -10,6 +10,8 @@ import ExpensesPerCategory from "./_components/expenses-per-category";
 import LastTransactions from "./_components/last-transactions";
 import canUserAddTransaction from "../_data/can-user-add-transaction";
 import AiReportButton from "./_components/ai-reports-button";
+import { Button } from "../_components/ui/button";
+import { Calendar } from "lucide-react";
 
 interface HomeProps {
   searchParams: {
@@ -41,6 +43,10 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
         <div className="flex justify-between">
           <h1 className="text-2xl font-bold">Dashboard</h1>
           <div className="flex items-center gap-3">
+            <Button variant="ghost">
+              Calendário
+              <Calendar />
+            </Button>
             <AiReportButton
               month={month}
               hasPremiumPlan={
@@ -59,12 +65,14 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
             />
             <div className="grid h-full grid-cols-3 grid-rows-1 gap-6 overflow-hidden">
               <TransactionsPieChart {...dashboard} />
-              <ExpensesPerCategory
-                expensesPerCategory={dashboard.totalExpensePerCategory}
-              />
             </div>
           </div>
-          <LastTransactions lastTransactions={dashboard.lastTransactions} />
+          <div className="flex-row space-y-6">
+            <LastTransactions lastTransactions={dashboard.lastTransactions} />
+            <ExpensesPerCategory
+              expensesPerCategory={dashboard.totalExpensePerCategory}
+            />
+          </div>
         </div>
       </div>
     </>

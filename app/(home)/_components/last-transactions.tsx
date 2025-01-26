@@ -26,12 +26,17 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
     }
     return "text-foreground";
   };
+
   const getAmountPrefix = (transaction: Transaction) => {
     if (transaction.type === TransactionType.DEPOSIT) {
       return "+";
     }
     return "-";
   };
+
+  // Limit to 3 transactions if showAll is false
+  const displayedTransactions = lastTransactions.slice(0, 3);
+
   return (
     <ScrollArea className="rounded-md border">
       <Card className="border-3">
@@ -42,7 +47,7 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
           </Button>
         </CardHeader>
         <CardContent className="space-y-6">
-          {lastTransactions.map((transaction) => (
+          {displayedTransactions.map((transaction) => (
             <div
               key={transaction.id}
               className="flex items-center justify-between"
@@ -73,7 +78,13 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
               </p>
             </div>
           ))}
-        </CardContent>{" "}
+
+          {lastTransactions.length > 3 && (
+            <Button variant="outline" className="mt-4 w-full">
+              <Link href="/transactions">Ver mais</Link>
+            </Button>
+          )}
+        </CardContent>
       </Card>
     </ScrollArea>
   );

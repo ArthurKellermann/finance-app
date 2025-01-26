@@ -12,7 +12,9 @@ const Navbar = () => {
     <div className="flex justify-between border-b border-solid px-8 py-4">
       {/* Left */}
       <div className="flex items-center gap-10">
-        <Image src="/logo.svg" width={173} height={39} alt="Fivest" />
+        <Link href="/">
+          <Image src="/logo.svg" width={173} height={39} alt="Fivest" />
+        </Link>
         <Link
           href="/"
           className={
