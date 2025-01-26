@@ -1,10 +1,5 @@
 import { Button } from "@/app/_components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/app/_components/ui/card";
+import { Card, CardContent, CardHeader } from "@/app/_components/ui/card";
 import { Progress } from "@/app/_components/ui/progress";
 import { ScrollArea } from "@/app/_components/ui/scroll-area";
 import { TRANSACTION_CATEGORY_LABELS } from "@/app/_constants/transactions";
@@ -19,16 +14,13 @@ const ExpensesPerCategory = ({
   expensesPerCategory,
 }: ExpensesPerCategoryProps) => {
   return (
-    <ScrollArea className="col-span-2 h-full rounded-md border pb-6">
+    <ScrollArea className="col-span-1 h-full rounded-md border pb-6">
       <Card className="border-3">
-        <CardHeader className="flex-row items-center justify-between">
-          <CardTitle className="font-bold">Gastos por Categoria</CardTitle>
-          <Button variant="outline" className="rounded-full font-bold" asChild>
-            <Link href="/">Gerenciar</Link>
-          </Button>
+        <CardHeader className="flex items-center justify-center">
+          <h3 className="text-lg font-semibold">Gastos por Categoria</h3>
         </CardHeader>
 
-        <CardContent className="space-y-6">
+        <CardContent className="flex-grow space-y-6">
           {expensesPerCategory.map((category) => (
             <div key={category.category} className="space-y-2">
               <div className="flex w-full justify-between">
@@ -42,6 +34,11 @@ const ExpensesPerCategory = ({
               <Progress value={category.percentageOfTotal} />
             </div>
           ))}
+        </CardContent>
+        <CardContent className="mt-4 flex w-full justify-center">
+          <Button variant="link" asChild>
+            <Link href="/">Gerenciar</Link>
+          </Button>
         </CardContent>
       </Card>
     </ScrollArea>

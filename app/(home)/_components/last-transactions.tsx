@@ -34,7 +34,6 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
     return "-";
   };
 
-  // Limit to 3 transactions if showAll is false
   const displayedTransactions = lastTransactions.slice(0, 3);
 
   return (
