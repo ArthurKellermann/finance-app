@@ -34,7 +34,7 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
     return "-";
   };
 
-  const displayedTransactions = lastTransactions.slice(0, 3);
+  const displayedTransactions = lastTransactions.slice(0, 4);
 
   return (
     <ScrollArea className="rounded-md border">
@@ -42,7 +42,7 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
         <CardHeader className="flex-row items-center justify-between">
           <CardTitle className="font-bold">Últimas Transações</CardTitle>
           <Button variant="outline" className="rounded-full font-bold" asChild>
-            <Link href="/transactions">Ver mais</Link>
+            <Link href="/transactions">Contas</Link>
           </Button>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -78,11 +78,14 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
             </div>
           ))}
 
-          {lastTransactions.length > 3 && (
-            <Button variant="outline" className="mt-4 w-full">
+          <div className="mt-4 flex w-full space-x-4">
+            <Button variant="outline" className="flex-1 rounded-full">
+              <Link href="/transactions">Mostrar gráficos</Link>
+            </Button>
+            <Button variant="outline" className="flex-1 rounded-full">
               <Link href="/transactions">Ver mais</Link>
             </Button>
-          )}
+          </div>
         </CardContent>
       </Card>
     </ScrollArea>

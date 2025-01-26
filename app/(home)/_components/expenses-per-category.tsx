@@ -15,29 +15,30 @@ const ExpensesPerCategory = ({
 }: ExpensesPerCategoryProps) => {
   return (
     <ScrollArea className="col-span-1 h-full rounded-md border pb-6">
-      <Card className="border-3">
+      <Card className="border-3 flex h-full flex-col">
         <CardHeader className="flex items-center justify-center">
           <h3 className="text-lg font-semibold">Gastos por Categoria</h3>
         </CardHeader>
-
-        <CardContent className="flex-grow space-y-6">
-          {expensesPerCategory.map((category) => (
-            <div key={category.category} className="space-y-2">
-              <div className="flex w-full justify-between">
-                <p className="text-sm font-bold">
-                  {TRANSACTION_CATEGORY_LABELS[category.category]}
-                </p>
-                <p className="text-sm font-bold">
-                  {category.percentageOfTotal}%
-                </p>
+        <div className="flex-grow">
+          <CardContent className="space-y-6">
+            {expensesPerCategory.map((category) => (
+              <div key={category.category} className="space-y-2">
+                <div className="flex w-full justify-between">
+                  <p className="text-sm font-bold">
+                    {TRANSACTION_CATEGORY_LABELS[category.category]}
+                  </p>
+                  <p className="text-sm font-bold">
+                    {category.percentageOfTotal}%
+                  </p>
+                </div>
+                <Progress value={category.percentageOfTotal} />
               </div>
-              <Progress value={category.percentageOfTotal} />
-            </div>
-          ))}
-        </CardContent>
+            ))}
+          </CardContent>
+        </div>
         <CardContent className="mt-4 flex w-full justify-center">
           <Button variant="link" asChild>
-            <Link href="/">Gerenciar</Link>
+            <Link href="/">Personalizar</Link>
           </Button>
         </CardContent>
       </Card>
