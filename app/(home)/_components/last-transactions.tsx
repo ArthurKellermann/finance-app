@@ -1,6 +1,10 @@
 import { Button } from "@/app/_components/ui/button";
-import { CardContent, CardHeader, CardTitle } from "@/app/_components/ui/card";
-import { ScrollArea } from "@/app/_components/ui/scroll-area";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/app/_components/ui/card";
 import { TRANSACTION_PAYMENT_METHOD_ICONS } from "@/app/_constants/transactions";
 import { formatCurrency } from "@/app/_utils/currency";
 import { Transaction, TransactionType } from "@prisma/client";
@@ -19,24 +23,28 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
     if (transaction.type === TransactionType.DEPOSIT) {
       return "text-primary";
     }
-    return "text-white";
+    return "text-foreground";
   };
+
   const getAmountPrefix = (transaction: Transaction) => {
     if (transaction.type === TransactionType.DEPOSIT) {
       return "+";
     }
     return "-";
   };
+
+  const displayedTransactions = lastTransactions.slice(0, 4);
+
   return (
-    <ScrollArea className="rounded-md border">
+    <Card className="border-3">
       <CardHeader className="flex-row items-center justify-between">
         <CardTitle className="font-bold">Últimas Transações</CardTitle>
         <Button variant="outline" className="rounded-full font-bold" asChild>
-          <Link href="/transactions">Ver mais</Link>
+          <Link href="/transactions">Contas</Link>
         </Button>
       </CardHeader>
       <CardContent className="space-y-6">
-        {lastTransactions.map((transaction) => (
+        {displayedTransactions.map((transaction) => (
           <div
             key={transaction.id}
             className="flex items-center justify-between"
@@ -67,8 +75,17 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
             </p>
           </div>
         ))}
+
+        <div className="mt-4 flex w-full space-x-4">
+          <Button variant="outline" className="flex-1 rounded-full">
+            <Link href="/transactions">Mostrar gráficos</Link>
+          </Button>
+          <Button variant="outline" className="flex-1 rounded-full">
+            <Link href="/transactions">Ver mais</Link>
+          </Button>
+        </div>
       </CardContent>
-    </ScrollArea>
+    </Card>
   );
 };
 

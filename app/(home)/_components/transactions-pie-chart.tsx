@@ -46,7 +46,7 @@ const TransactionsPieChart = ({
     {
       type: TransactionType.DEPOSIT,
       amount: depositsTotal,
-      fill: "#55B02E",
+      fill: "#4183FF",
     },
     {
       type: TransactionType.EXPENSE,
@@ -56,12 +56,16 @@ const TransactionsPieChart = ({
     {
       type: TransactionType.INVESTMENT,
       amount: investmentsTotal,
-      fill: "#FFFFFF",
+      fill: "#707070",
     },
   ];
   return (
     <Card className="flex flex-col p-6">
       <CardContent className="flex-1 pb-0">
+        <h3 className="text-center text-lg font-semibold">
+          Distribuição de Transações
+        </h3>
+
         <ChartContainer
           config={chartConfig}
           className="mx-auto aspect-square max-h-[250px]"
@@ -76,11 +80,12 @@ const TransactionsPieChart = ({
               dataKey="amount"
               nameKey="type"
               innerRadius={60}
+              fill="var(--primary)"
             />
           </PieChart>
         </ChartContainer>
 
-        <div className="space-y-3">
+        <div className="space-y-1">
           <PercentageItem
             icon={<TrendingUpIcon size={16} className="text-primary" />}
             title="Receita"

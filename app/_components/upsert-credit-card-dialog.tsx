@@ -18,7 +18,6 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
-import { MoneyInput } from "./money-input";
 import {
   Select,
   SelectContent,
@@ -26,85 +25,91 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import {
-  TRANSACTION_CATEGORY_OPTIONS,
-  TRANSACTION_PAYMENT_METHOD_OPTIONS,
-  TRANSACTION_TYPE_OPTIONS,
-} from "../_constants/transactions";
-import { DatePicker } from "./ui/date-picker";
-import { z } from "zod";
-import {
-  TransactionType,
-  TransactionCategory,
-  TransactionPaymentMethod,
-} from "@prisma/client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { upsertTransaction } from "../_actions/upsert-transaction";
+import { z } from "zod";
+import { Banks, CreditCardStatus, CreditCardType } from "@prisma/client";
+import {
+  CREDIT_CARD_TYPE_LABELS,
+  CREDIT_CARD_STATUS_LABELS,
+  BANK_LABELS,
+} from "../_constants/credit-cards";
+import { upsertCreditCard } from "../_actions/upsert-credit-card";
+import { MoneyInput } from "./money-input";
 
-interface UpsertTransactionDialogProps {
+interface UpsertCreditCardDialogProps {
   isOpen: boolean;
   defaultValues?: FormSchema;
-  transactionId?: string;
+  creditCardId?: string;
   setIsOpen: (isOpen: boolean) => void;
 }
 
 const formSchema = z.object({
-  name: z.string().trim().min(1, {
-    message: "O nome é obrigatório.",
-  }),
-  amount: z
-    .number({
-      required_error: "O valor é obrigatório.",
-    })
-    .positive({
-      message: "O valor deve ser positivo.",
-    }),
-  type: z.nativeEnum(TransactionType, {
+  description: z
+    .string()
+    .trim()
+    .min(1, { message: "A descrição é obrigatória." }),
+  limit: z
+    .number()
+    .positive({ message: "O limite deve ser um valor positivo." })
+    .min(1, { message: "O limite deve ser maior que zero." }),
+  type: z.nativeEnum(CreditCardType, {
     required_error: "O tipo é obrigatório.",
   }),
-  category: z.nativeEnum(TransactionCategory, {
-    required_error: "A categoria é obrigatória.",
+  bank: z.nativeEnum(Banks, {
+    required_error: "O banco é obrigatório.",
   }),
-  paymentMethod: z.nativeEnum(TransactionPaymentMethod, {
-    required_error: "O método de pagamento é obrigatório.",
+  status: z.nativeEnum(CreditCardStatus, {
+    required_error: "O status é obrigatório.",
   }),
-  date: z.date({
-    required_error: "A data é obrigatória.",
-  }),
+  spent: z
+    .number()
+    .positive()
+    .min(0, { message: "O gasto deve ser um valor positivo." }),
+  statementCloseDay: z
+    .number()
+    .min(1)
+    .max(31, { message: "O dia de fechamento deve estar entre 1 e 31." }),
+  dueDay: z
+    .number()
+    .min(1)
+    .max(31, { message: "O dia de vencimento deve estar entre 1 e 31." }),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
 
-const UpsertTransactionDialog = ({
+const UpsertCreditCardDialog = ({
   isOpen,
   defaultValues,
-  transactionId,
+  creditCardId,
   setIsOpen,
-}: UpsertTransactionDialogProps) => {
+}: UpsertCreditCardDialogProps) => {
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues ?? {
-      amount: 50,
-      category: TransactionCategory.OTHER,
-      date: new Date(),
-      name: "",
-      paymentMethod: TransactionPaymentMethod.CASH,
-      type: TransactionType.EXPENSE,
+      description: "",
+      limit: 0,
+      spent: 0,
+      type: CreditCardType.VISA,
+      bank: Banks.ITAU,
+      status: CreditCardStatus.ACTIVE,
+      statementCloseDay: 10,
+      dueDay: 20,
     },
   });
 
   const onSubmit = async (data: FormSchema) => {
     try {
-      await upsertTransaction({ ...data, id: transactionId });
+      console.log("data: " + data);
+      await upsertCreditCard({ ...data, id: creditCardId });
       setIsOpen(false);
       form.reset();
     } catch (error) {
-      console.error(error);
+      console.error("Erro ao salvar o cartão de crédito:", error);
     }
   };
 
-  const isUpdate = Boolean(transactionId);
+  const isUpdate = Boolean(creditCardId);
 
   return (
     <Dialog
@@ -120,29 +125,30 @@ const UpsertTransactionDialog = ({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {isUpdate ? "Atualizar" : "Criar"} transação
+            {isUpdate ? "Atualizar" : "Adicionar"} Cartão de Crédito
           </DialogTitle>
-          <DialogDescription>Insira as informações abaixo</DialogDescription>
+          <DialogDescription>Preencha as informações abaixo</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
-              name="name"
+              name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nome</FormLabel>
+                  <FormLabel>Descrição</FormLabel>
                   <FormControl>
-                    <Input placeholder="Digite o nome..." {...field} />
+                    <Input placeholder="Digite a descrição..." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
-              name="amount"
+              name="limit"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Valor</FormLabel>
@@ -161,6 +167,7 @@ const UpsertTransactionDialog = ({
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="type"
@@ -173,40 +180,43 @@ const UpsertTransactionDialog = ({
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue />
+                        <SelectValue placeholder="Selecione o tipo..." />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {TRANSACTION_TYPE_OPTIONS.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
+                      {Object.entries(CREDIT_CARD_TYPE_LABELS).map(
+                        ([value, label]) => (
+                          <SelectItem key={value} value={value}>
+                            {label}
+                          </SelectItem>
+                        ),
+                      )}
                     </SelectContent>
                   </Select>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
-              name="category"
+              name="bank"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Categoria</FormLabel>
+                  <FormLabel>Banco</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Selecione a categoria..." />
+                        <SelectValue placeholder="Selecione o banco..." />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {TRANSACTION_CATEGORY_OPTIONS.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
+                      {Object.entries(BANK_LABELS).map(([value, label]) => (
+                        <SelectItem key={value} value={value}>
+                          {label}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -215,49 +225,76 @@ const UpsertTransactionDialog = ({
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
-              name="paymentMethod"
+              name="status"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Método de pagamento</FormLabel>
+                  <FormLabel>Status</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Selecione um método de pagamento..." />
+                        <SelectValue placeholder="Selecione o status..." />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {TRANSACTION_PAYMENT_METHOD_OPTIONS.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
+                      {Object.entries(CREDIT_CARD_STATUS_LABELS).map(
+                        ([value, label]) => (
+                          <SelectItem key={value} value={value}>
+                            {label}
+                          </SelectItem>
+                        ),
+                      )}
                     </SelectContent>
                   </Select>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
-              name="date"
+              name="statementCloseDay"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Data</FormLabel>
-                  <DatePicker value={field.value} onChange={field.onChange} />
+                  <FormLabel>Dia de Fechamento</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Digite o dia de fechamento..."
+                      {...field}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="dueDay"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Dia de Vencimento</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Digite o dia de vencimento..."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <DialogFooter>
               <DialogClose asChild>
-                <Button type="button" variant="outline">
-                  Cancelar
-                </Button>
+                <Button variant="outline">Cancelar</Button>
               </DialogClose>
               <Button type="submit">
                 {isUpdate ? "Atualizar" : "Adicionar"}
@@ -270,4 +307,4 @@ const UpsertTransactionDialog = ({
   );
 };
 
-export default UpsertTransactionDialog;
+export default UpsertCreditCardDialog;

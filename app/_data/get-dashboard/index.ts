@@ -9,6 +9,7 @@ export const getDashboard = async (month: string) => {
     throw new Error("Unauthorized");
   }
   const where = {
+    userId,
     date: {
       gte: new Date(`2025-${month}-01`),
       lt: new Date(`2025-${month}-31`),
@@ -82,6 +83,13 @@ export const getDashboard = async (month: string) => {
     orderBy: { date: "desc" },
     take: 15,
   });
+
+  const creditCards = await db.creditCard.findMany({
+    where: { userId },
+    orderBy: { createdAt: "desc" },
+    take: 5,
+  });
+
   return {
     balance,
     depositsTotal,
@@ -89,6 +97,7 @@ export const getDashboard = async (month: string) => {
     expensesTotal,
     typesPercentage,
     totalExpensePerCategory,
+    creditCards,
     lastTransactions: JSON.parse(JSON.stringify(lastTransactions)),
   };
 };
