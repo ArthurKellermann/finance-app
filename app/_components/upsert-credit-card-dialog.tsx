@@ -35,6 +35,7 @@ import {
   BANK_LABELS,
 } from "../_constants/credit-cards";
 import { upsertCreditCard } from "../_actions/upsert-credit-card";
+import { MoneyInput } from "./money-input";
 
 interface UpsertCreditCardDialogProps {
   isOpen: boolean;
@@ -83,11 +84,11 @@ const UpsertCreditCardDialog = ({
   creditCardId,
   setIsOpen,
 }: UpsertCreditCardDialogProps) => {
-  const form = useForm({
+  const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues ?? {
       description: "",
-      limit: 1000,
+      limit: 0,
       spent: 0,
       type: CreditCardType.VISA,
       bank: Banks.ITAU,
@@ -99,6 +100,7 @@ const UpsertCreditCardDialog = ({
 
   const onSubmit = async (data: FormSchema) => {
     try {
+      console.log("data: " + data);
       await upsertCreditCard({ ...data, id: creditCardId });
       setIsOpen(false);
       form.reset();
@@ -149,12 +151,16 @@ const UpsertCreditCardDialog = ({
               name="limit"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Limite</FormLabel>
+                  <FormLabel>Valor</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Digite o limite..."
-                      {...field}
+                    <MoneyInput
+                      placeholder="Digite o valor..."
+                      value={field.value}
+                      onValueChange={({ floatValue }) =>
+                        field.onChange(floatValue)
+                      }
+                      onBlur={field.onBlur}
+                      disabled={field.disabled}
                     />
                   </FormControl>
                   <FormMessage />

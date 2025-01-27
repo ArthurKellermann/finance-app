@@ -89,6 +89,7 @@ export const getDashboard = async (month: string) => {
     orderBy: { createdAt: "desc" },
     take: 5,
   });
+
   return {
     balance,
     depositsTotal,

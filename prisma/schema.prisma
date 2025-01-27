@@ -90,6 +90,7 @@ enum Banks {
   CAIXA_ECONOMICA
   SANTANDER
   BANCO_DO_BRASIL
+  NUBANK
   HSBC
   BANRISUL
   BNB
@@ -97,4 +98,5 @@ enum Banks {
   ORIGINAL
   INTER
   PAN
+  OTHER
 }

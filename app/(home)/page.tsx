@@ -11,7 +11,7 @@ import LastTransactions from "./_components/last-transactions";
 import canUserAddTransaction from "../_data/can-user-add-transaction";
 import AiReportButton from "./_components/ai-reports-button";
 import { Button } from "../_components/ui/button";
-import { Calendar } from "lucide-react";
+import { NotebookIcon } from "lucide-react";
 import MyInvestmentsPieChart from "./_components/my-investments-pie-chart";
 import CreditCards from "./_components/credit-cards";
 
@@ -47,7 +47,7 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
           <div className="flex items-center gap-3">
             <Button variant="outline" className="bg-white">
               Planejamento
-              <Calendar />
+              <NotebookIcon />
             </Button>
             <AiReportButton
               month={month}
