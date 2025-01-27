@@ -45,7 +45,7 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
         <div className="flex justify-between">
           <h1 className="text-2xl font-bold">Dashboard</h1>
           <div className="flex items-center gap-3">
-            <Button variant="ghost">
+            <Button variant="outline" className="bg-white">
               Planejamento
               <Calendar />
             </Button>

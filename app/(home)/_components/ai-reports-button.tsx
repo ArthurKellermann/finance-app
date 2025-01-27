@@ -47,7 +47,7 @@ const AiReportButton = ({ month, hasPremiumPlan }: AiReportButtonProps) => {
       }}
     >
       <DialogTrigger asChild>
-        <Button variant="ghost">
+        <Button variant="outline" className="bg-white">
           Relatório IA
           <BotIcon />
         </Button>

@@ -7,7 +7,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/app/_components/ui/select";
-import { useRouter, useSearchParams } from "next/navigation";
+import { Calendar } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const MONTH_OPTIONS = [
   { value: "01", label: "Janeiro" },
@@ -26,20 +27,20 @@ const MONTH_OPTIONS = [
 
 const TimeSelect = () => {
   const { push } = useRouter();
-  const searchParams = useSearchParams();
-  const month = searchParams.get("month");
+  //const searchParams = useSearchParams();
+  //const month = searchParams.get("month");
 
   const handleMonthChange = (month: string) => {
     push(`/?month=${month}`);
   };
 
   return (
-    <Select
-      onValueChange={(value) => handleMonthChange(value)}
-      value={month || ""}
-    >
-      <SelectTrigger className="w-[150px] rounded-full">
-        <SelectValue placeholder="Mês" />
+    <Select onValueChange={(value) => handleMonthChange(value)}>
+      <SelectTrigger className="w-[150px] bg-white">
+        <div className="flex items-center gap-2">
+          <SelectValue placeholder="Mês" className="" />
+          <Calendar className="-4 w-4" />
+        </div>
       </SelectTrigger>
       <SelectContent>
         {MONTH_OPTIONS.map((option) => (
