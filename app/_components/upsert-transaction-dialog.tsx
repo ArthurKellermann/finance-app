@@ -27,20 +27,18 @@ import {
   SelectValue,
 } from "./ui/select";
 import {
-  TRANSACTION_CATEGORY_OPTIONS,
+  TRANSACTION_CATEGORY_LABELS,
   TRANSACTION_PAYMENT_METHOD_OPTIONS,
   TRANSACTION_TYPE_OPTIONS,
 } from "../_constants/transactions";
 import { DatePicker } from "./ui/date-picker";
 import { z } from "zod";
-import {
-  TransactionType,
-  TransactionCategory,
-  TransactionPaymentMethod,
-} from "@prisma/client";
+import { TransactionType, TransactionPaymentMethod } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { upsertTransaction } from "../_actions/upsert-transaction";
+import { useEffect, useState } from "react";
+import getDefaultCategories from "../_actions/get-default-categories";
 
 interface UpsertTransactionDialogProps {
   isOpen: boolean;
@@ -63,9 +61,7 @@ const formSchema = z.object({
   type: z.nativeEnum(TransactionType, {
     required_error: "O tipo é obrigatório.",
   }),
-  category: z.nativeEnum(TransactionCategory, {
-    required_error: "A categoria é obrigatória.",
-  }),
+  categoryId: z.string().uuid(),
   paymentMethod: z.nativeEnum(TransactionPaymentMethod, {
     required_error: "O método de pagamento é obrigatório.",
   }),
@@ -82,11 +78,26 @@ const UpsertTransactionDialog = ({
   transactionId,
   setIsOpen,
 }: UpsertTransactionDialogProps) => {
+  const [defaultCategories, setDefaultCategories] = useState<
+    { value: string; categoryId: string }[]
+  >([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const categories = await getDefaultCategories();
+      if (categories) {
+        setDefaultCategories(categories);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues ?? {
       amount: 50,
-      category: TransactionCategory.OTHER,
+      categoryId: defaultCategories[0]?.categoryId,
       date: new Date(),
       name: "",
       paymentMethod: TransactionPaymentMethod.CASH,
@@ -190,7 +201,7 @@ const UpsertTransactionDialog = ({
             />
             <FormField
               control={form.control}
-              name="category"
+              name="categoryId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Categoria</FormLabel>
@@ -204,9 +215,14 @@ const UpsertTransactionDialog = ({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {TRANSACTION_CATEGORY_OPTIONS.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
+                      {defaultCategories.map((option) => (
+                        <SelectItem
+                          key={option.categoryId}
+                          value={option.categoryId}
+                        >
+                          {TRANSACTION_CATEGORY_LABELS[
+                            option.value as keyof typeof TRANSACTION_CATEGORY_LABELS
+                          ] || option.value}
                         </SelectItem>
                       ))}
                     </SelectContent>

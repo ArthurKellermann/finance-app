@@ -1,10 +1,11 @@
 "use server";
 
-import { db } from "@/app/_lib/prisma";
+import { prisma } from "@/app/_lib/_prisma/prisma";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import OpenAI from "openai";
 import { GenerateAiReportSchema, generateAiReportSchema } from "./schema";
 import { aiReportData } from "./prompts/data";
+import findCategoryById from "@/app/_actions/find-category-by-id";
 
 export const generateAiReport = async ({ month }: GenerateAiReportSchema) => {
   generateAiReportSchema.parse({ month });
@@ -31,7 +32,7 @@ export const generateAiReport = async ({ month }: GenerateAiReportSchema) => {
   });
 
   // Get the transactions of the received month
-  const transactions = await db.transaction.findMany({
+  const transactions = await prisma.transaction.findMany({
     where: {
       date: {
         gte: new Date(`2025-${month}-01`),
@@ -44,8 +45,8 @@ export const generateAiReport = async ({ month }: GenerateAiReportSchema) => {
   const content = `Gere um relatório com insights sobre as minhas finanças, com dicas e orientações de como melhorar minha vida financeira. As transações estão divididas por ponto e vírgula. A estrutura de cada uma é {DATA}-{TIPO}-{VALOR}-{CATEGORIA}. São elas:
   ${transactions
     .map(
-      (transaction) =>
-        `${transaction.date.toLocaleDateString("pt-BR")}-R$${transaction.amount}-${transaction.type}-${transaction.category}`,
+      async (transaction) =>
+        `${transaction.date.toLocaleDateString("pt-BR")}-R$${transaction.amount}-${transaction.type}-${await findCategoryById(transaction.categoryId)}`,
     )
     .join(";")}`;
   const completion = await openAi.chat.completions.create({

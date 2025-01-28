@@ -1,13 +1,13 @@
 "use server";
 
-import { db } from "@/app/_lib/prisma";
+import { prisma } from "@/app/_lib/_prisma/prisma";
 import { DeleteTransactionSchema } from "./schema";
 import { revalidatePath } from "next/cache";
 
 export const deleteTransaction = async ({
   transactionId,
 }: DeleteTransactionSchema) => {
-  await db.transaction.delete({
+  await prisma.transaction.delete({
     where: {
       id: transactionId,
     },

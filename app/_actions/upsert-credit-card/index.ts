@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@/app/_lib/prisma";
+import { prisma } from "@/app/_lib/_prisma/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { CreditCardType, CreditCardStatus, Banks } from "@prisma/client";
 import { upsertCreditCardSchema } from "./schema";
@@ -26,7 +26,7 @@ export const upsertCreditCard = async (params: UpsertCreditCardParams) => {
     throw new Error("Unauthorized");
   }
 
-  await db.creditCard.upsert({
+  await prisma.creditCard.upsert({
     update: { ...params, userId },
     create: { ...params, userId },
     where: {

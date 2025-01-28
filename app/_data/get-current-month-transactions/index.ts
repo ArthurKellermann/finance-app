@@ -1,4 +1,4 @@
-import { db } from "@/app/_lib/prisma";
+import { prisma } from "@/app/_lib/_prisma/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { endOfDay, startOfMonth } from "date-fns";
 import { redirect } from "next/navigation";
@@ -10,7 +10,7 @@ const getCurrentMonthTransactions = async () => {
     redirect("/login");
   }
 
-  const currentMonthTransactions = await db.transaction.count({
+  const currentMonthTransactions = await prisma.transaction.count({
     where: {
       userId,
       createdAt: {
