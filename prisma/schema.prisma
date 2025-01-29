@@ -35,6 +35,8 @@ model Category {
   name        String        @unique
   isDefault   Boolean       @default(false)
   userId      String?
+  icon        String
+  color       String
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   Transaction Transaction[]
