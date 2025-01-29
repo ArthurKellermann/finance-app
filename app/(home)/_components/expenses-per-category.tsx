@@ -1,10 +1,9 @@
-import { Button } from "@/app/_components/ui/button";
 import { Card, CardContent, CardHeader } from "@/app/_components/ui/card";
 import { Progress } from "@/app/_components/ui/progress";
 // import { ScrollArea } from "@/app/_components/ui/scroll-area";
 import { TRANSACTION_CATEGORY_LABELS } from "@/app/_constants/transactions";
 import { TotalExpensePerCategory } from "@/app/_data/get-dashboard/types";
-import Link from "next/link";
+import EditCategoryDialog from "./categories-dialog/edit-categories-dialog";
 
 interface ExpensesPerCategoryProps {
   expensesPerCategory: TotalExpensePerCategory[];
@@ -25,7 +24,9 @@ const ExpensesPerCategory = ({
             <div key={category.category} className="space-y-2">
               <div className="flex w-full justify-between">
                 <p className="text-sm font-bold">
-                  {TRANSACTION_CATEGORY_LABELS[category.category]}
+                  {TRANSACTION_CATEGORY_LABELS[
+                    category.category as keyof typeof TRANSACTION_CATEGORY_LABELS
+                  ] || category.category}
                 </p>
                 <p className="text-sm font-bold">
                   {category.percentageOfTotal}%
@@ -37,9 +38,7 @@ const ExpensesPerCategory = ({
         </CardContent>
       </div>
       <CardContent className="flex w-full justify-center">
-        <Button variant="link" asChild>
-          <Link href="/">Personalizar</Link>
-        </Button>
+        <EditCategoryDialog />
       </CardContent>
     </Card>
     // </ScrollArea>
