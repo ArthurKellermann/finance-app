@@ -251,7 +251,13 @@ function sanitizeHex(val: string) {
   const sanitized = val.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
   return sanitized;
 }
-const ColorPicker = ({ default_value = "#1C9488" }) => {
+const ColorPicker = ({
+  default_value = "#1C9488",
+  onChange,
+}: {
+  default_value?: string;
+  onChange?: (color: Color) => void;
+}) => {
   // Initialize from controlled prop or a default
   const [color, setColor] = useState<Color>(() => {
     const hex = sanitizeHex(default_value);
@@ -259,6 +265,10 @@ const ColorPicker = ({ default_value = "#1C9488" }) => {
     return { ...hsl, hex: sanitizeHex(hex) };
   });
   // Update from hex input
+
+  const updateColor = () => {
+    onChange?.(color);
+  };
   const handleHexInputChange = (newVal: string) => {
     const hex = sanitizeHex(newVal);
     if (hex.length === 6) {
@@ -343,6 +353,7 @@ const ColorPicker = ({ default_value = "#1C9488" }) => {
               });
               return { ...value, hex: hex_formatted };
             });
+            updateColor();
           }}
         />
         <input
@@ -369,6 +380,7 @@ const ColorPicker = ({ default_value = "#1C9488" }) => {
               const hex_formatted = hslToHex({ ...rest });
               return { ...rest, hex: hex_formatted };
             });
+            updateColor();
           }}
         />
         <div className="relative h-fit w-full">
@@ -400,6 +412,7 @@ const ColorPicker = ({ default_value = "#1C9488" }) => {
             value={color.hex}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               handleHexInputChange(e.target.value);
+              updateColor();
             }}
           />
           <div className="absolute inset-y-0 right-0 flex h-full items-center px-[5px]">
