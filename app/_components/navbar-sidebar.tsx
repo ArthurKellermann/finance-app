@@ -41,7 +41,15 @@ const NavbarSidebar = () => {
 
           <h2 className="mb-4 text-xl font-semibold">Menu</h2>
 
-          <UserButton />
+          <UserButton
+            showName
+            appearance={{
+              elements: {
+                userButtonBox: "flex flex-row-reverse items-center gap-2",
+                userButtonOuterIdentifier: "text-right",
+              },
+            }}
+          />
 
           <ul className="mt-4 space-y-4">
             <li>
