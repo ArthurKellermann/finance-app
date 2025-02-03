@@ -2,7 +2,8 @@
 import AddTransactionButton from "@/app/_components/add-transaction-button";
 import { Card, CardContent, CardHeader } from "@/app/_components/ui/card";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
+import { useAmountVisibility } from "@/app/_contexts/amount-visibility-context";
 
 interface SummaryCardProps {
   icon: ReactNode;
@@ -19,11 +20,7 @@ const SummaryCard = ({
   size = "small",
   userCanAddTransaction,
 }: SummaryCardProps) => {
-  const [isAmountVisible, setIsAmountVisible] = useState(true);
-
-  const toggleAmountVisibility = () => {
-    setIsAmountVisible(!isAmountVisible);
-  };
+  const { isAmountVisible, toggleAmountVisibility } = useAmountVisibility();
 
   const maskedAmount = "********";
   return (

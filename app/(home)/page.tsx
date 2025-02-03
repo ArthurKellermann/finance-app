@@ -14,6 +14,7 @@ import { Button } from "../_components/ui/button";
 import { NotebookIcon } from "lucide-react";
 import MyInvestmentsPieChart from "./_components/my-investments-pie-chart";
 import CreditCards from "./_components/credit-cards";
+import { AmountVisibilityProvider } from "../_contexts/amount-visibility-context";
 
 interface HomeProps {
   searchParams: {
@@ -39,7 +40,7 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
   const user = await clerkClient().users.getUser(userId);
 
   return (
-    <>
+    <AmountVisibilityProvider>
       <Navbar />
       <div className="flex h-full flex-col space-y-6 overflow-hidden p-6">
         <div className="flex justify-between">
@@ -84,6 +85,7 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
               />
             </div>
           </div>
+
           <div className="flex-row space-y-6">
             <LastTransactions lastTransactions={dashboard.lastTransactions} />
 
@@ -91,7 +93,7 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
           </div>
         </div>
       </div>
-    </>
+    </AmountVisibilityProvider>
   );
 };
 
