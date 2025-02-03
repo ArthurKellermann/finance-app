@@ -11,21 +11,26 @@ import {
 } from "@/app/_components/ui/alert-dialog";
 import { Button } from "@/app/_components/ui/button";
 import { TrashIcon } from "lucide-react";
-import { deleteCategory } from "./_actions/delete-category";
+import { deleteCategory } from "../../_actions/delete-category";
 import { toast } from "sonner";
 
 interface DeleteCategoryButtonProps {
   categoryId: string;
+  onDeleteSuccess: () => void;
 }
 
-const DeleteCategoryButton = ({ categoryId }: DeleteCategoryButtonProps) => {
+const DeleteCategoryButton = ({
+  categoryId,
+  onDeleteSuccess,
+}: DeleteCategoryButtonProps) => {
   const handleConfirmDeleteClick = async () => {
     try {
       await deleteCategory({ categoryId });
-      toast.success("Transação deletada com sucesso!");
+      onDeleteSuccess();
+      toast.success("Categoria deletada com sucesso!");
     } catch (error) {
       console.error(error);
-      toast.error("Ocorreu um erro ao deletar a transação.");
+      toast.error("Ocorreu um erro ao deletar a categoria.");
     }
   };
   return (

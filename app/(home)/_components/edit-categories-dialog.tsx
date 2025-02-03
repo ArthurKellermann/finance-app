@@ -1,31 +1,45 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { DataTable } from "@/app/_components/ui/data-table";
-import { Button } from "../../../_components/ui/button";
+import { Button } from "../../_components/ui/button";
 import {
   Dialog,
   DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "../../../_components/ui/dialog";
+} from "../../_components/ui/dialog";
 import getDefaultCategories from "@/app/_actions/get-default-categories";
 import DeleteCategoryButton from "./delete-category-button";
 import { ColumnDef } from "@tanstack/react-table";
 import { TRANSACTION_CATEGORY_LABELS } from "@/app/_constants/transactions";
 import { Input } from "@/app/_components/ui/input";
-import { PlusIcon, CheckIcon, Palette } from "lucide-react";
+import { PlusIcon, CheckIcon, Palette, AppWindow } from "lucide-react";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import ColorPicker from "@/app/_components/ui/color-picker";
-import { IconPickerDialog } from "@/app/_components/ui/icon-picker";
+import { IconPicker } from "@/app/_components/ui/icon-picker";
+import { IconRenderer } from "@/app/_components/ui/icon-renderer";
+import { useAuth } from "@clerk/nextjs";
+import { createCategory } from "../../_actions/create-category";
+import { findCategoryByName } from "../../_actions/find-category-by-name";
+import { toast } from "sonner";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/app/_components/ui/popover";
 
 const EditCategoryDialog = () => {
+  const { userId } = useAuth();
   const [isAdding, setIsAdding] = useState(false);
   const [newCategory, setNewCategory] = useState("");
+  const [openIconDialog, setOpenIconDialog] = useState(false);
+  const [selected, setSelected] = useState<null | string>(null);
   const [categories, setCategories] = useState<
-    { value: string; categoryId: string }[]
+    { value: string; categoryId: string; color: string; icon: string }[]
   >([]);
+  const colorRef = useRef("");
 
   useEffect(() => {
     const fetchDefaultCategories = async () => {
@@ -37,20 +51,71 @@ const EditCategoryDialog = () => {
     fetchDefaultCategories();
   }, []);
 
-  const handleAddCategory = useCallback(() => {
-    if (newCategory.trim()) {
+  const handleAddCategory = useCallback(async () => {
+    if (!userId) {
+      console.error("userId is required");
+      return;
+    }
+
+    if (selected === null) {
+      console.error("Icon is required");
+      return;
+    }
+
+    const data = {
+      userId: userId,
+      name: newCategory,
+      isDefault: false,
+      color: colorRef.current,
+      icon: selected,
+    };
+
+    const existingCategory = await findCategoryByName({
+      userId,
+      name: newCategory,
+    });
+
+    if (existingCategory) {
+      toast.error("Essa categoria já existe. Por favor, escolha outra.");
+      return;
+    }
+
+    try {
+      const newCategoryData = await createCategory(data);
+
       setCategories((prev) => [
         ...prev,
-        { value: newCategory, categoryId: Math.random().toString() },
+        {
+          value: newCategory,
+          categoryId: newCategoryData.categoryId,
+          color: colorRef.current,
+          icon: selected,
+        },
       ]);
+
       setNewCategory("");
+      setSelected(null);
+      colorRef.current = "";
       setIsAdding(false);
+
+      toast.success("Categoria criada com sucesso!");
+    } catch (error) {
+      toast.error("Erro ao criar categoria");
+      console.error(error);
     }
-  }, [newCategory]);
+  }, [userId, newCategory, selected]);
+
+  const handleDeleteCategory = useCallback((categoryId: string) => {
+    setCategories((prev) =>
+      prev.filter((category) => category.categoryId !== categoryId),
+    );
+  }, []);
 
   const data = categories.map((category) => ({
     id: category.categoryId,
     name: category.value,
+    color: category.color,
+    icon: category.icon,
   }));
 
   const categoryColumns: ColumnDef<{ id: string; name: string }>[] = [
@@ -74,25 +139,63 @@ const EditCategoryDialog = () => {
           {isAdding ? (
             <div className="flex items-center gap-2">
               <div className="flex items-center">
-                <Dialog>
-                  <DialogTrigger asChild>
+                <Popover>
+                  <PopoverTrigger>
                     <Button variant="link" className="text-primary">
                       <Palette className="h-6 w-6 text-primary" />
                     </Button>
-                  </DialogTrigger>
+                  </PopoverTrigger>
 
-                  <DialogContent className="w-auto bg-white">
+                  <PopoverContent className="w-auto bg-white p-4" side="right">
                     <DialogTitle>Selecione a cor</DialogTitle>
                     <DialogDescription>
                       Escolha uma cor para sua categoria.
                     </DialogDescription>
-                    <div className="rounded-lg bg-white p-4">
-                      <ColorPicker default_value="#1C9488" />
-                    </div>
+
+                    <ColorPicker
+                      onChange={(color) => {
+                        const hexColor = `#${color.hex}`;
+                        colorRef.current = hexColor;
+                        console.log("Selected color:", hexColor);
+                      }}
+                    />
+                  </PopoverContent>
+                </Popover>
+
+                <Dialog
+                  open={openIconDialog}
+                  onOpenChange={(e) => setOpenIconDialog(e)}
+                >
+                  <DialogTrigger asChild>
+                    <Button variant="link" className="text-primary">
+                      {selected ? (
+                        <Button variant="outline" className="w-10">
+                          <IconRenderer
+                            icon={selected}
+                            style={{ height: "1.5rem", width: "1.5rem" }}
+                          />
+                        </Button>
+                      ) : (
+                        <AppWindow className="h-6 w-6 text-primary" />
+                      )}
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Selecione o ícone</DialogTitle>
+                      <DialogDescription>
+                        Escolha o ícone que melhor combine com sua categoria
+                      </DialogDescription>
+                    </DialogHeader>
+                    <IconPicker
+                      onChange={(icon) => {
+                        setSelected(icon);
+                        setOpenIconDialog(false);
+                        console.log({ icon });
+                      }}
+                    />
                   </DialogContent>
                 </Dialog>
-
-                <IconPickerDialog />
               </div>
 
               <Input
@@ -128,7 +231,10 @@ const EditCategoryDialog = () => {
       ),
       cell: ({ row: { original: category } }) => (
         <div className="flex justify-end">
-          <DeleteCategoryButton categoryId={category.id} />
+          <DeleteCategoryButton
+            categoryId={category.id}
+            onDeleteSuccess={() => handleDeleteCategory(category.id)}
+          />
         </div>
       ),
     },

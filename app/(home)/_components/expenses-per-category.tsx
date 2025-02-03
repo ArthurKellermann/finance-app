@@ -3,7 +3,7 @@ import { Progress } from "@/app/_components/ui/progress";
 // import { ScrollArea } from "@/app/_components/ui/scroll-area";
 import { TRANSACTION_CATEGORY_LABELS } from "@/app/_constants/transactions";
 import { TotalExpensePerCategory } from "@/app/_data/get-dashboard/types";
-import EditCategoryDialog from "./categories-dialog/edit-categories-dialog";
+import EditCategoryDialog from "./edit-categories-dialog";
 
 interface ExpensesPerCategoryProps {
   expensesPerCategory: TotalExpensePerCategory[];
