@@ -118,16 +118,31 @@ const EditCategoryDialog = () => {
     icon: category.icon,
   }));
 
-  const categoryColumns: ColumnDef<{ id: string; name: string }>[] = [
+  const categoryColumns: ColumnDef<{
+    id: string;
+    name: string;
+    color: string;
+    icon: string;
+  }>[] = [
     {
       accessorKey: "name",
       header: "Nome",
       cell: ({ row: { original: category } }) => {
         return (
-          <div>
-            {TRANSACTION_CATEGORY_LABELS[
-              category.name as keyof typeof TRANSACTION_CATEGORY_LABELS
-            ] || category.name}
+          <div className="flex items-center gap-2">
+            <div
+              className="h-4 w-4 rounded-full"
+              style={{ backgroundColor: category.color }}
+            />
+            <span>
+              {TRANSACTION_CATEGORY_LABELS[
+                category.name as keyof typeof TRANSACTION_CATEGORY_LABELS
+              ] || category.name}
+            </span>
+            <IconRenderer
+              icon={category.icon}
+              style={{ height: "1.2rem", width: "1.2rem" }}
+            />
           </div>
         );
       },

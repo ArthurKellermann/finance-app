@@ -96,6 +96,14 @@ export const getDashboard = async (month: string) => {
     if (category) {
       item.category = category.name;
     }
+
+    if (category?.color) {
+      item.color = category.color;
+    }
+
+    if (category?.icon) {
+      item.icon = category.icon;
+    }
   });
 
   const lastTransactions = await prisma.transaction.findMany({
