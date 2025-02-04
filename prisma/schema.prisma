@@ -11,13 +11,15 @@ model Transaction {
   id            String                   @id @default(uuid())
   name          String
   type          TransactionType
+  categoryId    String
   amount        Decimal                  @db.Decimal(10, 2)
-  category      TransactionCategory
   paymentMethod TransactionPaymentMethod
   date          DateTime
   createdAt     DateTime                 @default(now())
   updatedAt     DateTime                 @updatedAt
   userId        String
+
+  category Category @relation(fields: [categoryId], references: [id])
 
   @@map("transactions")
 }
@@ -28,16 +30,18 @@ enum TransactionType {
   INVESTMENT
 }
 
-enum TransactionCategory {
-  HOUSING
-  TRANSPORTATION
-  FOOD
-  ENTERTAINMENT
-  HEALTH
-  UTILITY
-  SALARY
-  EDUCATION
-  OTHER
+model Category {
+  id          String        @id @default(uuid())
+  name        String        @unique
+  isDefault   Boolean       @default(false)
+  userId      String?
+  icon        String
+  color       String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Transaction Transaction[]
+
+  @@map("categories")
 }
 
 enum TransactionPaymentMethod {

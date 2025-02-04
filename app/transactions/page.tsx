@@ -1,4 +1,4 @@
-import { db } from "../_lib/prisma";
+import { prisma } from "../_lib/_prisma/prisma";
 import { DataTable } from "../_components/ui/data-table";
 import { transactionColumns } from "./_columns";
 import AddTransactionButton from "../_components/add-transaction-button";
@@ -13,7 +13,7 @@ const TransactionsPage = async () => {
   if (!userId) {
     redirect("/login");
   }
-  const transactions = await db.transaction.findMany({
+  const transactions = await prisma.transaction.findMany({
     where: {
       userId,
     },

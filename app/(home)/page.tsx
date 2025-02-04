@@ -14,6 +14,7 @@ import { Button } from "../_components/ui/button";
 import { NotebookIcon } from "lucide-react";
 import MyInvestmentsPieChart from "./_components/my-investments-pie-chart";
 import CreditCards from "./_components/credit-cards";
+import { AmountVisibilityProvider } from "../_contexts/amount-visibility-context";
 
 interface HomeProps {
   searchParams: {
@@ -41,56 +42,59 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
   return (
     <>
       <Navbar />
-      <div className="flex h-full flex-col space-y-6 overflow-hidden p-6">
-        <div className="flex justify-between">
-          <h1 className="text-2xl font-bold">Dashboard</h1>
-          <div className="flex items-center gap-3">
-            <Button variant="outline" className="bg-white">
-              Planejamento
-              <NotebookIcon />
-            </Button>
-            <AiReportButton
-              month={month}
-              hasPremiumPlan={
-                user.publicMetadata.subscriptionPlan === "premium"
-              }
-            />
-            <TimeSelect />
-          </div>
-        </div>
-        <div className="grid h-full grid-cols-[2fr,1fr] gap-6 overflow-hidden">
-          <div className="flex flex-col gap-6 overflow-hidden">
-            <SummaryCards
-              month={month}
-              {...dashboard}
-              userCanAddTransaction={userCanAddTransaction}
-            />
-
-            <div className="grid h-full grid-cols-3 grid-rows-1 gap-6 overflow-hidden">
-              <TransactionsPieChart {...dashboard} />
-              <MyInvestmentsPieChart
-                investmentsPercentage={{
-                  "Tesouro Direto": 20,
-                  "Renda Fixa": 15,
-                  "Renda Variável": 25,
-                  FIIs: 10,
-                  ETFs: 15,
-                  Criptomoedas: 5,
-                  "Previdência Privada": 10,
-                }}
+      <AmountVisibilityProvider>
+        <div className="flex h-full flex-col space-y-6 overflow-hidden p-6">
+          <div className="flex justify-between">
+            <h1 className="text-2xl font-bold">Dashboard</h1>
+            <div className="flex items-center gap-3">
+              <Button variant="outline" className="bg-white">
+                Planejamento
+                <NotebookIcon />
+              </Button>
+              <AiReportButton
+                month={month}
+                hasPremiumPlan={
+                  user.publicMetadata.subscriptionPlan === "premium"
+                }
               />
-              <ExpensesPerCategory
-                expensesPerCategory={dashboard.totalExpensePerCategory}
-              />
+              <TimeSelect />
             </div>
           </div>
-          <div className="flex-row space-y-6">
-            <LastTransactions lastTransactions={dashboard.lastTransactions} />
+          <div className="grid h-full grid-cols-[2fr,1fr] gap-6 overflow-hidden">
+            <div className="flex flex-col gap-6 overflow-hidden">
+              <SummaryCards
+                month={month}
+                {...dashboard}
+                userCanAddTransaction={userCanAddTransaction}
+              />
 
-            <CreditCards creditCards={dashboard.creditCards} />
+              <div className="grid h-full grid-cols-3 grid-rows-1 gap-6 overflow-hidden">
+                <TransactionsPieChart {...dashboard} />
+                <MyInvestmentsPieChart
+                  investmentsPercentage={{
+                    "Tesouro Direto": 20,
+                    "Renda Fixa": 15,
+                    "Renda Variável": 25,
+                    FIIs: 10,
+                    ETFs: 15,
+                    Criptomoedas: 5,
+                    "Previdência Privada": 10,
+                  }}
+                />
+                <ExpensesPerCategory
+                  expensesPerCategory={dashboard.totalExpensePerCategory}
+                />
+              </div>
+            </div>
+
+            <div className="flex-row space-y-6">
+              <LastTransactions lastTransactions={dashboard.lastTransactions} />
+
+              <CreditCards creditCards={dashboard.creditCards} />
+            </div>
           </div>
         </div>
-      </div>
+      </AmountVisibilityProvider>
     </>
   );
 };

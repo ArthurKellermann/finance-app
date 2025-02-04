@@ -1,5 +1,6 @@
 {
   "name": "finance-app",
+  "type": "module",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,10 +10,14 @@
     "lint": "next lint",
     "prepare": "husky"
   },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "dependencies": {
     "@clerk/localizations": "^3.9.14",
     "@clerk/nextjs": "^5.7.5",
     "@clerk/themes": "^2.1.37",
+    "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^3.10.0",
     "@prisma/client": "^5.21.1",
     "@radix-ui/react-alert-dialog": "^1.1.5",
@@ -27,6 +32,7 @@
     "@radix-ui/react-tooltip": "^1.1.7",
     "@stripe/stripe-js": "^4.9.0",
     "@tanstack/react-table": "^8.20.5",
+    "@uiw/react-color": "^2.3.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
@@ -46,6 +52,8 @@
     "stripe": "^17.3.1",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.2",
     "zod": "^3.24.1"
   },
   "devDependencies": {
@@ -61,6 +69,6 @@
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "typescript": "^5.7.3"
   }
 }
