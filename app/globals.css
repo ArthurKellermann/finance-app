@@ -31,7 +31,7 @@ body {
     --destructive: 0 84.2% 60.2%; /* Adjust as needed */
     --destructive-foreground: 0 0 100%; /* White */
     --border: 240 5.9% 90%; /* Very light blue */
-    --input: 240 5.9% 75%; /* Very light blue */
+    --input: 240 5.9% 90%; /* Very light blue */
     --ring: 210 80% 40%; /* Darker blue (#007BFF) */
     --radius: 0.5rem;
     --chart-1: 210 80% 60%; /* Blue for charts */

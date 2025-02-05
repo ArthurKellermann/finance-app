@@ -17,7 +17,6 @@ export const getDashboard = async (month: string) => {
     },
   };
 
-  // Agregações por tipo de transação
   const depositsTotal = Number(
     (
       await prisma.transaction.aggregate({
@@ -115,8 +114,12 @@ export const getDashboard = async (month: string) => {
   const creditCards = await prisma.creditCard.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
-    take: 5,
   });
+
+  const totalCreditCardSpent = creditCards.reduce(
+    (acc, card) => acc + card.spent,
+    0,
+  );
 
   return {
     balance,
@@ -125,6 +128,7 @@ export const getDashboard = async (month: string) => {
     expensesTotal,
     typesPercentage,
     totalExpensePerCategory,
+    totalCreditCardSpent,
     creditCards,
     lastTransactions: JSON.parse(JSON.stringify(lastTransactions)),
   };

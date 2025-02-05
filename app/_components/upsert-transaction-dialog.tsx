@@ -39,6 +39,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { upsertTransaction } from "../_actions/upsert-transaction";
 import { useEffect, useState } from "react";
 import getDefaultCategories from "../_actions/get-default-categories";
+import getCreditCards from "../_actions/get-credit-cards";
+import { useAuth } from "@clerk/nextjs";
 
 interface UpsertTransactionDialogProps {
   isOpen: boolean;
@@ -68,6 +70,7 @@ const formSchema = z.object({
   date: z.date({
     required_error: "A data é obrigatória.",
   }),
+  creditCardId: z.string().uuid().optional(),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -78,8 +81,15 @@ const UpsertTransactionDialog = ({
   transactionId,
   setIsOpen,
 }: UpsertTransactionDialogProps) => {
+  const { userId } = useAuth();
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
   const [defaultCategories, setDefaultCategories] = useState<
     { value: string; categoryId: string }[]
+  >([]);
+  const [creditCards, setCreditCards] = useState<
+    { id: string; description: string; userId: string }[]
   >([]);
 
   useEffect(() => {
@@ -92,6 +102,22 @@ const UpsertTransactionDialog = ({
 
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    const fetchCreditCards = async () => {
+      const cards = await getCreditCards({ userId });
+      if (cards) {
+        const formattedCards = cards.map((card) => ({
+          id: card.id,
+          description: card.description,
+          userId: card.userId,
+        }));
+        setCreditCards(formattedCards);
+      }
+    };
+
+    fetchCreditCards();
+  }, [userId]);
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -116,6 +142,10 @@ const UpsertTransactionDialog = ({
   };
 
   const isUpdate = Boolean(transactionId);
+
+  const paymentMethod = form.watch("paymentMethod");
+  const showCreditCardField =
+    paymentMethod === TransactionPaymentMethod.CREDIT_CARD;
 
   return (
     <Dialog
@@ -258,6 +288,35 @@ const UpsertTransactionDialog = ({
                 </FormItem>
               )}
             />
+            {showCreditCardField && (
+              <FormField
+                control={form.control}
+                name="creditCardId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Cartão de Crédito</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione o cartão..." />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {creditCards.map((card) => (
+                          <SelectItem key={card.id} value={card.id}>
+                            {card.description}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name="date"

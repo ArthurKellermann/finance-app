@@ -44,37 +44,43 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
         </Button>
       </CardHeader>
       <CardContent className="space-y-6">
-        {displayedTransactions.map((transaction) => (
-          <div
-            key={transaction.id}
-            className="flex items-center justify-between"
-          >
-            <div className="flex items-center gap-3">
-              <div className="rounded-lg bg-white bg-opacity-[3%] p-3 text-white">
-                <Image
-                  src={`/${TRANSACTION_PAYMENT_METHOD_ICONS[transaction.paymentMethod]}`}
-                  height={20}
-                  width={20}
-                  alt="PIX"
-                />
+        {displayedTransactions.length > 0 ? (
+          displayedTransactions.map((transaction) => (
+            <div
+              key={transaction.id}
+              className="flex items-center justify-between"
+            >
+              <div className="flex items-center gap-3">
+                <div className="rounded-lg bg-white bg-opacity-[3%] p-3 text-white">
+                  <Image
+                    src={`/${TRANSACTION_PAYMENT_METHOD_ICONS[transaction.paymentMethod]}`}
+                    height={20}
+                    width={20}
+                    alt="PIX"
+                  />
+                </div>
+                <div>
+                  <p className="text-sm font-bold">{transaction.name}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {new Date(transaction.date).toLocaleDateString("pt-BR", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-bold">{transaction.name}</p>
-                <p className="text-sm text-muted-foreground">
-                  {new Date(transaction.date).toLocaleDateString("pt-BR", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </p>
-              </div>
+              <p className={`text-sm font-bold ${getAmountColor(transaction)}`}>
+                {getAmountPrefix(transaction)}
+                {formatCurrency(Number(transaction.amount))}
+              </p>
             </div>
-            <p className={`text-sm font-bold ${getAmountColor(transaction)}`}>
-              {getAmountPrefix(transaction)}
-              {formatCurrency(Number(transaction.amount))}
-            </p>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p className="text-center text-sm text-muted-foreground">
+            Nenhuma transação encontrada
+          </p>
+        )}
 
         <div className="mt-4 flex w-full space-x-4">
           <Button variant="outline" className="flex-1 rounded-full">

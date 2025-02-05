@@ -56,9 +56,9 @@ const Navbar = () => {
           Mercado
         </Link>
         <Link
-          href="/conections"
+          href="/connections"
           className={
-            pathname === "/conections"
+            pathname === "/connections"
               ? "font-bold text-primary"
               : "text-muted-foreground"
           }

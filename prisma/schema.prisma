@@ -14,12 +14,14 @@ model Transaction {
   categoryId    String
   amount        Decimal                  @db.Decimal(10, 2)
   paymentMethod TransactionPaymentMethod
+  creditCardId  String?
   date          DateTime
   createdAt     DateTime                 @default(now())
   updatedAt     DateTime                 @updatedAt
   userId        String
 
-  category Category @relation(fields: [categoryId], references: [id])
+  category   Category    @relation(fields: [categoryId], references: [id])
+  creditCard CreditCard? @relation(fields: [creditCardId], references: [id])
 
   @@map("transactions")
 }
@@ -68,6 +70,7 @@ model CreditCard {
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
   userId            String
+  Transaction       Transaction[]
 
   @@map("credit_cards")
 }
