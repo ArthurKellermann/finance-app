@@ -111,6 +111,26 @@ export const getDashboard = async (month: string) => {
     take: 15,
   });
 
+  const creditCardTransactionsByCreditCard = await prisma.transaction.groupBy({
+    by: ["creditCardId"],
+    where: {
+      ...where,
+      type: TransactionType.EXPENSE,
+    },
+    _sum: {
+      amount: true,
+    },
+  });
+
+  const totalSpentByCreditCardPerMonth =
+    creditCardTransactionsByCreditCard.reduce(
+      (acc, card) => {
+        acc[card.creditCardId as string] = Number(card._sum.amount);
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+
   const creditCards = await prisma.creditCard.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
@@ -129,6 +149,7 @@ export const getDashboard = async (month: string) => {
     typesPercentage,
     totalExpensePerCategory,
     totalCreditCardSpent,
+    totalSpentByCreditCardPerMonth,
     creditCards,
     lastTransactions: JSON.parse(JSON.stringify(lastTransactions)),
   };

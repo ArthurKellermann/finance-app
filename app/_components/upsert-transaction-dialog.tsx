@@ -82,9 +82,7 @@ const UpsertTransactionDialog = ({
   setIsOpen,
 }: UpsertTransactionDialogProps) => {
   const { userId } = useAuth();
-  if (!userId) {
-    throw new Error("Unauthorized");
-  }
+
   const [defaultCategories, setDefaultCategories] = useState<
     { value: string; categoryId: string }[]
   >([]);
@@ -105,6 +103,9 @@ const UpsertTransactionDialog = ({
 
   useEffect(() => {
     const fetchCreditCards = async () => {
+      if (!userId) {
+        return null;
+      }
       const cards = await getCreditCards({ userId });
       if (cards) {
         const formattedCards = cards.map((card) => ({

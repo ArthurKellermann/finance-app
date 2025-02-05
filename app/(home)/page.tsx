@@ -90,7 +90,12 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
             <div className="flex-row space-y-6">
               <LastTransactions lastTransactions={dashboard.lastTransactions} />
 
-              <CreditCards creditCards={dashboard.creditCards} />
+              <CreditCards
+                creditCards={dashboard.creditCards}
+                totalSpentByCreditCardPerMonth={
+                  dashboard.totalSpentByCreditCardPerMonth
+                }
+              />
             </div>
           </div>
         </div>

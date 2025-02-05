@@ -13,9 +13,13 @@ import Link from "next/link";
 
 interface CreditCardsProps {
   creditCards: CreditCard[];
+  totalSpentByCreditCardPerMonth: Record<string, number>;
 }
 
-const CreditCards = ({ creditCards }: CreditCardsProps) => {
+const CreditCards = ({
+  creditCards,
+  totalSpentByCreditCardPerMonth,
+}: CreditCardsProps) => {
   const getAmountColor = (spent: number, limit: number) => {
     if (spent > limit) {
       return "text-red-500";
@@ -63,7 +67,9 @@ const CreditCards = ({ creditCards }: CreditCardsProps) => {
               <p
                 className={`text-sm font-bold ${getAmountColor(card.spent, card.limit)}`}
               >
-                {formatCurrency(card.spent)}
+                {formatCurrency(
+                  totalSpentByCreditCardPerMonth[card.id as string] || 0,
+                )}
               </p>
               <p className="text-sm text-muted-foreground">
                 / {formatCurrency(card.limit)}
