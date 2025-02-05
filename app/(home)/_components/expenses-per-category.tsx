@@ -25,10 +25,6 @@ const ExpensesPerCategory = ({
             <div key={category.category} className="space-y-2">
               <div className="flex w-full justify-between">
                 <div className="flex items-center gap-2">
-                  <div
-                    className="h-3 w-3 rounded-full"
-                    style={{ backgroundColor: category.color }}
-                  />
                   <p className="text-sm font-bold">
                     {TRANSACTION_CATEGORY_LABELS[
                       category.category as keyof typeof TRANSACTION_CATEGORY_LABELS
@@ -43,7 +39,16 @@ const ExpensesPerCategory = ({
                   {category.percentageOfTotal}%
                 </p>
               </div>
-              <Progress value={category.percentageOfTotal} />
+
+              <Progress
+                value={category.percentageOfTotal}
+                style={
+                  {
+                    "--progress-foreground": category.color,
+                  } as React.CSSProperties
+                }
+                className="[&>div]:!bg-[var(--progress-foreground)]"
+              />
             </div>
           ))}
         </CardContent>

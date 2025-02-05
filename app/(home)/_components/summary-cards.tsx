@@ -12,6 +12,7 @@ interface SummaryCards {
   balance: number;
   depositsTotal: number;
   investmentsTotal: number;
+  totalCreditCardSpent: number;
   expensesTotal: number;
   userCanAddTransaction?: boolean;
 }
@@ -21,6 +22,7 @@ const SummaryCards = async ({
   depositsTotal,
   expensesTotal,
   investmentsTotal,
+  totalCreditCardSpent,
   userCanAddTransaction,
 }: SummaryCards) => {
   return (
@@ -55,7 +57,7 @@ const SummaryCards = async ({
         <SummaryCard
           icon={<CreditCardIcon size={16} />}
           title="Cartão de Crédito"
-          amount={expensesTotal}
+          amount={totalCreditCardSpent}
         />
       </div>
     </div>
