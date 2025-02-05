@@ -60,6 +60,7 @@ model CreditCard {
   status            CreditCardStatus
   limit             Float
   spent             Float
+  imagePath         String
   type              CreditCardType
   bank              Banks
   statementCloseDay Int

@@ -62,10 +62,7 @@ const formSchema = z.object({
   status: z.nativeEnum(CreditCardStatus, {
     required_error: "O status é obrigatório.",
   }),
-  spent: z
-    .number()
-    .positive()
-    .min(0, { message: "O gasto deve ser um valor positivo." }),
+  spent: z.number().min(0, { message: "O gasto deve ser um valor positivo." }),
   statementCloseDay: z
     .number()
     .min(1)
@@ -100,7 +97,7 @@ const UpsertCreditCardDialog = ({
 
   const onSubmit = async (data: FormSchema) => {
     try {
-      console.log("data: " + data);
+      console.log("data:", data);
       await upsertCreditCard({ ...data, id: creditCardId });
       setIsOpen(false);
       form.reset();
@@ -131,12 +128,15 @@ const UpsertCreditCardDialog = ({
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="grid grid-cols-2 gap-4"
+          >
             <FormField
               control={form.control}
               name="description"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="col-span-2">
                   <FormLabel>Descrição</FormLabel>
                   <FormControl>
                     <Input placeholder="Digite a descrição..." {...field} />
@@ -151,10 +151,32 @@ const UpsertCreditCardDialog = ({
               name="limit"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Valor</FormLabel>
+                  <FormLabel>Limite</FormLabel>
                   <FormControl>
                     <MoneyInput
-                      placeholder="Digite o valor..."
+                      placeholder="Digite o limite..."
+                      value={field.value}
+                      onValueChange={({ floatValue }) =>
+                        field.onChange(floatValue)
+                      }
+                      onBlur={field.onBlur}
+                      disabled={field.disabled}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="spent"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Gasto Atual</FormLabel>
+                  <FormControl>
+                    <MoneyInput
+                      placeholder="Digite o gasto atual..."
                       value={field.value}
                       onValueChange={({ floatValue }) =>
                         field.onChange(floatValue)
@@ -292,7 +314,7 @@ const UpsertCreditCardDialog = ({
               )}
             />
 
-            <DialogFooter>
+            <DialogFooter className="col-span-2 mt-4">
               <DialogClose asChild>
                 <Button variant="outline">Cancelar</Button>
               </DialogClose>

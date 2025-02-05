@@ -8,7 +8,6 @@ import {
 } from "@/app/_components/ui/card";
 import { formatCurrency } from "@/app/_utils/currency";
 import { CreditCard } from "@prisma/client";
-import { CreditCardIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -36,13 +35,13 @@ const CreditCards = ({ creditCards }: CreditCardsProps) => {
         {displayedCreditCards.map((card) => (
           <div key={card.id} className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="rounded-lg bg-white bg-opacity-[3%] p-3 text-white">
-                <CreditCardIcon size={16} />
+              <div className="p-2">
                 <Image
-                  src="/visa.png"
-                  height={20}
-                  width={20}
+                  src={card.imagePath}
+                  height={24}
+                  width={40}
                   alt="Cartão de Crédito"
+                  className="object-contain opacity-80"
                 />
               </div>
               <div>
