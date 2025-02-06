@@ -46,7 +46,7 @@ const availableCharts = [
     selected: false,
   },
   {
-    name: "Minhas Contas",
+    name: "Fluxo Semestral de Despesas e Receitas",
     icon: <BarChart className="text-yellow-500" size={48} />,
     selected: false,
   },
@@ -88,7 +88,7 @@ function CustomizeHomeChartsDialog() {
       .map((chart) => chart.name);
 
     localStorage.setItem("selectedCharts", JSON.stringify(selectedChartNames));
-    window.location.reload(); // Força o recarregamento da página para refletir as alterações
+    window.location.reload();
     setIsOpen(false);
   };
 

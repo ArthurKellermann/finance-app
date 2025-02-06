@@ -69,9 +69,8 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
                 {...dashboard}
                 userCanAddTransaction={userCanAddTransaction}
               />
-              <div className="grid h-full grid-cols-3 grid-rows-1 gap-6 overflow-hidden">
-                <HomeCharts dashboard={dashboard} month={month} />
-              </div>
+
+              <HomeCharts dashboard={dashboard} month={month} />
             </div>
 
             <div className="flex-row space-y-6">
