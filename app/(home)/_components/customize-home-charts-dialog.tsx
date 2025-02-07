@@ -57,7 +57,6 @@ function CustomizeHomeChartsDialog() {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    // Carrega as seleções salvas do localStorage
     const savedCharts = localStorage.getItem("selectedCharts");
     if (savedCharts) {
       const savedChartNames = JSON.parse(savedCharts);

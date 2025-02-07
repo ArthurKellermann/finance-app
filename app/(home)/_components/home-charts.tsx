@@ -40,7 +40,7 @@ const HomeCharts = ({ month, dashboard }: HomeProps) => {
         )}
         {selectedCharts.includes("Fluxo Mensal") && (
           <div className="col-span-2">
-            <MonthlyFlowChart />
+            <MonthlyFlowChart chartData={dashboard.monthlyFlow} />
           </div>
         )}
         {selectedCharts.includes("Distribuição de Transações") && (

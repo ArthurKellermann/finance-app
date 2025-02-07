@@ -141,12 +141,39 @@ export const getDashboard = async (month: string) => {
     0,
   );
 
+  const monthlyTransactions = await prisma.transaction.findMany({
+    where,
+    orderBy: { date: "asc" },
+  });
+
+  const monthlyFlow = Array.from({ length: 31 }, (_, i) => ({
+    day: i + 1,
+    expenses: 0,
+    revenue: 0,
+    investment: 0,
+  }));
+
+  monthlyTransactions.forEach((transaction) => {
+    const day = new Date(transaction.date).getDate();
+
+    if (transaction.type === TransactionType.EXPENSE) {
+      monthlyFlow[day - 1].expenses += Number(transaction.amount);
+    } else if (transaction.type === TransactionType.DEPOSIT) {
+      monthlyFlow[day - 1].revenue += Number(transaction.amount);
+    } else if (transaction.type === TransactionType.INVESTMENT) {
+      monthlyFlow[day - 1].investment += Number(transaction.amount);
+    }
+  });
+
+  console.log("monthlyFlow", monthlyFlow);
+
   return {
     balance,
     depositsTotal,
     investmentsTotal,
     expensesTotal,
     typesPercentage,
+    monthlyFlow,
     totalExpensePerCategory,
     totalCreditCardSpent,
     totalSpentByCreditCardPerMonth,

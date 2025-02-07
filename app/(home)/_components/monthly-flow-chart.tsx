@@ -19,26 +19,30 @@ import { Button } from "@/app/_components/ui/button";
 import Link from "next/link";
 
 const chartConfig = {
-  desktop: {
+  revenue: {
     label: "Receita",
     color: "#2563eb",
   },
-  mobile: {
+  expense: {
     label: "Despesa",
     color: "#ff7f7f",
   },
+  investment: {
+    label: "Investimento",
+    color: "#34D399",
+  },
 } satisfies ChartConfig;
 
-export function MonthlyFlowChart() {
-  const chartData = [
-    { day: "1", desktop: 186, mobile: 80, tablet: 120 },
-    { day: "2", desktop: 305, mobile: 200, tablet: 150 },
-    { day: "3", desktop: 237, mobile: 120, tablet: 110 },
-    { day: "4", desktop: 73, mobile: 190, tablet: 160 },
-    { day: "5", desktop: 209, mobile: 130, tablet: 140 },
-    { day: "6", desktop: 214, mobile: 140, tablet: 130 },
-  ];
+interface MonthlyFlowChartProps {
+  chartData: {
+    day: number;
+    revenue: number;
+    expenses: number;
+    investment: number;
+  }[];
+}
 
+export function MonthlyFlowChart({ chartData }: MonthlyFlowChartProps) {
   return (
     <Card className="flex flex-col p-6">
       <CardContent className="flex-1 pb-0">
@@ -59,22 +63,22 @@ export function MonthlyFlowChart() {
               <Tooltip content={<ChartTooltipContent />} />
               <Line
                 type="monotone"
-                dataKey="desktop"
-                stroke="#2563eb"
+                dataKey="revenue"
+                stroke={chartConfig.revenue.color}
                 strokeWidth={2}
                 dot={false}
               />
               <Line
                 type="monotone"
-                dataKey="mobile"
-                stroke="#ff7f7f"
+                dataKey="expenses"
+                stroke={chartConfig.expense.color}
                 strokeWidth={2}
                 dot={false}
               />
               <Line
                 type="monotone"
-                dataKey="tablet"
-                stroke="#34D399"
+                dataKey="investment"
+                stroke={chartConfig.investment.color}
                 strokeWidth={2}
                 dot={false}
               />
@@ -83,7 +87,7 @@ export function MonthlyFlowChart() {
         </ChartContainer>
 
         <Button variant="link" className="mt-3 w-full">
-          <Link href="/portfolio">Ver carteira</Link>
+          <Link href="/transactions">Ver transações</Link>
         </Button>
       </CardContent>
     </Card>
