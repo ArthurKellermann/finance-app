@@ -18,37 +18,44 @@ import {
   Menu,
 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 
 const availableCharts = [
   {
     name: "Distribuição de Transações",
     icon: <PieChart className="text-green-500" size={48} />,
     selected: false,
+    size: 1,
   },
   {
     name: "Meus Investimentos",
     icon: <DollarSignIcon className="text-purple-500" size={48} />,
     selected: false,
+    size: 1,
   },
   {
     name: "Gastos por Categoria",
     icon: <Menu className="text-orange-500" size={48} />,
     selected: false,
+    size: 1,
   },
   {
     name: "Fluxo Mensal",
     icon: <LineChart className="text-blue-500" size={48} />,
     selected: false,
+    size: 2,
   },
   {
     name: "Meus Objetivos",
     icon: <CheckCircle className="text-red-500" size={48} />,
     selected: false,
+    size: 1,
   },
   {
     name: "Fluxo Semestral de Despesas e Receitas",
     icon: <BarChart className="text-yellow-500" size={48} />,
     selected: false,
+    size: 2,
   },
 ];
 
@@ -72,10 +79,17 @@ function CustomizeHomeChartsDialog() {
     const newCharts = [...selectedCharts];
     const chart = newCharts[index];
 
+    const currentSize = newCharts.reduce(
+      (acc, c) => acc + (c.selected ? c.size : 0),
+      0,
+    );
+
     if (chart.selected) {
       chart.selected = false;
-    } else if (newCharts.filter((c) => c.selected).length < 3) {
+    } else if (currentSize + chart.size <= 3) {
       chart.selected = true;
+    } else {
+      toast.error("Você só pode selecionar até 3 espaços de gráficos!");
     }
 
     setSelectedCharts(newCharts);
