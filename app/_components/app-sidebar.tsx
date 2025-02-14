@@ -7,6 +7,7 @@ import {
   Bell,
   BookOpen,
   Bot,
+  BrainCircuit,
   ChevronRight,
   ChevronsUpDown,
   Command,
@@ -23,6 +24,7 @@ import {
   Settings2,
   Sparkles,
   SquareTerminal,
+  Target,
   Trash2,
 } from "lucide-react";
 
@@ -63,19 +65,20 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "@/app/_components/ui/sidebar";
-import { useUser } from "@clerk/nextjs";
+import { useUser, useClerk } from "@clerk/nextjs";
+import Link from "next/link";
 
 const data = {
-  teams: [
+  dashboards: [
     {
       name: "Pessoal",
       logo: GalleryVerticalEnd,
-      plan: "Enterprise",
+      plan: "Premium",
     },
     {
       name: "Família",
       logo: AudioWaveform,
-      plan: "Startup",
+      plan: "Free",
     },
     {
       name: "Amigos",
@@ -102,6 +105,10 @@ const data = {
           title: "Cartões de Crédito",
           url: "#",
         },
+        {
+          title: "Categorias",
+          url: "#",
+        },
       ],
     },
     {
@@ -114,11 +121,15 @@ const data = {
           url: "#",
         },
         {
-          title: "Explorer",
+          title: "Explorar Ativos",
           url: "#",
         },
         {
-          title: "Quantum",
+          title: "Recomentações de IA",
+          url: "#",
+        },
+        {
+          title: "Projeções de Mercado",
           url: "#",
         },
       ],
@@ -129,7 +140,7 @@ const data = {
       icon: BookOpen,
       items: [
         {
-          title: "Bolsa",
+          title: "Bolsa de Valores",
           url: "#",
         },
         {
@@ -141,11 +152,50 @@ const data = {
           url: "#",
         },
         {
-          title: "Relatórios",
+          title: "Análises e Relatórios",
           url: "#",
         },
       ],
     },
+    {
+      title: "Análise Inteligentes",
+      url: "#",
+      icon: BrainCircuit,
+      items: [
+        {
+          title: "Insights Financeiros",
+          url: "#",
+        },
+        {
+          title: "Padrões de Gasto",
+          url: "#",
+        },
+        {
+          title: "Alertas de Economia",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Metas Financeiras",
+      url: "#",
+      icon: Target,
+      items: [
+        {
+          title: "Criar Nova Meta",
+          url: "#",
+        },
+        {
+          title: "Metas Ativas",
+          url: "#",
+        },
+        {
+          title: "Progresso das Metas",
+          url: "#",
+        },
+      ],
+    },
+
     {
       title: "Configurações",
       url: "#",
@@ -153,10 +203,6 @@ const data = {
       items: [
         {
           title: "Geral",
-          url: "#",
-        },
-        {
-          title: "Dashboards",
           url: "#",
         },
         {
@@ -173,7 +219,7 @@ const data = {
   about: [
     {
       name: "Conheça a Fivest",
-      url: "#",
+      url: "/about",
       icon: Frame,
     },
     {
@@ -191,7 +237,8 @@ const data = {
 
 export function AppSidebar({ children }: { children: React.ReactNode }) {
   const { user } = useUser();
-  const [activeTeam, setActiveTeam] = React.useState(data.teams[0]);
+  const clerk = useClerk();
+  const [activeTeam, setActiveTeam] = React.useState(data.dashboards[0]);
 
   const userData = {
     name: user?.fullName || "Guest",
@@ -234,7 +281,7 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
                   <DropdownMenuLabel className="text-xs text-muted-foreground">
                     Contas
                   </DropdownMenuLabel>
-                  {data.teams.map((team, index) => (
+                  {data.dashboards.map((team, index) => (
                     <DropdownMenuItem
                       key={team.name}
                       onClick={() => setActiveTeam(team)}
@@ -398,30 +445,40 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    <DropdownMenuItem>
-                      <Sparkles />
-                      Assinaturas
-                    </DropdownMenuItem>
+                    <Link href="/subscription">
+                      <DropdownMenuItem>
+                        <Sparkles />
+                        Assinaturas
+                      </DropdownMenuItem>
+                    </Link>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        clerk.openUserProfile();
+                      }}
+                    >
                       <BadgeCheck />
-                      Account
+                      Conta
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => {}}>
                       <CreditCard />
                       Billing
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                       <Bell />
-                      Notifications
+                      Notificações
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      clerk.signOut();
+                    }}
+                  >
                     <LogOut />
-                    Log out
+                    Sair
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
