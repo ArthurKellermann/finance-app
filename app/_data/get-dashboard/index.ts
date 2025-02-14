@@ -111,7 +111,7 @@ export const getDashboard = async (month: string) => {
     take: 15,
   });
 
-  const creditCardTransactionsByCreditCard = await prisma.transaction.groupBy({
+  const creditCardTransactions = await prisma.transaction.groupBy({
     by: ["creditCardId"],
     where: {
       ...where,
@@ -122,14 +122,13 @@ export const getDashboard = async (month: string) => {
     },
   });
 
-  const totalSpentByCreditCardPerMonth =
-    creditCardTransactionsByCreditCard.reduce(
-      (acc, card) => {
-        acc[card.creditCardId as string] = Number(card._sum.amount);
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
+  const totalSpentByCreditCardPerMonth = creditCardTransactions.reduce(
+    (acc, card) => {
+      acc[card.creditCardId as string] = Number(card._sum.amount);
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 
   const creditCards = await prisma.creditCard.findMany({
     where: { userId },
@@ -164,8 +163,6 @@ export const getDashboard = async (month: string) => {
       monthlyFlow[day - 1].investment += Number(transaction.amount);
     }
   });
-
-  console.log("monthlyFlow", monthlyFlow);
 
   return {
     balance,

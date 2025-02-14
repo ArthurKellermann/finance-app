@@ -57,7 +57,7 @@ export function MonthlyFlowChart({ chartData }: MonthlyFlowChartProps) {
                 tickLine={false}
                 tickMargin={10}
                 axisLine={false}
-                tickFormatter={(value) => `Dia ${value}`}
+                tickFormatter={(value) => `${value}`}
               />
               <YAxis />
               <Tooltip content={<ChartTooltipContent />} />

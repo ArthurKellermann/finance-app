@@ -4,12 +4,14 @@ import { UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import NavbarSidebar from "./navbar-sidebar";
+
+import { SidebarTrigger } from "./ui/sidebar";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 const Navbar = () => {
   const pathname = usePathname();
   return (
-    <div className="flex justify-between border-2 bg-popover px-8 py-4 shadow-md">
+    <div className="flex justify-between bg-popover px-8 py-4 shadow-md">
       {/* Left */}
       <div className="flex items-center gap-10">
         <Link href="/">
@@ -80,7 +82,14 @@ const Navbar = () => {
       <div className="flex space-x-4">
         <UserButton showName />
 
-        <NavbarSidebar />
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <SidebarTrigger className="-ml-1" />
+          </TooltipTrigger>
+          <TooltipContent side="bottom" align="start">
+            Abrir menu lateral
+          </TooltipContent>
+        </Tooltip>
       </div>
     </div>
   );

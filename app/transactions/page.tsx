@@ -13,15 +13,14 @@ const TransactionsPage = async () => {
   if (!userId) {
     redirect("/login");
   }
+
   const transactions = await prisma.transaction.findMany({
-    where: {
-      userId,
-    },
-    orderBy: {
-      date: "desc",
-    },
+    where: { userId },
+    orderBy: { date: "desc" },
   });
+
   const userCanAddTransaction = await canUserAddTransaction();
+
   return (
     <>
       <Navbar />
@@ -31,12 +30,15 @@ const TransactionsPage = async () => {
           <h1 className="text-2xl font-bold">Transações</h1>
           <AddTransactionButton userCanAddTransaction={userCanAddTransaction} />
         </div>
-        <ScrollArea className="h-full">
-          <DataTable
-            columns={transactionColumns}
-            data={JSON.parse(JSON.stringify(transactions))}
-          />
-        </ScrollArea>
+
+        <div className="col-span-1 space-y-6">
+          <ScrollArea className="h-full">
+            <DataTable
+              columns={transactionColumns}
+              data={JSON.parse(JSON.stringify(transactions))}
+            />
+          </ScrollArea>
+        </div>
       </div>
     </>
   );

@@ -1,6 +1,5 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import Navbar from "../_components/navbar";
 import SummaryCards from "./_components/summary-cards";
 import TimeSelect from "./_components/time-select";
 import { isMatch } from "date-fns";
@@ -40,7 +39,6 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
 
   return (
     <>
-      <Navbar />
       <AmountVisibilityProvider>
         <div className="flex h-full flex-col space-y-6 overflow-hidden p-6">
           <div className="flex justify-between">
