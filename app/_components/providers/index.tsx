@@ -3,7 +3,6 @@ import { cookies } from "next/headers";
 import { SidebarProvider } from "../ui/sidebar";
 import { AppSidebar } from "../app-sidebar";
 import { AppSidebarInset } from "./app-sidebar-inset";
-import { auth } from "@clerk/nextjs/server";
 
 type ProviderProps = {
   children: React.ReactNode;
@@ -11,11 +10,6 @@ type ProviderProps = {
 
 export async function Providers({ children }: ProviderProps) {
   const cookieStore = await cookies();
-  const { userId } = auth();
-
-  if (!userId) {
-    return <div className="h-full">{children}</div>;
-  }
 
   const sidebarState = cookieStore.get("sidebar:state")?.value;
   //* get sidebar width from cookie

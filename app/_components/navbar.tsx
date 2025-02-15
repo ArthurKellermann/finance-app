@@ -1,15 +1,13 @@
 "use client";
 
-import { UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-import { SidebarTrigger } from "./ui/sidebar";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import UserProfileDropDown from "./user-profile-drop-down";
 
 const Navbar = () => {
   const pathname = usePathname();
+
   return (
     <div className="flex justify-between bg-popover px-8 py-4 shadow-md">
       {/* Left */}
@@ -79,17 +77,8 @@ const Navbar = () => {
         </Link>
       </div>
       {/* Right */}
-      <div className="flex space-x-4">
-        <UserButton showName />
-
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <SidebarTrigger className="-ml-1" />
-          </TooltipTrigger>
-          <TooltipContent side="bottom" align="start">
-            Abrir menu lateral
-          </TooltipContent>
-        </Tooltip>
+      <div className="flex h-[30px] items-center">
+        <UserProfileDropDown />
       </div>
     </div>
   );

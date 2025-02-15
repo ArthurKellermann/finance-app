@@ -13,7 +13,7 @@ const About = () => {
         />
         <h1 className="text-4xl font-bold">Transforme sua Vida Financeira</h1>
         <p className="mt-4 max-w-2xl text-lg text-gray-600">
-          A <strong>Finance App</strong> é a plataforma ideal para você
+          A <strong>Fivest</strong> é a plataforma ideal para você
           <strong> planejar, investir e crescer financeiramente</strong> com
           inteligência artificial e insights personalizados.
         </p>
@@ -78,7 +78,7 @@ const About = () => {
             Comece agora e tenha controle total sobre seu dinheiro!
           </p>
           <button className="mt-6 rounded-lg bg-blue-600 px-6 py-3 text-lg font-semibold text-white shadow-md transition-all hover:bg-blue-700">
-            Criar Conta Grátis
+            Conhecer
           </button>
         </div>
       </section>

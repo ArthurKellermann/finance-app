@@ -3,36 +3,26 @@
 import * as React from "react";
 import {
   AudioWaveform,
-  BadgeCheck,
-  Bell,
-  BookOpen,
   Bot,
-  BrainCircuit,
+  Calendar,
   ChevronRight,
   ChevronsUpDown,
   Command,
-  CreditCard,
+  DollarSign,
   Folder,
   Forward,
   Frame,
   GalleryVerticalEnd,
-  LogOut,
-  Map,
+  LineChart,
   MoreHorizontal,
-  PieChart,
+  NotebookIcon,
   Plus,
   Settings2,
-  Sparkles,
   SquareTerminal,
   Target,
   Trash2,
+  UserIcon,
 } from "lucide-react";
-
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/app/_components/ui/avatar";
 
 import {
   Collapsible,
@@ -42,7 +32,6 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -64,9 +53,9 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   SidebarRail,
+  SidebarTrigger,
 } from "@/app/_components/ui/sidebar";
-import { useUser, useClerk } from "@clerk/nextjs";
-import Link from "next/link";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 const data = {
   dashboards: [
@@ -114,7 +103,7 @@ const data = {
     {
       title: "Investimentos",
       url: "#",
-      icon: Bot,
+      icon: DollarSign,
       items: [
         {
           title: "Carteira de Investimentos",
@@ -122,6 +111,10 @@ const data = {
         },
         {
           title: "Explorar Ativos",
+          url: "#",
+        },
+        {
+          title: "Simulador",
           url: "#",
         },
         {
@@ -137,7 +130,7 @@ const data = {
     {
       title: "Mercado",
       url: "#",
-      icon: BookOpen,
+      icon: LineChart,
       items: [
         {
           title: "Bolsa de Valores",
@@ -160,7 +153,7 @@ const data = {
     {
       title: "Análise Inteligentes",
       url: "#",
-      icon: BrainCircuit,
+      icon: Bot,
       items: [
         {
           title: "Insights Financeiros",
@@ -172,6 +165,21 @@ const data = {
         },
         {
           title: "Alertas de Economia",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Calendário",
+      url: "#",
+      icon: Calendar,
+      items: [
+        {
+          title: "Ver",
+          url: "#",
+        },
+        {
+          title: "Lista de Tarefas",
           url: "#",
         },
       ],
@@ -225,26 +233,18 @@ const data = {
     {
       name: "Fivest Learning",
       url: "#",
-      icon: PieChart,
+      icon: NotebookIcon,
     },
     {
       name: "Suporte",
       url: "#",
-      icon: Map,
+      icon: UserIcon,
     },
   ],
 };
 
 export function AppSidebar({ children }: { children: React.ReactNode }) {
-  const { user } = useUser();
-  const clerk = useClerk();
   const [activeTeam, setActiveTeam] = React.useState(data.dashboards[0]);
-
-  const userData = {
-    name: user?.fullName || "Guest",
-    email: user?.emailAddresses[0]?.emailAddress || "guest@example.com",
-    avatar: user?.imageUrl || "/avatars/default.jpg",
-  };
 
   return (
     <>
@@ -252,59 +252,14 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
         <SidebarHeader>
           <SidebarMenu>
             <SidebarMenuItem>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <SidebarMenuButton
-                    size="lg"
-                    className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                  >
-                    <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                      <activeTeam.logo className="size-4" />
-                    </div>
-                    <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="truncate font-semibold">
-                        {activeTeam.name}
-                      </span>
-                      <span className="truncate text-xs">
-                        {activeTeam.plan}
-                      </span>
-                    </div>
-                    <ChevronsUpDown className="ml-auto" />
-                  </SidebarMenuButton>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                  align="start"
-                  side="bottom"
-                  sideOffset={4}
-                >
-                  <DropdownMenuLabel className="text-xs text-muted-foreground">
-                    Contas
-                  </DropdownMenuLabel>
-                  {data.dashboards.map((team, index) => (
-                    <DropdownMenuItem
-                      key={team.name}
-                      onClick={() => setActiveTeam(team)}
-                      className="gap-2 p-2"
-                    >
-                      <div className="flex size-6 items-center justify-center rounded-sm border">
-                        <team.logo className="size-4 shrink-0" />
-                      </div>
-                      {team.name}
-                      <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
-                    </DropdownMenuItem>
-                  ))}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="gap-2 p-2">
-                    <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-                      <Plus className="size-4" />
-                    </div>
-                    <div className="font-medium text-muted-foreground">
-                      Adicionar Dashboard
-                    </div>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <SidebarTrigger className="-ml-1" />
+                </TooltipTrigger>
+                <TooltipContent side="bottom" align="start">
+                  Abrir menu lateral
+                </TooltipContent>
+              </Tooltip>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarHeader>
@@ -403,82 +358,50 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
                     size="lg"
                     className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                   >
-                    <Avatar className="h-8 w-8 rounded-lg">
-                      <AvatarImage src={userData.avatar} alt={userData.name} />
-                      <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                    </Avatar>
+                    <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                      <activeTeam.logo className="size-4" />
+                    </div>
                     <div className="grid flex-1 text-left text-sm leading-tight">
                       <span className="truncate font-semibold">
-                        {userData.name}
+                        {activeTeam.name}
                       </span>
-                      <span className="truncate text-xs">{userData.email}</span>
+                      <span className="truncate text-xs">
+                        {activeTeam.plan}
+                      </span>
                     </div>
-                    <ChevronsUpDown className="ml-auto size-4" />
+                    <ChevronsUpDown className="ml-auto" />
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+                  align="start"
                   side="bottom"
-                  align="end"
                   sideOffset={4}
                 >
-                  <DropdownMenuLabel className="p-0 font-normal">
-                    <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                      <Avatar className="h-8 w-8 rounded-lg">
-                        <AvatarImage
-                          src={userData.avatar}
-                          alt={userData.name}
-                        />
-                        <AvatarFallback className="rounded-lg">
-                          CN
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="grid flex-1 text-left text-sm leading-tight">
-                        <span className="truncate font-semibold">
-                          {userData.name}
-                        </span>
-                        <span className="truncate text-xs">
-                          {userData.email}
-                        </span>
-                      </div>
-                    </div>
+                  <DropdownMenuLabel className="text-xs text-muted-foreground">
+                    Contas
                   </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuGroup>
-                    <Link href="/subscription">
-                      <DropdownMenuItem>
-                        <Sparkles />
-                        Assinaturas
-                      </DropdownMenuItem>
-                    </Link>
-                  </DropdownMenuGroup>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuGroup>
+                  {data.dashboards.map((team, index) => (
                     <DropdownMenuItem
-                      onClick={() => {
-                        clerk.openUserProfile();
-                      }}
+                      key={team.name}
+                      onClick={() => setActiveTeam(team)}
+                      className="gap-2 p-2"
                     >
-                      <BadgeCheck />
-                      Conta
+                      <div className="flex size-6 items-center justify-center rounded-sm border">
+                        <team.logo className="size-4 shrink-0" />
+                      </div>
+                      {team.name}
+                      <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => {}}>
-                      <CreditCard />
-                      Billing
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Bell />
-                      Notificações
-                    </DropdownMenuItem>
-                  </DropdownMenuGroup>
+                  ))}
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={() => {
-                      clerk.signOut();
-                    }}
-                  >
-                    <LogOut />
-                    Sair
+                  <DropdownMenuItem className="gap-2 p-2">
+                    <div className="flex size-6 items-center justify-center rounded-md border bg-background">
+                      <Plus className="size-4" />
+                    </div>
+                    <div className="font-medium text-muted-foreground">
+                      Adicionar Dashboard
+                    </div>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
