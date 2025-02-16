@@ -43,7 +43,7 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
         <div className="flex h-full flex-col space-y-6 overflow-hidden p-6">
           <div className="flex justify-between">
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold">Dashboard</h1>
+              <h1 className="text-2xl font-bold">Olá, {user.firstName}!</h1>
               <CustomizeHomeChartsDialog />
             </div>
             <div className="flex items-center gap-3">

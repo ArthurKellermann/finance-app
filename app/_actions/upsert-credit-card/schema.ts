@@ -8,6 +8,6 @@ export const upsertCreditCardSchema = z.object({
   status: z.nativeEnum(CreditCardStatus),
   bank: z.nativeEnum(Banks),
   spent: z.number().min(0),
-  statementCloseDay: z.number().min(1).max(31),
-  dueDay: z.number().min(1).max(31),
+  statementCloseDay: z.string().min(1).max(31),
+  dueDay: z.string().min(1).max(31),
 });
