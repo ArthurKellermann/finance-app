@@ -56,6 +56,7 @@ import {
   SidebarTrigger,
 } from "@/app/_components/ui/sidebar";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import { ModeToggle } from "./ui/theme-provider";
 
 const data = {
   dashboards: [
@@ -92,7 +93,7 @@ const data = {
         },
         {
           title: "Cartões de Crédito",
-          url: "#",
+          url: "/credit-cards",
         },
         {
           title: "Categorias",
@@ -252,17 +253,27 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
         <SidebarHeader>
           <SidebarMenu>
             <SidebarMenuItem>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <SidebarTrigger className="-ml-1" />
-                </TooltipTrigger>
-                <TooltipContent side="bottom" align="start">
-                  Abrir menu lateral
-                </TooltipContent>
-              </Tooltip>
+              <SidebarMenuButton
+                size="lg"
+                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              >
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <SidebarTrigger
+                      className="flex items-center"
+                      variant="outline"
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" align="start">
+                    Abrir menu lateral
+                  </TooltipContent>
+                </Tooltip>
+                <ModeToggle />
+              </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarHeader>
+
         <SidebarContent>
           <SidebarGroup>
             <SidebarGroupLabel>Finanças</SidebarGroupLabel>

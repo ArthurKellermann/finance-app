@@ -47,7 +47,7 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
               <CustomizeHomeChartsDialog />
             </div>
             <div className="flex items-center gap-3">
-              <Button variant="outline" className="bg-white">
+              <Button variant="secondary">
                 Planejamento
                 <NotebookIcon />
               </Button>

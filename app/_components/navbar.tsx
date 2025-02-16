@@ -4,16 +4,23 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import UserProfileDropDown from "./user-profile-drop-down";
+import { useTheme } from "next-themes";
 
 const Navbar = () => {
   const pathname = usePathname();
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
   return (
     <div className="flex justify-between bg-popover px-8 py-4 shadow-md">
       {/* Left */}
       <div className="flex items-center gap-10">
         <Link href="/">
-          <Image src="/logo.svg" width={173} height={39} alt="Fivest" />
+          {isDark ? (
+            <Image src="/logo-white.svg" width={173} height={39} alt="Fivest" />
+          ) : (
+            <Image src="/logo.svg" width={173} height={39} alt="Fivest" />
+          )}
         </Link>
         <Link
           href="/"

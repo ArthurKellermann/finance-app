@@ -118,12 +118,12 @@ function CustomizeHomeChartsDialog() {
           </Button>
         </div>
       </DialogTrigger>
-      <DialogContent className="max-w-lg rounded-lg bg-white p-6 shadow-2xl transition-all duration-300">
+      <DialogContent className="max-w-lg rounded-lg bg-background p-6 shadow-2xl transition-all duration-300">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-semibold text-gray-800">
+          <DialogTitle className="text-2xl font-semibold text-card-foreground">
             Escolha os Gráficos
           </DialogTitle>
-          <DialogDescription className="text-gray-600">
+          <DialogDescription className="text-foreground">
             Selecione até 3 gráficos para exibir na página inicial.
           </DialogDescription>
         </DialogHeader>
@@ -132,7 +132,7 @@ function CustomizeHomeChartsDialog() {
             <div
               key={index}
               className={`flex cursor-pointer flex-col items-center justify-between rounded-lg border p-6 transition-shadow duration-200 hover:shadow-xl ${
-                chart.selected ? "border-blue-500 bg-blue-50" : "bg-gray-50"
+                chart.selected ? "border-blue-500 bg-card" : "bg-card"
               }`}
               onClick={() => toggleChartSelection(index)}
             >

@@ -1,25 +1,36 @@
+"use client";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 
 const About = () => {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
   return (
-    <div className="min-h-screen w-full bg-white text-gray-900">
+    <div className="min-h-screen w-full bg-card">
       <section className="flex h-[500px] w-full flex-col items-center justify-center px-6 py-20 text-center">
-        <Image
-          src="/logo.png"
-          alt="Logo"
-          width={120}
-          height={120}
-          className="mb-4"
-        />
+        <div className="mb-8">
+          {isDark ? (
+            <Image
+              src="/logo-white.png"
+              alt="Fivest Logo"
+              width={120}
+              height={120}
+            />
+          ) : (
+            <Image src="/logo.png" alt="Fivest Logo" width={120} height={120} />
+          )}
+        </div>
+
         <h1 className="text-4xl font-bold">Transforme sua Vida Financeira</h1>
-        <p className="mt-4 max-w-2xl text-lg text-gray-600">
+        <p className="text-gray-450 mt-4 max-w-2xl text-lg">
           A <strong>Fivest</strong> é a plataforma ideal para você
           <strong> planejar, investir e crescer financeiramente</strong> com
           inteligência artificial e insights personalizados.
         </p>
       </section>
 
-      <section className="w-full bg-gray-100 px-6 py-20">
+      <section className="w-full bg-background px-6 py-20">
         <div className="mx-auto max-w-6xl">
           <h2 className="text-center text-3xl font-bold">
             Principais Funcionalidades
@@ -55,10 +66,8 @@ const About = () => {
 
       <section className="w-full px-6 py-20">
         <div className="mx-auto max-w-4xl text-center">
-          <h2 className="text-3xl font-bold">
-            Por que escolher a Finance App?
-          </h2>
-          <p className="mt-4 text-lg text-gray-600">
+          <h2 className="text-3xl font-bold">Por que escolher a Fivest?</h2>
+          <p className="text-gray-450 mt-4 text-lg">
             Nossa plataforma usa <strong>inteligência artificial</strong> e{" "}
             <strong>dados financeiros reais</strong> para oferecer{" "}
             <strong>insights personalizados</strong>, ajudando você a{" "}
@@ -69,12 +78,12 @@ const About = () => {
         </div>
       </section>
 
-      <section className="w-full bg-gray-100 px-6 py-20">
+      <section className="w-full bg-card px-6 py-20">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-3xl font-bold">
             Pronto para transformar suas finanças?
           </h2>
-          <p className="mt-4 text-lg text-gray-600">
+          <p className="mt-4 text-lg">
             Comece agora e tenha controle total sobre seu dinheiro!
           </p>
           <button className="mt-6 rounded-lg bg-blue-600 px-6 py-3 text-lg font-semibold text-white shadow-md transition-all hover:bg-blue-700">
@@ -94,9 +103,9 @@ const FeatureCard = ({
   description: string;
 }) => {
   return (
-    <div className="rounded-xl border bg-white p-6 shadow-lg transition-all hover:shadow-xl">
+    <div className="rounded-xl border bg-card p-6 shadow-lg transition-all hover:shadow-xl">
       <h3 className="text-xl font-bold">{title}</h3>
-      <p className="mt-2 text-gray-600">{description}</p>
+      <p className="mt-2 text-foreground">{description}</p>
     </div>
   );
 };
