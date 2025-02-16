@@ -10,7 +10,13 @@ import {
 import EditTransactionButton from "../_components/edit-transaction-button";
 import DeleteTransactionButton from "../_components/delete-transaction-button";
 
-export const transactionColumns: ColumnDef<Transaction>[] = [
+type TransactionWithCategory = Transaction & {
+  category: {
+    name: string;
+  };
+};
+
+export const transactionColumns: ColumnDef<TransactionWithCategory>[] = [
   {
     accessorKey: "name",
     header: "Nome",
@@ -26,7 +32,9 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
     accessorKey: "category",
     header: "Categoria",
     cell: ({ row: { original: transaction } }) =>
-      TRANSACTION_CATEGORY_LABELS[transaction.category],
+      TRANSACTION_CATEGORY_LABELS[
+        transaction.category.name as keyof typeof TRANSACTION_CATEGORY_LABELS
+      ] || transaction.category.name,
   },
   {
     accessorKey: "paymentMethod",

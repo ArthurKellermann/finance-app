@@ -16,7 +16,9 @@ const TransactionsPage = async () => {
   const transactions = await prisma.transaction.findMany({
     where: { userId },
     orderBy: { date: "desc" },
+    include: { category: true },
   });
+  console.log({ transactions });
 
   const userCanAddTransaction = await canUserAddTransaction();
 
