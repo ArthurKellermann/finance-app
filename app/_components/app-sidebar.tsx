@@ -253,10 +253,7 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
         <SidebarHeader>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton
-                size="lg"
-                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-              >
+              <SidebarMenuButton>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <SidebarTrigger
@@ -264,11 +261,14 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
                       variant="outline"
                     />
                   </TooltipTrigger>
-                  <TooltipContent side="bottom" align="start">
+                  <TooltipContent side="right" align="start">
                     Abrir menu lateral
                   </TooltipContent>
                 </Tooltip>
-                <ModeToggle />
+
+                <div className="data-[state=open]:invisible">
+                  <ModeToggle />
+                </div>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
