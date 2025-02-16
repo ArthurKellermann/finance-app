@@ -51,15 +51,10 @@ const CreditCards = ({
               <div>
                 <p className="text-sm font-bold">{card.description}</p>
                 <p className="text-sm text-muted-foreground">
-                  Fecha em{" "}
-                  {new Date(card.statementCloseDay).toLocaleDateString(
-                    "pt-BR",
-                    {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                    },
-                  )}
+                  Fecha em {card.statementCloseDay} de{" "}
+                  {new Date(
+                    new Date().setMonth(new Date().getMonth() + 1),
+                  ).toLocaleString("pt-BR", { month: "long", year: "numeric" })}
                 </p>
               </div>
             </div>
