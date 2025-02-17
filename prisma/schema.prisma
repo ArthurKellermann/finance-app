@@ -108,3 +108,28 @@ enum Banks {
   PAN
   OTHER
 }
+
+model Goal {
+  id             String     @id @default(uuid())
+  name           String
+  description    String
+  status         GoalStatus
+  targetDate     String
+  goalAmount     String
+  startingAmount String
+  color          String
+  iconPath       String
+  userId         String
+  createdAt      DateTime   @default(now())
+  updatedAi      DateTime   @updatedAt
+
+  @@map("goals")
+}
+
+enum GoalStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+  CANCELLED
+}
