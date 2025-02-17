@@ -78,7 +78,7 @@ const About = () => {
         </div>
       </section>
 
-      <section className="w-full bg-card px-6 py-20">
+      <section className="w-full bg-background px-6 py-20">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-3xl font-bold">
             Pronto para transformar suas finanças?
