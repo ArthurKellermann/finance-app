@@ -5,6 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import UserProfileDropDown from "./user-profile-drop-down";
 import { useTheme } from "next-themes";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -22,15 +28,51 @@ const Navbar = () => {
             <Image src="/logo.svg" width={173} height={39} alt="Fivest" />
           )}
         </Link>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            className={
+              pathname === "/"
+                ? "font-bold text-primary"
+                : "text-muted-foreground"
+            }
+          >
+            Dashboards
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem>
+              <Link
+                href="/"
+                className={
+                  pathname === "/" ? "font-bold" : "text-muted-foreground"
+                }
+              >
+                Finanças
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link
+                href="/investments"
+                className={
+                  pathname === "/investments"
+                    ? "font-bold"
+                    : "text-muted-foreground"
+                }
+              >
+                Investimentos
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <Link
-          href="/"
+          href="/transactions"
           className={
-            pathname === "/"
+            pathname === "/transactions"
               ? "font-bold text-primary"
               : "text-muted-foreground"
           }
         >
-          Dashboard
+          Transações
         </Link>
         <Link
           href="/portfolio"
@@ -41,16 +83,6 @@ const Navbar = () => {
           }
         >
           Carteira
-        </Link>
-        <Link
-          href="/transactions"
-          className={
-            pathname === "/transactions"
-              ? "font-bold text-primary"
-              : "text-muted-foreground"
-          }
-        >
-          Transações
         </Link>
         <Link
           href="/market"
@@ -71,16 +103,6 @@ const Navbar = () => {
           }
         >
           Conexões
-        </Link>
-        <Link
-          href="/subscription"
-          className={
-            pathname === "/subscription"
-              ? "font-bold text-primary"
-              : "text-muted-foreground"
-          }
-        >
-          Assinatura
         </Link>
       </div>
       {/* Right */}
