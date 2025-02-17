@@ -1,3 +1,4 @@
+"use client";
 import { Card, CardContent } from "@/app/_components/ui/card";
 import { Progress } from "@/app/_components/ui/progress";
 import { cn } from "@/app/_lib/utils";
@@ -9,8 +10,11 @@ import {
   TooltipTrigger,
 } from "@/app/_components/ui/tooltip";
 import { CREDIT_CARD_STATUS_LABELS } from "@/app/_constants/credit-cards";
+import DeleteCreditCardButton from "./delete-credit-card-button";
+import { useState } from "react";
 
 interface CreditCardProps {
+  id: string;
   description: string;
   status: "ACTIVE" | "SUSPENDED" | "BLOCKED" | "EXPIRED" | "CANCELLED";
   limit: string;
@@ -34,6 +38,7 @@ const statusIcons: Record<
 };
 
 export default function CreditCard({
+  id,
   description,
   dueDay,
   imagePath,
@@ -43,6 +48,14 @@ export default function CreditCard({
   type,
   spent,
 }: CreditCardProps) {
+  const [isDeleted, setIsDeleted] = useState(false);
+
+  const handleDeleteSuccess = () => {
+    setIsDeleted(true);
+  };
+
+  if (isDeleted) return null;
+
   const totalSpent = (parseFloat(spent) / parseFloat(limit)) * 100;
   const { icon: StatusIcon, color: statusColor } = statusIcons[status];
 
@@ -95,7 +108,8 @@ export default function CreditCard({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <span>
-                      Fechamento {statementCloseDay}/
+                      <div className="text-xs">Fechamento</div>{" "}
+                      {statementCloseDay}/
                       {new Date(
                         new Date().setMonth(new Date().getMonth() + 1),
                       ).toLocaleString("pt-BR", { month: "2-digit" })}
@@ -110,7 +124,7 @@ export default function CreditCard({
               <Tooltip>
                 <TooltipTrigger asChild>
                   <span>
-                    Vencimento {dueDay}/
+                    <div className="text-xs">Vencimento</div> {dueDay}/
                     {new Date(
                       new Date().setMonth(new Date().getMonth() + 1),
                     ).toLocaleString("pt-BR", { month: "2-digit" })}
@@ -127,13 +141,25 @@ export default function CreditCard({
         </CardContent>
       </Card>
       <div className="mt-4 w-80 space-y-2">
-        <Progress value={totalSpent} className="bg-popover" />
-        <div>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Progress value={totalSpent} className="bg-popover" />
+          </TooltipTrigger>
+          <TooltipContent side="top" align="start">
+            {`${totalSpent.toFixed(2)}%`}
+          </TooltipContent>
+        </Tooltip>
+
+        <div className="flex items-center justify-between">
           Limite de{" "}
           {new Intl.NumberFormat("pt-BR", {
             style: "currency",
             currency: "BRL",
           }).format(parseFloat(limit))}
+          <DeleteCreditCardButton
+            creditCardId={id}
+            onDeleteSuccess={handleDeleteSuccess}
+          />
         </div>
       </div>
     </div>

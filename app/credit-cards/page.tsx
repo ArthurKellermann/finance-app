@@ -23,7 +23,7 @@ const CreditCardsPage = async () => {
           <AddCreditCardButton userCanAddCreditCard={true} />
         </div>
       </div>
-      <div className="flex items-center gap-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
         {creditCards.length > 0 ? (
           creditCards.map((card: any) => <CreditCard key={card.id} {...card} />)
         ) : (
