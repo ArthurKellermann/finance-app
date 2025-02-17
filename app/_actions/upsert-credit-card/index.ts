@@ -13,8 +13,8 @@ interface UpsertCreditCardParams {
   bank: Banks;
   spent: number;
   type: CreditCardType;
-  statementCloseDay: number;
-  dueDay: number;
+  statementCloseDay: string;
+  dueDay: string;
   status: CreditCardStatus;
 }
 
@@ -33,6 +33,8 @@ export const upsertCreditCard = async (params: UpsertCreditCardParams) => {
     return await prisma.creditCard.create({
       data: {
         ...rest,
+        dueDay: Number(params.dueDay),
+        statementCloseDay: Number(params.statementCloseDay),
         imagePath,
         userId,
       },
@@ -43,6 +45,8 @@ export const upsertCreditCard = async (params: UpsertCreditCardParams) => {
     where: { id },
     data: {
       ...rest,
+      dueDay: Number(params.dueDay),
+      statementCloseDay: Number(params.statementCloseDay),
       imagePath,
       userId,
     },

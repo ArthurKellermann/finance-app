@@ -22,7 +22,7 @@ body {
     --popover-foreground: 240 10% 3.9%; /* Dark blue */
     --primary: 210 80% 40%; /* Dark blue, deeper (#007BFF) */
     --primary-foreground: 240 10% 97.3%; /* White */
-    --secondary: 210 60% 75%; /* Medium blue */
+    --secondary: 0 0% 100%; /* Medium blue */
     --secondary-foreground: 240 5.9% 10%; /* Dark blue */
     --muted: 240 4.8% 95.9%; /* Very light blue */
     --muted-foreground: 240 3.8% 46.1%; /* Dark blue */
@@ -51,14 +51,14 @@ body {
 
   .dark {
     --background: 20 14.3% 4.1%; /* Soft black */
-    --foreground: 0 0% 95%; /* White */
-    --card: 210 60% 15%; /* Dark blue for the cards */
+    --foreground: 0 0% 75%; /* White */
+    --card: 240 5.9% 10%; /* Dark blue for the cards */
     --card-foreground: 0 0% 95%; /* White */
     --popover: 0 0% 9%; /* Soft black */
     --popover-foreground: 0 0% 95%; /* White */
     --primary: 210 80% 40%; /* Dark blue (#007BFF) */
     --primary-foreground: 0 0 100%; /* White */
-    --secondary: 210 60% 75%; /* Medium blue */
+    --secondary: 240 5.9% 10%; /* Medium blue */
     --secondary-foreground: 0 0 100%; /* White */
     --muted: 0 0% 15%; /* Dark */
     --muted-foreground: 240 5% 64.9%; /* Dark blue */

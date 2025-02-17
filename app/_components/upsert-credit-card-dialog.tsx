@@ -64,11 +64,11 @@ const formSchema = z.object({
   }),
   spent: z.number().min(0, { message: "O gasto deve ser um valor positivo." }),
   statementCloseDay: z
-    .number()
+    .string()
     .min(1)
     .max(31, { message: "O dia de fechamento deve estar entre 1 e 31." }),
   dueDay: z
-    .number()
+    .string()
     .min(1)
     .max(31, { message: "O dia de vencimento deve estar entre 1 e 31." }),
 });
@@ -90,8 +90,8 @@ const UpsertCreditCardDialog = ({
       type: CreditCardType.VISA,
       bank: Banks.ITAU,
       status: CreditCardStatus.ACTIVE,
-      statementCloseDay: 10,
-      dueDay: 20,
+      statementCloseDay: "10",
+      dueDay: "20",
     },
   });
 
@@ -286,7 +286,7 @@ const UpsertCreditCardDialog = ({
                   <FormLabel>Dia de Fechamento</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
+                      type="string"
                       placeholder="Digite o dia de fechamento..."
                       {...field}
                     />
@@ -304,7 +304,7 @@ const UpsertCreditCardDialog = ({
                   <FormLabel>Dia de Vencimento</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
+                      type="string"
                       placeholder="Digite o dia de vencimento..."
                       {...field}
                     />

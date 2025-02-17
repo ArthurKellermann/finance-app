@@ -111,6 +111,25 @@ export const getDashboard = async (month: string) => {
     take: 15,
   });
 
+  const creditCardTransactions = await prisma.transaction.groupBy({
+    by: ["creditCardId"],
+    where: {
+      ...where,
+      type: TransactionType.EXPENSE,
+    },
+    _sum: {
+      amount: true,
+    },
+  });
+
+  const totalSpentByCreditCardPerMonth = creditCardTransactions.reduce(
+    (acc, card) => {
+      acc[card.creditCardId as string] = Number(card._sum.amount);
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
+
   const creditCards = await prisma.creditCard.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
@@ -121,14 +140,40 @@ export const getDashboard = async (month: string) => {
     0,
   );
 
+  const monthlyTransactions = await prisma.transaction.findMany({
+    where,
+    orderBy: { date: "asc" },
+  });
+
+  const monthlyFlow = Array.from({ length: 31 }, (_, i) => ({
+    day: i + 1,
+    expenses: 0,
+    revenue: 0,
+    investment: 0,
+  }));
+
+  monthlyTransactions.forEach((transaction) => {
+    const day = new Date(transaction.date).getDate();
+
+    if (transaction.type === TransactionType.EXPENSE) {
+      monthlyFlow[day - 1].expenses += Number(transaction.amount);
+    } else if (transaction.type === TransactionType.DEPOSIT) {
+      monthlyFlow[day - 1].revenue += Number(transaction.amount);
+    } else if (transaction.type === TransactionType.INVESTMENT) {
+      monthlyFlow[day - 1].investment += Number(transaction.amount);
+    }
+  });
+
   return {
     balance,
     depositsTotal,
     investmentsTotal,
     expensesTotal,
     typesPercentage,
+    monthlyFlow,
     totalExpensePerCategory,
     totalCreditCardSpent,
+    totalSpentByCreditCardPerMonth,
     creditCards,
     lastTransactions: JSON.parse(JSON.stringify(lastTransactions)),
   };

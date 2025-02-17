@@ -161,7 +161,7 @@ const EditCategoryDialog = () => {
                     </Button>
                   </PopoverTrigger>
 
-                  <PopoverContent className="w-auto bg-white p-4" side="right">
+                  <PopoverContent className="w-auto bg-card p-4" side="right">
                     <DialogTitle>Selecione a cor</DialogTitle>
                     <DialogDescription>
                       Escolha uma cor para sua categoria.
@@ -267,10 +267,10 @@ const EditCategoryDialog = () => {
             Personalizar
           </Button>
         </DialogTrigger>
-        <DialogContent className="w-full max-w-4xl rounded-lg bg-white p-6 shadow-lg">
+        <DialogContent className="w-full max-w-4xl rounded-lg bg-card p-6 shadow-lg">
           <DialogHeader>
             <div>
-              <DialogTitle className="text-xl font-semibold text-gray-900">
+              <DialogTitle className="text-xl font-semibold">
                 Personalizar categorias
               </DialogTitle>
               <DialogDescription>

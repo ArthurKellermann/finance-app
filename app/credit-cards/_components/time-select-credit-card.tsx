@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Select,
   SelectContent,
@@ -8,7 +6,6 @@ import {
   SelectValue,
 } from "@/app/_components/ui/select";
 import { Calendar } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 const MONTH_OPTIONS = [
   { value: "01", label: "Janeiro" },
@@ -25,22 +22,13 @@ const MONTH_OPTIONS = [
   { value: "12", label: "Dezembro" },
 ];
 
-const TimeSelect = () => {
-  const { push } = useRouter();
-  //const searchParams = useSearchParams();
-  //const month = searchParams.get("month");
-
-  const handleMonthChange = (month: string) => {
-    push(`/?month=${month}`);
-  };
-
+const TimeSelectCreditCard = () => {
   return (
-    //remove value from Select tag
-    <Select onValueChange={(value) => handleMonthChange(value)}>
+    <Select>
       <SelectTrigger className="w-[150px] bg-secondary">
         <div className="flex items-center gap-2">
           <SelectValue placeholder="Mês" />
-          <Calendar className="-4 w-4" />
+          <Calendar className="h-4 w-4" />
         </div>
       </SelectTrigger>
       <SelectContent>
@@ -54,4 +42,4 @@ const TimeSelect = () => {
   );
 };
 
-export default TimeSelect;
+export default TimeSelectCreditCard;

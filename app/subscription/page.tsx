@@ -1,6 +1,5 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import Navbar from "../_components/navbar";
 import { Card, CardContent, CardHeader } from "../_components/ui/card";
 import { CheckIcon, XIcon } from "lucide-react";
 import AcquirePlanButton from "./_components/acquire-plan-button";
@@ -20,7 +19,6 @@ const SubscriptionPage = async () => {
 
   return (
     <>
-      <Navbar />
       <div className="space-y-6 p-6">
         <h1 className="text-2xl font-bold">Assinatura</h1>
 

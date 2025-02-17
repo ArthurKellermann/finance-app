@@ -13,9 +13,13 @@ import Link from "next/link";
 
 interface CreditCardsProps {
   creditCards: CreditCard[];
+  totalSpentByCreditCardPerMonth: Record<string, number>;
 }
 
-const CreditCards = ({ creditCards }: CreditCardsProps) => {
+const CreditCards = ({
+  creditCards,
+  totalSpentByCreditCardPerMonth,
+}: CreditCardsProps) => {
   const getAmountColor = (spent: number, limit: number) => {
     if (spent > limit) {
       return "text-red-500";
@@ -47,15 +51,10 @@ const CreditCards = ({ creditCards }: CreditCardsProps) => {
               <div>
                 <p className="text-sm font-bold">{card.description}</p>
                 <p className="text-sm text-muted-foreground">
-                  Fecha em{" "}
-                  {new Date(card.statementCloseDay).toLocaleDateString(
-                    "pt-BR",
-                    {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                    },
-                  )}
+                  Fecha em {card.statementCloseDay} de{" "}
+                  {new Date(
+                    new Date().setMonth(new Date().getMonth() + 1),
+                  ).toLocaleString("pt-BR", { month: "long", year: "numeric" })}
                 </p>
               </div>
             </div>
@@ -63,7 +62,9 @@ const CreditCards = ({ creditCards }: CreditCardsProps) => {
               <p
                 className={`text-sm font-bold ${getAmountColor(card.spent, card.limit)}`}
               >
-                {formatCurrency(card.spent)}
+                {formatCurrency(
+                  totalSpentByCreditCardPerMonth[card.id as string] || 0,
+                )}
               </p>
               <p className="text-sm text-muted-foreground">
                 / {formatCurrency(card.limit)}
@@ -76,7 +77,7 @@ const CreditCards = ({ creditCards }: CreditCardsProps) => {
             <Link href="/">Conferir faturas</Link>
           </Button>
           <Button variant="outline" className="flex-1 rounded-full">
-            <Link href="/">Ver mais</Link>
+            <Link href="/credit-cards">Ver mais</Link>
           </Button>
         </div>
       </CardContent>
