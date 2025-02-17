@@ -1,5 +1,5 @@
 import { prisma } from "../_lib/_prisma/prisma";
-import { DataTable } from "../_components/ui/data-table";
+import { DataTable } from "./_columns/data-table";
 import { transactionColumns } from "./_columns";
 import AddTransactionButton from "../_components/add-transaction-button";
 import { auth } from "@clerk/nextjs/server";
@@ -18,14 +18,12 @@ const TransactionsPage = async () => {
     orderBy: { date: "desc" },
     include: { category: true },
   });
-  console.log({ transactions });
 
   const userCanAddTransaction = await canUserAddTransaction();
 
   return (
     <>
       <div className="flex flex-col space-y-6 overflow-hidden p-6">
-        {/* Title and Button */}
         <div className="flex w-full items-center justify-between">
           <h1 className="text-2xl font-bold">Transações</h1>
           <AddTransactionButton userCanAddTransaction={userCanAddTransaction} />

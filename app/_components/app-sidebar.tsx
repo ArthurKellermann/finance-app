@@ -116,7 +116,7 @@ const data = {
         },
         {
           title: "Simulador",
-          url: "#",
+          url: "/investments/simulator",
         },
         {
           title: "Recomentações de IA",

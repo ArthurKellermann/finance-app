@@ -77,7 +77,7 @@ const CreditCards = ({
             <Link href="/">Conferir faturas</Link>
           </Button>
           <Button variant="outline" className="flex-1 rounded-full">
-            <Link href="/">Ver mais</Link>
+            <Link href="/credit-cards">Ver mais</Link>
           </Button>
         </div>
       </CardContent>
