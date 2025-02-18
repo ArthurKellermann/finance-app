@@ -3,7 +3,8 @@ import getCreditCards from "../_actions/get-credit-cards";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import AddCreditCardButton from "../_components/add-credit-card-button";
-import TimeSelectCreditCard from "./_components/time-select-credit-card";
+import { Button } from "../_components/ui/button";
+import Link from "next/link";
 
 const CreditCardsPage = async () => {
   const { userId } = auth();
@@ -19,7 +20,9 @@ const CreditCardsPage = async () => {
       <div className="flex items-center justify-between gap-2">
         <h1 className="mb-10 text-2xl font-bold">Cartões de Crédito</h1>
         <div className="flex items-center gap-3">
-          <TimeSelectCreditCard />
+          <Button variant="secondary">
+            <Link href="/credit-cards/statements">Ver faturas</Link>
+          </Button>
           <AddCreditCardButton userCanAddCreditCard={true} />
         </div>
       </div>
