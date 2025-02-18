@@ -85,7 +85,7 @@ const data = {
       items: [
         {
           title: "Histórico",
-          url: "#",
+          url: "/transactions",
         },
         {
           title: "Bancos",
