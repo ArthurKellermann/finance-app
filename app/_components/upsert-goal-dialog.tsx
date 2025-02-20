@@ -52,11 +52,11 @@ const formSchema = z.object({
   }),
   targetDate: z.date({ required_error: "A data é obrigatória." }),
   goalAmount: z.number({ required_error: "O valor da meta é obrigatório." }),
-  startingAmount: z.number({
+  currentAmount: z.number({
     required_error: "O valor inicial é obrigatório.",
   }),
   color: z.string().min(1, { message: "A cor é obrigatória." }),
-  iconPath: z.string().min(1, { message: "O caminho do ícone é obrigatório." }),
+  icon: z.string().min(1, { message: "O caminho do ícone é obrigatório." }),
 });
 
 interface UpsertGoalDialogProps {
@@ -84,6 +84,7 @@ const predefinedNames = [
   "Minha próxima conquista",
   "Primeiro milhão",
   "Ajudando quem precisa",
+  "Outro",
 ];
 
 const UpsertGoalDialog = ({
@@ -106,9 +107,9 @@ const UpsertGoalDialog = ({
       status: GoalStatus.IN_PROGRESS,
       targetDate: new Date(),
       goalAmount: 0,
-      startingAmount: 0,
+      currentAmount: 0,
       color: "#000000",
-      iconPath: "",
+      icon: "",
     },
   });
 
@@ -117,12 +118,12 @@ const UpsertGoalDialog = ({
       const dataToSubmit = {
         ...data,
         color: colorRef.current,
-        iconPath: selectedIcon,
+        icon: selectedIcon,
         goalAmount: Number(data.goalAmount),
-        startingAmount: Number(data.startingAmount),
+        currentAmount: Number(data.currentAmount),
         id: goalId,
       };
-      console.log("dataToSubmit:", dataToSubmit);
+
       await upsertGoal(dataToSubmit);
       setIsOpen(false);
       colorRef.current = "";
@@ -223,56 +224,58 @@ const UpsertGoalDialog = ({
                 </FormItem>
               )}
             />
+            <div className="flex gap-4">
+              <FormField
+                control={form.control}
+                name="goalAmount"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel className="block text-sm font-medium">
+                      Valor da Meta
+                    </FormLabel>
+                    <FormControl>
+                      <MoneyInput
+                        placeholder="Digite o valor da meta..."
+                        value={field.value}
+                        onValueChange={({ floatValue }) =>
+                          field.onChange(floatValue || 0)
+                        }
+                        onBlur={field.onBlur}
+                        disabled={field.disabled}
+                        className="w-full"
+                      />
+                    </FormControl>
+                    <FormMessage className="text-sm text-red-500" />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="goalAmount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="block text-sm font-medium">
-                    Valor da Meta
-                  </FormLabel>
-                  <FormControl>
-                    <MoneyInput
-                      placeholder="Digite o valor da meta..."
-                      value={field.value}
-                      onValueChange={({ floatValue }) =>
-                        field.onChange(floatValue || 0)
-                      }
-                      onBlur={field.onBlur}
-                      disabled={field.disabled}
-                      className="w-full"
-                    />
-                  </FormControl>
-                  <FormMessage className="text-sm text-red-500" />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="currentAmount"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel className="block text-sm font-medium">
+                      Valor Inicial
+                    </FormLabel>
+                    <FormControl>
+                      <MoneyInput
+                        placeholder="Digite o valor inicial..."
+                        value={field.value}
+                        onValueChange={({ floatValue }) =>
+                          field.onChange(floatValue || 0)
+                        }
+                        onBlur={field.onBlur}
+                        disabled={field.disabled}
+                        className="w-full"
+                      />
+                    </FormControl>
+                    <FormMessage className="text-sm text-red-500" />
+                  </FormItem>
+                )}
+              />
+            </div>
 
-            <FormField
-              control={form.control}
-              name="startingAmount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="block text-sm font-medium">
-                    Valor Inicial
-                  </FormLabel>
-                  <FormControl>
-                    <MoneyInput
-                      placeholder="Digite o valor inicial..."
-                      value={field.value}
-                      onValueChange={({ floatValue }) =>
-                        field.onChange(floatValue || 0)
-                      }
-                      onBlur={field.onBlur}
-                      disabled={field.disabled}
-                      className="w-full"
-                    />
-                  </FormControl>
-                  <FormMessage className="text-sm text-red-500" />
-                </FormItem>
-              )}
-            />
             <div className="flex items-center gap-4">
               <FormField
                 control={form.control}
@@ -323,7 +326,7 @@ const UpsertGoalDialog = ({
                 <Dialog open={openIconDialog} onOpenChange={setOpenIconDialog}>
                   <DialogTrigger asChild>
                     <Button
-                      variant="secondary"
+                      variant="outline"
                       className="flex items-center gap-2"
                     >
                       {selectedIcon ? (
@@ -345,7 +348,7 @@ const UpsertGoalDialog = ({
                     <IconPicker
                       onChange={(icon) => {
                         setSelectedIcon(icon);
-                        form.setValue("iconPath", icon);
+                        form.setValue("icon", icon);
                         setOpenIconDialog(false);
                       }}
                     />

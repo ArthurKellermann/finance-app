@@ -7,9 +7,9 @@ export const upsertGoalSchema = z.object({
   status: z.nativeEnum(GoalStatus),
   targetDate: z.date(),
   goalAmount: z.number().positive(),
-  startingAmount: z.number().positive(),
+  currentAmount: z.number().positive(),
   color: z.string().min(1),
-  iconPath: z.string().min(1),
+  icon: z.string().min(1),
 });
 
 export type UpsertGoalSchema = z.infer<typeof upsertGoalSchema>;

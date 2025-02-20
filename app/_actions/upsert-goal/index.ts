@@ -11,9 +11,9 @@ interface UpsertGoalParams {
   status: GoalStatus;
   targetDate: Date;
   goalAmount: number;
-  startingAmount: number;
+  currentAmount: number;
   color: string;
-  iconPath: string;
+  icon: string;
 }
 
 export const upsertGoal = async (params: UpsertGoalParams) => {

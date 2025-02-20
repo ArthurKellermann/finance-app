@@ -21,7 +21,7 @@ const getGoals = async () => {
     return goals;
   } catch (error) {
     console.error("Error fetching goals:", error);
-    throw new Error("Failed to fetch credit cards");
+    throw new Error("Failed to fetch goals");
   }
 };
 
