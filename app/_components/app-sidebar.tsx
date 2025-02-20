@@ -191,12 +191,8 @@ const data = {
       icon: Target,
       items: [
         {
-          title: "Criar Nova Meta",
-          url: "#",
-        },
-        {
           title: "Metas Ativas",
-          url: "#",
+          url: "/goals",
         },
         {
           title: "Progresso das Metas",

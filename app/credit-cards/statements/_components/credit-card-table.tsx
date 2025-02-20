@@ -43,7 +43,6 @@ const CreditCardTable = ({
         uniqueCards={uniqueCards}
       />
       <div className="grid grid-cols-2 gap-4">
-        {/* Tabela de Transações */}
         <div className="col-span-1 space-y-6 rounded-md bg-card">
           <ScrollArea className="h-[600px]">
             <DataTable

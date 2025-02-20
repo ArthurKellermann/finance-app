@@ -1,6 +1,8 @@
 import getTransactionsByPaymentMethod from "@/app/_actions/get-transactions-by-payment-method";
 import TimeSelectCreditCard from "../_components/time-select-credit-card";
 import CreditCardTable from "./_components/credit-card-table";
+import { Button } from "@/app/_components/ui/button";
+import Link from "next/link";
 
 const CreditCardsStatementsPage = async () => {
   const { transactions } = await getTransactionsByPaymentMethod("CREDIT_CARD");
@@ -39,7 +41,12 @@ const CreditCardsStatementsPage = async () => {
     <div className="flex flex-col space-y-6 overflow-hidden p-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Faturas Cartão de Crédito</h1>
-        <TimeSelectCreditCard />
+        <div className="flex items-center gap-3">
+          <Button variant="outline">
+            <Link href="/credit-cards">Cartões de Crédito</Link>
+          </Button>
+          <TimeSelectCreditCard />
+        </div>
       </div>
       <CreditCardTable
         transactions={transactions}

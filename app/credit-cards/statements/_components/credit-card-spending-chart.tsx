@@ -39,10 +39,8 @@ const colors = [
   "#20B2AA", // Sea green
 ];
 
-// Componente personalizado para o Tooltip
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
-    // Formata a data para DD/MM/AAAA
     const formattedDate = new Date(label).toLocaleDateString("pt-BR", {
       day: "2-digit",
       month: "2-digit",

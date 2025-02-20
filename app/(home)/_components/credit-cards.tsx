@@ -3,6 +3,7 @@ import { Button } from "@/app/_components/ui/button";
 import {
   Card,
   CardContent,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/app/_components/ui/card";
@@ -30,7 +31,7 @@ const CreditCards = ({
   const displayedCreditCards = creditCards.slice(0, 3);
 
   return (
-    <Card className="border-3">
+    <Card className="border-3 h-full rounded-md">
       <CardHeader className="flex-row items-center justify-between rounded-t-md">
         <CardTitle className="font-bold">Cartões de Crédito</CardTitle>
         <AddCreditCardButton userCanAddCreditCard={true} />
@@ -72,6 +73,8 @@ const CreditCards = ({
             </div>
           </div>
         ))}
+      </CardContent>
+      <CardFooter>
         <div className="flex w-full space-x-4">
           <Button variant="outline" className="flex-1 rounded-full">
             <Link href="/credit-cards/statements">Conferir faturas</Link>
@@ -80,7 +83,7 @@ const CreditCards = ({
             <Link href="/credit-cards">Ver mais</Link>
           </Button>
         </div>
-      </CardContent>
+      </CardFooter>
     </Card>
   );
 };

@@ -114,9 +114,9 @@ model Goal {
   name           String
   description    String
   status         GoalStatus
-  targetDate     String
-  goalAmount     String
-  startingAmount String
+  targetDate     DateTime
+  goalAmount     Float
+  startingAmount Float
   color          String
   iconPath       String
   userId         String

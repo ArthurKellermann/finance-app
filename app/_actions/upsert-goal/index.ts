@@ -1,5 +1,4 @@
 "use server";
-
 import { prisma } from "@/app/_lib/_prisma/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { GoalStatus } from "@prisma/client";
@@ -10,9 +9,9 @@ interface UpsertGoalParams {
   name: string;
   description: string;
   status: GoalStatus;
-  targetDate: string;
-  goalAmount: string;
-  startingAmount: string;
+  targetDate: Date;
+  goalAmount: number;
+  startingAmount: number;
   color: string;
   iconPath: string;
 }
@@ -20,7 +19,7 @@ interface UpsertGoalParams {
 export const upsertGoal = async (params: UpsertGoalParams) => {
   upsertGoalSchema.parse(params);
 
-  const { userId } = await auth();
+  const { userId } = auth();
   if (!userId) {
     throw new Error("Unauthorized");
   }

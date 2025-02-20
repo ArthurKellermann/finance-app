@@ -7,7 +7,17 @@ import {
   CardTitle,
 } from "@/app/_components/ui/card";
 import { Badge } from "@/app/_components/ui/badge";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import Image from "next/image";
+import { CREDIT_CARD_STATUS_LABELS } from "@/app/_constants/credit-cards";
+import { Button } from "@/app/_components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/app/_components/ui/dialog";
+import { groupBy } from "lodash";
 
 interface CreditCardDetailsProps {
   card: CreditCard;
@@ -15,7 +25,8 @@ interface CreditCardDetailsProps {
 }
 
 const CreditCardDetails = ({ card, transactions }: CreditCardDetailsProps) => {
-  // Calcula o valor total da fatura no mês
+  const [isFaturasDialogOpen, setIsFaturasDialogOpen] = useState(false);
+
   const totalSpentThisMonth = useMemo(() => {
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth();
@@ -34,6 +45,21 @@ const CreditCardDetails = ({ card, transactions }: CreditCardDetailsProps) => {
   }, [transactions, card.id]);
 
   const availableLimit = card.limit - card.spent;
+
+  const faturasFechadas = useMemo(() => {
+    const groupedTransactions = groupBy(transactions, (t) => {
+      const date = new Date(t.date);
+      return `${date.getFullYear()}-${date.getMonth() + 1}`;
+    });
+
+    return Object.entries(groupedTransactions).map(([key, transacoes]) => {
+      const total = transacoes.reduce((sum, t) => sum + Number(t.amount), 0);
+      return {
+        periodo: key,
+        total,
+      };
+    });
+  }, [transactions]);
 
   return (
     <Card className="h-full border-border shadow-sm">
@@ -63,13 +89,17 @@ const CreditCardDetails = ({ card, transactions }: CreditCardDetailsProps) => {
             </div>
           </div>
           <div className="mt-4">
-            <p className="text-sm">Número do Cartão</p>
-            <p className="font-mono text-lg">**** **** **** 1234</p>
+            <Image
+              src={card.imagePath}
+              alt={card.type}
+              width={40}
+              height={25}
+            />
           </div>
           <div className="mt-4 flex justify-between">
             <div>
               <p className="text-sm">Titular</p>
-              <p className="text-lg">Seu Nome</p>
+              <p className="text-lg">Seu nome</p>
             </div>
             <div>
               <p className="text-sm">Validade</p>
@@ -84,7 +114,7 @@ const CreditCardDetails = ({ card, transactions }: CreditCardDetailsProps) => {
             <Badge
               variant={card.status === "ACTIVE" ? "default" : "destructive"}
             >
-              {card.status === "ACTIVE" ? "Ativo" : "Inativo"}
+              {CREDIT_CARD_STATUS_LABELS[card.status]}
             </Badge>
           </div>
           <div className="space-y-2">
@@ -114,6 +144,35 @@ const CreditCardDetails = ({ card, transactions }: CreditCardDetailsProps) => {
             <p className="text-lg font-semibold">{card.dueDay}</p>
           </div>
         </div>
+
+        <Button className="w-full" onClick={() => setIsFaturasDialogOpen(true)}>
+          Ver Faturas Fechadas
+        </Button>
+
+        <Dialog
+          open={isFaturasDialogOpen}
+          onOpenChange={setIsFaturasDialogOpen}
+        >
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Faturas Fechadas</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              {faturasFechadas.map((fatura, index) => (
+                <div key={index} className="border-b pb-2">
+                  <p className="font-semibold">Período: {fatura.periodo}</p>
+                  <p>
+                    Total:{" "}
+                    {new Intl.NumberFormat("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    }).format(fatura.total)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </DialogContent>
+        </Dialog>
       </CardContent>
     </Card>
   );

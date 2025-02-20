@@ -53,12 +53,10 @@ const EditCategoryDialog = () => {
 
   const handleAddCategory = useCallback(async () => {
     if (!userId) {
-      console.error("userId is required");
       return;
     }
 
     if (selected === null) {
-      console.error("Icon is required");
       return;
     }
 
