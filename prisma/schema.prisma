@@ -126,6 +126,13 @@ model Goal {
   @@map("goals")
 }
 
+model GoalDeposit {
+  id        String   @id @default(uuid())
+  amount    Float
+  date      DateTime
+  createdAt DateTime
+}
+
 enum GoalStatus {
   PENDING
   IN_PROGRESS

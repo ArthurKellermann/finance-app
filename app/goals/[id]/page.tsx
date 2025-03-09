@@ -1,21 +1,17 @@
 "use client";
+
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import { Card, CardContent } from "@/app/_components/ui/card";
 import { Progress } from "@/app/_components/ui/progress";
 import { cn } from "@/app/_lib/utils";
-import { GoalStatus } from "@prisma/client";
-import { Ban, CheckCircle, Clock, XCircle, Check } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { Button } from "@/app/_components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/app/_components/ui/tooltip";
-import { IconRenderer } from "@/app/_components/ui/icon-renderer";
+import { CheckCircle, Clock, XCircle, Ban } from "lucide-react";
 import { GOALS_STATUS_LABELS } from "@/app/_constants/goals";
-import DeleteGoalButton from "./delete-goal-button";
-import { useState } from "react";
-import EditGoalButton from "./edit-goal-button";
+import { IconRenderer } from "@/app/_components/ui/icon-renderer";
+import { Tooltip } from "@radix-ui/react-tooltip";
+import { TooltipContent, TooltipTrigger } from "@/app/_components/ui/tooltip";
+import type { GoalStatus } from "@prisma/client";
+import getGoalById from "../_actions/get-goal-by-id";
 
 interface GoalCardProps {
   id: string;
@@ -40,15 +36,26 @@ const statusIcons: Record<GoalStatus, { icon: any; color: string }> = {
   CANCELLED: { icon: Ban, color: "text-gray-500" },
 };
 
-export default function GoalCard(goal: GoalCardProps) {
-  const router = useRouter();
-  const [isDeleted, setIsDeleted] = useState(false);
+export default function GoalDetailsPage() {
+  const params = useParams();
+  const [goal, setGoal] = useState<GoalCardProps | null>(null);
 
-  const handleDeleteSuccess = () => {
-    setIsDeleted(true);
-  };
+  useEffect(() => {
+    const fetchGoalDetails = async () => {
+      try {
+        const data = await getGoalById(params.id as string);
+        setGoal(data);
+      } catch (error) {
+        console.error("Failed to fetch goal details:", error);
+      }
+    };
 
-  if (isDeleted) return null;
+    fetchGoalDetails();
+  }, [params.id]);
+
+  if (!goal) {
+    return <div>Carregando...</div>;
+  }
 
   const progress = (goal.currentAmount / goal.goalAmount) * 100;
 
@@ -68,24 +75,15 @@ export default function GoalCard(goal: GoalCardProps) {
     currency: "BRL",
   }).format(goal.currentAmount);
 
-  const handleClick = () => {
-    router.push(`/goals/${goal.id}`);
-  };
-
-  const handleCompleteGoal = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-  };
-
   const { icon: StatusIcon, color: statusColor } = statusIcons[goal.status];
 
   return (
-    <div>
+    <div className="p-6">
       <Card
         className={cn(
-          "relative h-64 w-full transform cursor-pointer overflow-hidden rounded-xl p-6 shadow-lg transition-transform duration-300 hover:scale-105",
+          "relative h-64 w-full transform overflow-hidden rounded-xl p-6 shadow-lg",
           "bg-card text-card-foreground",
         )}
-        onClick={handleClick}
       >
         <CardContent className="flex h-full flex-col justify-between">
           <div className="flex items-center justify-between">
@@ -149,51 +147,6 @@ export default function GoalCard(goal: GoalCardProps) {
           </div>
         </CardContent>
       </Card>
-
-      <div className="mt-4 flex">
-        <Button
-          variant="secondary"
-          size="icon"
-          className="rounded-full"
-          onClick={handleCompleteGoal}
-        >
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span>
-                <Check className="h-5 w-5" />
-              </span>
-            </TooltipTrigger>
-            <TooltipContent side="bottom" align="start">
-              Concluir meta
-            </TooltipContent>
-          </Tooltip>
-        </Button>
-
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span>
-              <EditGoalButton goal={goal} />
-            </span>
-          </TooltipTrigger>
-          <TooltipContent side="bottom" align="start">
-            Editar meta
-          </TooltipContent>
-        </Tooltip>
-
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span>
-              <DeleteGoalButton
-                goalId={goal.id}
-                onDeleteSuccess={handleDeleteSuccess}
-              />
-            </span>
-          </TooltipTrigger>
-          <TooltipContent side="bottom" align="start">
-            Deletar meta
-          </TooltipContent>
-        </Tooltip>
-      </div>
     </div>
   );
 }
