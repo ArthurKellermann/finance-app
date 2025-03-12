@@ -10,22 +10,19 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/app/_components/ui/tooltip";
-import { toast } from "sonner";
 
 interface AddDepositButtonProps {
   userCanAddCreditCard?: boolean;
   goalId: string;
+  onDepositAdded: () => void;
 }
 
 const AddDepositButton = ({
   userCanAddCreditCard,
   goalId,
+  onDepositAdded,
 }: AddDepositButtonProps) => {
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
-
-  const handleSubmitDeposit = async () => {
-    toast.success("Deposito adicionado com sucesso!");
-  };
 
   return (
     <>
@@ -51,7 +48,7 @@ const AddDepositButton = ({
         isOpen={dialogIsOpen}
         setIsOpen={setDialogIsOpen}
         goalId={goalId}
-        onSubmitDeposit={handleSubmitDeposit}
+        onDepositAdded={onDepositAdded}
       />
     </>
   );

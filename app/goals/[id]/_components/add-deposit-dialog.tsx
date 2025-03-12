@@ -21,16 +21,14 @@ import { DatePicker } from "@/app/_components/ui/date-picker";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import createGoalDeposit from "../../_actions/create-goal-deposit";
+import { toast } from "sonner";
 
 interface AddDepositDialogProps {
   isOpen: boolean;
   goalId: string;
   setIsOpen: (isOpen: boolean) => void;
-  onSubmitDeposit: (data: {
-    amount: number;
-    date: Date;
-    goalId: string;
-  }) => void;
+  onDepositAdded: () => void;
 }
 
 const depositSchema = z.object({
@@ -52,7 +50,7 @@ const AddDepositDialog = ({
   isOpen,
   goalId,
   setIsOpen,
-  onSubmitDeposit,
+  onDepositAdded,
 }: AddDepositDialogProps) => {
   const form = useForm<DepositSchema>({
     resolver: zodResolver(depositSchema),
@@ -64,11 +62,13 @@ const AddDepositDialog = ({
 
   const onSubmit = async (data: DepositSchema) => {
     try {
-      await onSubmitDeposit({ ...data, goalId });
+      await createGoalDeposit({ ...data, goalId });
       setIsOpen(false);
+      toast.success("Depósito adicionado com sucesso!");
       form.reset();
+      onDepositAdded();
     } catch (error) {
-      console.error(error);
+      console.error("Erro ao enviar o formulário:", error);
     }
   };
 
@@ -102,9 +102,9 @@ const AddDepositDialog = ({
                     <MoneyInput
                       placeholder="Digite o valor..."
                       value={field.value}
-                      onValueChange={({ floatValue }) =>
-                        field.onChange(floatValue)
-                      }
+                      onValueChange={({ floatValue }) => {
+                        field.onChange(floatValue || 0);
+                      }}
                       onBlur={field.onBlur}
                       disabled={field.disabled}
                     />
@@ -119,7 +119,14 @@ const AddDepositDialog = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Data</FormLabel>
-                  <DatePicker value={field.value} onChange={field.onChange} />
+                  <DatePicker
+                    value={field.value}
+                    onChange={(date) => {
+                      if (date) {
+                        field.onChange(date);
+                      }
+                    }}
+                  />
                   <FormMessage />
                 </FormItem>
               )}

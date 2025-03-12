@@ -1,3 +1,4 @@
+"use server";
 import { prisma } from "@/app/_lib/_prisma/prisma";
 
 interface createGoalDepositProps {
@@ -21,6 +22,15 @@ const createGoalDeposit = async ({
       amount,
       date,
       createdAt: new Date(),
+    },
+  });
+
+  await prisma.goal.update({
+    where: { id: goalId },
+    data: {
+      currentAmount: {
+        increment: amount,
+      },
     },
   });
 

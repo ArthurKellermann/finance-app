@@ -110,7 +110,7 @@ enum Banks {
 }
 
 model Goal {
-  id            String     @id @default(uuid())
+  id            String        @id @default(uuid())
   name          String
   description   String
   status        GoalStatus
@@ -120,17 +120,23 @@ model Goal {
   color         String
   icon          String
   userId        String
-  createdAt     DateTime   @default(now())
-  updatedAi     DateTime   @updatedAt
+  createdAt     DateTime      @default(now())
+  updatedAi     DateTime      @updatedAt
+  goalDeposit   GoalDeposit[]
 
   @@map("goals")
 }
 
 model GoalDeposit {
   id        String   @id @default(uuid())
+  goalId    String
   amount    Float
   date      DateTime
-  createdAt DateTime
+  createdAt DateTime @default(now())
+
+  goal Goal @relation(fields: [goalId], references: [id])
+
+  @@map("goal_deposit")
 }
 
 enum GoalStatus {

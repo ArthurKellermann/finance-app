@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Card, CardContent } from "@/app/_components/ui/card";
 import { Progress } from "@/app/_components/ui/progress";
@@ -10,24 +10,12 @@ import { GOALS_STATUS_LABELS } from "@/app/_constants/goals";
 import { IconRenderer } from "@/app/_components/ui/icon-renderer";
 import { Tooltip } from "@radix-ui/react-tooltip";
 import { TooltipContent, TooltipTrigger } from "@/app/_components/ui/tooltip";
-import type { GoalStatus } from "@prisma/client";
+import type { Goal, GoalDeposit, GoalStatus } from "@prisma/client";
 import getGoalById from "../_actions/get-goal-by-id";
 import AddDepositButton from "./_components/add-deposit-button";
-
-interface GoalCardProps {
-  id: string;
-  name: string;
-  description: string;
-  status: GoalStatus;
-  targetDate: Date;
-  goalAmount: number;
-  currentAmount: number;
-  color: string;
-  icon: string;
-  userId: string;
-  createdAt: Date;
-  updatedAi: Date;
-}
+import { getDepositsByGoalId } from "@/app/_actions/get-deposits-by-goal-id";
+import { DataTable } from "./_columns/data-table";
+import { getDepositColumns } from "./_columns";
 
 const statusIcons: Record<GoalStatus, { icon: any; color: string }> = {
   PENDING: { icon: Clock, color: "text-yellow-500" },
@@ -39,20 +27,37 @@ const statusIcons: Record<GoalStatus, { icon: any; color: string }> = {
 
 export default function GoalDetailsPage() {
   const params = useParams();
-  const [goal, setGoal] = useState<GoalCardProps | null>(null);
+  const [goal, setGoal] = useState<Goal | null>(null);
+  const [deposits, setDeposits] = useState<GoalDeposit[] | null>(null);
+
+  // Função memoizada para buscar os detalhes da meta
+  const fetchGoalDetails = useCallback(async () => {
+    try {
+      const data = await getGoalById(params.id as string);
+      setGoal(data);
+    } catch (error) {
+      console.error("Failed to fetch goal details:", error);
+    }
+  }, [params.id]);
+
+  const fetchDeposits = useCallback(async () => {
+    try {
+      const data = await getDepositsByGoalId(params.id as string);
+      setDeposits(data);
+    } catch (error) {
+      console.error("Failed to fetch deposits:", error);
+    }
+  }, [params.id]);
+
+  const handleDepositChange = useCallback(async () => {
+    await fetchGoalDetails();
+    await fetchDeposits();
+  }, [fetchGoalDetails, fetchDeposits]);
 
   useEffect(() => {
-    const fetchGoalDetails = async () => {
-      try {
-        const data = await getGoalById(params.id as string);
-        setGoal(data);
-      } catch (error) {
-        console.error("Failed to fetch goal details:", error);
-      }
-    };
-
     fetchGoalDetails();
-  }, [params.id]);
+    fetchDeposits();
+  }, [fetchGoalDetails, fetchDeposits]);
 
   if (!goal) {
     return <div>Carregando...</div>;
@@ -80,7 +85,11 @@ export default function GoalDetailsPage() {
 
   return (
     <div className="p-6">
-      <AddDepositButton goalId={goal.id} userCanAddCreditCard={true} />
+      <AddDepositButton
+        goalId={goal.id}
+        userCanAddCreditCard={true}
+        onDepositAdded={handleDepositChange}
+      />
       <Card
         className={cn(
           "relative h-64 w-full transform overflow-hidden rounded-xl p-6 shadow-lg",
@@ -149,6 +158,10 @@ export default function GoalDetailsPage() {
           </div>
         </CardContent>
       </Card>
+      <DataTable
+        columns={getDepositColumns(handleDepositChange)}
+        data={JSON.parse(JSON.stringify(deposits)) || []}
+      />
     </div>
   );
 }
