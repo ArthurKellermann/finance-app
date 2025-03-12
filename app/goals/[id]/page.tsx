@@ -12,6 +12,7 @@ import { Tooltip } from "@radix-ui/react-tooltip";
 import { TooltipContent, TooltipTrigger } from "@/app/_components/ui/tooltip";
 import type { GoalStatus } from "@prisma/client";
 import getGoalById from "../_actions/get-goal-by-id";
+import AddDepositButton from "./_components/add-deposit-button";
 
 interface GoalCardProps {
   id: string;
@@ -79,6 +80,7 @@ export default function GoalDetailsPage() {
 
   return (
     <div className="p-6">
+      <AddDepositButton goalId={goal.id} userCanAddCreditCard={true} />
       <Card
         className={cn(
           "relative h-64 w-full transform overflow-hidden rounded-xl p-6 shadow-lg",
