@@ -73,6 +73,17 @@ function CustomizeHomeChartsDialog() {
       }));
       setSelectedCharts(updatedCharts);
     }
+
+    if (!savedCharts) {
+      localStorage.setItem(
+        "selectedCharts",
+        JSON.stringify([
+          availableCharts[0],
+          availableCharts[1],
+          availableCharts[2],
+        ]),
+      );
+    }
   }, []);
 
   const toggleChartSelection = (index: number) => {
@@ -99,6 +110,8 @@ function CustomizeHomeChartsDialog() {
     const selectedChartNames = selectedCharts
       .filter((chart) => chart.selected)
       .map((chart) => chart.name);
+
+    console.log("selectedChartNames:", selectedChartNames);
 
     localStorage.setItem("selectedCharts", JSON.stringify(selectedChartNames));
     window.location.reload();

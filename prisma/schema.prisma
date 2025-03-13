@@ -108,3 +108,41 @@ enum Banks {
   PAN
   OTHER
 }
+
+model Goal {
+  id            String        @id @default(uuid())
+  name          String
+  description   String
+  status        GoalStatus
+  targetDate    DateTime
+  goalAmount    Float
+  currentAmount Float
+  color         String
+  icon          String
+  userId        String
+  createdAt     DateTime      @default(now())
+  updatedAi     DateTime      @updatedAt
+  goalDeposit   GoalDeposit[]
+
+  @@map("goals")
+}
+
+model GoalDeposit {
+  id        String   @id @default(uuid())
+  goalId    String
+  amount    Float
+  date      DateTime
+  createdAt DateTime @default(now())
+
+  goal Goal @relation(fields: [goalId], references: [id])
+
+  @@map("goal_deposit")
+}
+
+enum GoalStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+  CANCELLED
+}

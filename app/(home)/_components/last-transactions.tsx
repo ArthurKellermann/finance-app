@@ -33,7 +33,7 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
     return "-";
   };
 
-  const displayedTransactions = lastTransactions.slice(0, 4);
+  const displayedTransactions = lastTransactions.slice(0, 5);
 
   return (
     <Card className="border-3">

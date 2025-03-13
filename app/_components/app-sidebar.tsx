@@ -85,7 +85,7 @@ const data = {
       items: [
         {
           title: "Histórico",
-          url: "#",
+          url: "/transactions",
         },
         {
           title: "Bancos",
@@ -191,12 +191,8 @@ const data = {
       icon: Target,
       items: [
         {
-          title: "Criar Nova Meta",
-          url: "#",
-        },
-        {
           title: "Metas Ativas",
-          url: "#",
+          url: "/goals",
         },
         {
           title: "Progresso das Metas",
