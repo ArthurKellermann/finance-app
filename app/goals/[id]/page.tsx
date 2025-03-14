@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Card, CardContent } from "@/app/_components/ui/card";
-import { Progress } from "@/app/_components/ui/progress";
 import { cn } from "@/app/_lib/utils";
 import { CheckCircle, Clock, XCircle, Ban } from "lucide-react";
 import { GOALS_STATUS_LABELS } from "@/app/_constants/goals";
@@ -16,6 +15,7 @@ import AddDepositButton from "./_components/add-deposit-button";
 import { getDepositsByGoalId } from "@/app/_actions/get-deposits-by-goal-id";
 import { DataTable } from "./_columns/data-table";
 import { getDepositColumns } from "./_columns";
+import { CurrentGoalAmountPieChart } from "./_components/current-goal-amount-pie-chart";
 
 const statusIcons: Record<GoalStatus, { icon: any; color: string }> = {
   PENDING: { icon: Clock, color: "text-yellow-500" },
@@ -30,7 +30,6 @@ export default function GoalDetailsPage() {
   const [goal, setGoal] = useState<Goal | null>(null);
   const [deposits, setDeposits] = useState<GoalDeposit[] | null>(null);
 
-  // Função memoizada para buscar os detalhes da meta
   const fetchGoalDetails = useCallback(async () => {
     try {
       const data = await getGoalById(params.id as string);
@@ -60,10 +59,12 @@ export default function GoalDetailsPage() {
   }, [fetchGoalDetails, fetchDeposits]);
 
   if (!goal) {
-    return <div>Carregando...</div>;
+    return (
+      <div className="text-center text-lg font-semibold text-gray-700">
+        Carregando...
+      </div>
+    );
   }
-
-  const progress = (goal.currentAmount / goal.goalAmount) * 100;
 
   const formattedDate = new Intl.DateTimeFormat("pt-BR", {
     day: "numeric",
@@ -84,84 +85,107 @@ export default function GoalDetailsPage() {
   const { icon: StatusIcon, color: statusColor } = statusIcons[goal.status];
 
   return (
-    <div className="p-6">
-      <AddDepositButton
-        goalId={goal.id}
-        userCanAddCreditCard={true}
-        onDepositAdded={handleDepositChange}
-      />
-      <Card
-        className={cn(
-          "relative h-64 w-full transform overflow-hidden rounded-xl p-6 shadow-lg",
-          "bg-card text-card-foreground",
-        )}
-      >
-        <CardContent className="flex h-full flex-col justify-between">
-          <div className="flex items-center justify-between">
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center gap-2">
-                <span className="text-2xl font-bold">{goal.name}</span>
+    <div className="space-y-6 p-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Detalhes da Meta</h1>
+        <AddDepositButton
+          goalId={goal.id}
+          userCanAddDeposit={true}
+          onDepositAdded={handleDepositChange}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <Card className="rounded-lg shadow-sm">
+          <CardContent className="p-6">
+            <div className="flex flex-col gap-6 md:flex-row">
+              <div className="flex-shrink-0"></div>
+
+              <div className="flex-1 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl font-bold">{goal.name}</span>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span>
+                            <StatusIcon
+                              className={cn("h-5 w-5", statusColor)}
+                            />
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent side="right" align="start">
+                          {GOALS_STATUS_LABELS[goal.status]}
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+
+                    <p className="text-sm text-muted-foreground">
+                      {goal.description}
+                    </p>
+                  </div>
+                  <div
+                    className="flex h-8 w-8 items-center justify-center rounded-md text-3xl"
+                    style={{ backgroundColor: goal.color }}
+                  >
+                    <IconRenderer
+                      icon={goal.icon}
+                      style={{
+                        height: "1.5rem",
+                        width: "1.5rem",
+                        color: "white",
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-row gap-6">
+                  <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-semibold">
+                          {formattedDate}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2"></div>
+                    </div>
+                    <span className="text-sm text-muted-foreground">
+                      Valor atual:
+                    </span>
+                    <span className="text-lg font-bold">
+                      {formattedCurrentAmount}
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      Valor total:
+                    </span>
+                    <span className="text-lg font-bold">
+                      {formattedGoalAmount}
+                    </span>
+                    {/* <div className="mt-6 text-muted-foreground">
+                      1% dos seus depósitos foram <br /> para esse objetivo.
+                    </div> */}
+                  </div>
+                  <div className="flex flex-1 justify-end">
+                    <CurrentGoalAmountPieChart
+                      currentAmount={goal.currentAmount}
+                      goalAmount={goal.goalAmount}
+                      color={goal.color}
+                    />
+                  </div>
+                </div>
               </div>
-              <p className="text-sm text-muted-foreground">
-                {goal.description}
-              </p>
             </div>
-            <div
-              className="flex h-8 w-8 items-center justify-center rounded-md text-3xl"
-              style={{ backgroundColor: goal.color }}
-            >
-              <IconRenderer
-                icon={goal.icon}
-                style={{
-                  height: "1.5rem",
-                  width: "1.5rem",
-                  color: "white",
-                }}
-              />
-            </div>
-          </div>
-          <div className="flex justify-between">
-            <div className="flex flex-col gap-1">
-              <span className="text-xs font-semibold text-muted-foreground">
-                Data final
-              </span>
-              <span className="text-sm font-semibold">{formattedDate}</span>
-            </div>
+          </CardContent>
+        </Card>
 
-            <span className="text-xl font-bold font-medium">{`${progress.toFixed(2)}%`}</span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Progress
-              value={progress}
-              colorBar={goal.color}
-              className="h-4 flex-1"
-              style={{ backgroundColor: `var(--${goal.color}-200)` }}
-            />
-          </div>
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-semibold">
-                {formattedCurrentAmount} / {formattedGoalAmount}
-              </span>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span>
-                    <StatusIcon className={cn("h-6 w-6", statusColor)} />
-                  </span>
-                </TooltipTrigger>
-                <TooltipContent side="left" align="start">
-                  {GOALS_STATUS_LABELS[goal.status]}
-                </TooltipContent>
-              </Tooltip>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-      <DataTable
-        columns={getDepositColumns(handleDepositChange)}
-        data={JSON.parse(JSON.stringify(deposits)) || []}
-      />
+        <div className="space-y-4">
+          <h2 className="text-xl font-bold">Depósitos</h2>
+          <DataTable
+            columns={getDepositColumns(handleDepositChange)}
+            data={JSON.parse(JSON.stringify(deposits)) || []}
+          />
+        </div>
+      </div>
     </div>
   );
 }

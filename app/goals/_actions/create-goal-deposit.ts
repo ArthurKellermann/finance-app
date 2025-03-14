@@ -1,7 +1,7 @@
 "use server";
 import { prisma } from "@/app/_lib/_prisma/prisma";
 
-interface createGoalDepositProps {
+interface CreateGoalDepositProps {
   goalId: string;
   amount: number;
   date: Date;
@@ -11,30 +11,54 @@ const createGoalDeposit = async ({
   goalId,
   amount,
   date,
-}: createGoalDepositProps) => {
+}: CreateGoalDepositProps) => {
   if (!goalId || !amount || !date) {
-    return;
+    throw new Error("Invalid data to create the deposit.");
+  }
+  if (amount <= 0) {
+    throw new Error("The deposit amount must be positive.");
+  }
+  if (isNaN(date.getTime())) {
+    throw new Error("The deposit date is invalid.");
   }
 
-  const deposit = await prisma.goalDeposit.create({
-    data: {
-      goalId,
-      amount,
-      date,
-      createdAt: new Date(),
-    },
-  });
+  try {
+    const deposit = await prisma.$transaction(async (prisma) => {
+      const deposit = await prisma.goalDeposit.create({
+        data: {
+          goalId,
+          amount,
+          date,
+          createdAt: new Date(),
+        },
+      });
 
-  await prisma.goal.update({
-    where: { id: goalId },
-    data: {
-      currentAmount: {
-        increment: amount,
-      },
-    },
-  });
+      const updatedGoal = await prisma.goal.update({
+        where: { id: goalId },
+        data: {
+          currentAmount: {
+            increment: amount,
+          },
+        },
+      });
 
-  return deposit;
+      if (updatedGoal.currentAmount >= updatedGoal.goalAmount) {
+        await prisma.goal.update({
+          where: { id: goalId },
+          data: {
+            status: "COMPLETED",
+          },
+        });
+      }
+
+      return deposit;
+    });
+
+    return deposit;
+  } catch (error) {
+    console.error("Error creating deposit:", error);
+    throw new Error("Error creating deposit.");
+  }
 };
 
 export default createGoalDeposit;

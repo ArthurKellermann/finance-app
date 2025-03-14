@@ -1,6 +1,6 @@
 "use client";
 
-import { CreditCardIcon } from "lucide-react";
+import { DollarSign } from "lucide-react";
 import { Button } from "@/app/_components/ui/button";
 import { useState } from "react";
 import AddDepositDialog from "./add-deposit-dialog";
@@ -12,13 +12,13 @@ import {
 } from "@/app/_components/ui/tooltip";
 
 interface AddDepositButtonProps {
-  userCanAddCreditCard?: boolean;
+  userCanAddDeposit?: boolean;
   goalId: string;
   onDepositAdded: () => void;
 }
 
 const AddDepositButton = ({
-  userCanAddCreditCard,
+  userCanAddDeposit,
   goalId,
   onDepositAdded,
 }: AddDepositButtonProps) => {
@@ -32,14 +32,14 @@ const AddDepositButton = ({
             <Button
               className="rounded-full font-bold"
               onClick={() => setDialogIsOpen(true)}
-              disabled={!userCanAddCreditCard}
+              disabled={!userCanAddDeposit}
             >
               Adicionar
-              <CreditCardIcon />
+              <DollarSign />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            {!userCanAddCreditCard &&
+            {!userCanAddDeposit &&
               "Você atingiu o limite de cartões de crédito. Atualize seu plano para adicionar mais."}
           </TooltipContent>
         </Tooltip>
