@@ -6,7 +6,6 @@ import { Card, CardContent } from "@/app/_components/ui/card";
 import { cn } from "@/app/_lib/utils";
 import { CheckCircle, Clock, XCircle, Ban } from "lucide-react";
 import { GOALS_STATUS_LABELS } from "@/app/_constants/goals";
-import { IconRenderer } from "@/app/_components/ui/icon-renderer";
 import { Tooltip } from "@radix-ui/react-tooltip";
 import { TooltipContent, TooltipTrigger } from "@/app/_components/ui/tooltip";
 import type { Goal, GoalDeposit, GoalStatus } from "@prisma/client";
@@ -16,6 +15,7 @@ import { getDepositsByGoalId } from "@/app/_actions/get-deposits-by-goal-id";
 import { DataTable } from "./_columns/data-table";
 import { getDepositColumns } from "./_columns";
 import { CurrentGoalAmountPieChart } from "./_components/current-goal-amount-pie-chart";
+import { IconRenderer } from "@/app/_components/ui/use-icon-picker";
 
 const statusIcons: Record<GoalStatus, { icon: any; color: string }> = {
   PENDING: { icon: Clock, color: "text-yellow-500" },
@@ -124,19 +124,6 @@ export default function GoalDetailsPage() {
                       {goal.description}
                     </p>
                   </div>
-                  <div
-                    className="flex h-8 w-8 items-center justify-center rounded-md text-3xl"
-                    style={{ backgroundColor: goal.color }}
-                  >
-                    <IconRenderer
-                      icon={goal.icon}
-                      style={{
-                        height: "1.5rem",
-                        width: "1.5rem",
-                        color: "white",
-                      }}
-                    />
-                  </div>
                 </div>
 
                 <div className="flex flex-row gap-6">
@@ -161,18 +148,27 @@ export default function GoalDetailsPage() {
                     <span className="text-lg font-bold">
                       {formattedGoalAmount}
                     </span>
-                    {/* <div className="mt-6 text-muted-foreground">
-                      1% dos seus depósitos foram <br /> para esse objetivo.
-                    </div> */}
                   </div>
-                  <div className="flex flex-1 justify-end">
-                    <CurrentGoalAmountPieChart
-                      currentAmount={goal.currentAmount}
-                      goalAmount={goal.goalAmount}
-                      color={goal.color}
-                    />
-                  </div>
+                  <div className="flex flex-1 justify-end"></div>
                 </div>
+              </div>
+              <CurrentGoalAmountPieChart
+                currentAmount={goal.currentAmount}
+                goalAmount={goal.goalAmount}
+                color={goal.color}
+              />
+              <div
+                className="flex h-8 w-8 items-center justify-center rounded-md text-3xl"
+                style={{ backgroundColor: goal.color }}
+              >
+                <IconRenderer
+                  icon={goal.icon}
+                  style={{
+                    height: "1.5rem",
+                    width: "1.5rem",
+                    color: "white",
+                  }}
+                />
               </div>
             </div>
           </CardContent>
