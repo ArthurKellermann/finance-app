@@ -10,7 +10,7 @@ import canUserAddTransaction from "../_data/can-user-add-transaction";
 const TransactionsPage = async () => {
   const { userId } = await auth();
   if (!userId) {
-    redirect("/login");
+    redirect("/get-started");
   }
 
   const transactions = await prisma.transaction.findMany({

@@ -8,7 +8,7 @@ const GoalsPage = async () => {
   const { userId } = auth();
 
   if (!userId) {
-    redirect("/login");
+    redirect("/get-started");
   }
 
   const goals = await getGoals();

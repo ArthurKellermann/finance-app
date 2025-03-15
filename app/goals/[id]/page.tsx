@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import { Card, CardContent } from "@/app/_components/ui/card";
 import { cn } from "@/app/_lib/utils";
 import { CheckCircle, Clock, XCircle, Ban } from "lucide-react";
@@ -16,6 +16,7 @@ import { DataTable } from "./_columns/data-table";
 import { getDepositColumns } from "./_columns";
 import { CurrentGoalAmountPieChart } from "./_components/current-goal-amount-pie-chart";
 import { IconRenderer } from "@/app/_components/ui/use-icon-picker";
+import { useAuth } from "@clerk/nextjs";
 
 const statusIcons: Record<GoalStatus, { icon: any; color: string }> = {
   PENDING: { icon: Clock, color: "text-yellow-500" },
@@ -26,6 +27,12 @@ const statusIcons: Record<GoalStatus, { icon: any; color: string }> = {
 };
 
 export default function GoalDetailsPage() {
+  const { userId } = useAuth();
+
+  if (!userId) {
+    redirect("/get-started");
+  }
+
   const params = useParams();
   const [goal, setGoal] = useState<Goal | null>(null);
   const [deposits, setDeposits] = useState<GoalDeposit[] | null>(null);

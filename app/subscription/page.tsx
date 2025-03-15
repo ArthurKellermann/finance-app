@@ -10,7 +10,7 @@ const SubscriptionPage = async () => {
   const { userId } = await auth();
 
   if (!userId) {
-    redirect("/login");
+    redirect("/get-started");
   }
 
   const user = await clerkClient().users.getUser(userId);
