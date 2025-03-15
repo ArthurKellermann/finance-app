@@ -17,7 +17,7 @@ const mulish = Mulish({
 
 export const metadata: Metadata = {
   title: "Fivest",
-  description: "Seu gerenciador de finanças pessoais.",
+  description: "Seu gerenciador de finanças pessoais e investimentos.",
 };
 
 export default function RootLayout({

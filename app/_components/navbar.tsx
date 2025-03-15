@@ -169,12 +169,12 @@ const data = {
       ],
     },
     {
-      title: "Calendário",
+      title: "Planejmanto",
       url: "#",
       icon: Calendar,
       items: [
         {
-          title: "Ver",
+          title: "Calendário",
           url: "/calendar",
         },
         {
@@ -184,16 +184,16 @@ const data = {
       ],
     },
     {
-      title: "Metas Financeiras",
+      title: "Metas",
       url: "#",
       icon: Target,
       items: [
         {
-          title: "Metas Ativas",
+          title: "Metas Financeiras",
           url: "/goals",
         },
         {
-          title: "Progresso das Metas",
+          title: "Programar Transação",
           url: "#",
         },
       ],
@@ -225,7 +225,7 @@ const Navbar = () => {
   const [isOpen, setOpen] = useState(false);
 
   return (
-    <header className="flex min-h-16 justify-between bg-popover shadow-md">
+    <header className="flex min-h-16 justify-between overflow-visible bg-popover shadow-md">
       {/* Left Side */}
       <div className="flex items-center gap-10 px-6">
         <Link href="/">
@@ -246,7 +246,7 @@ const Navbar = () => {
                   </NavigationMenuTrigger>
 
                   {item.items && item.items.length > 0 && (
-                    <NavigationMenuContent className="!w-[450px] p-4">
+                    <NavigationMenuContent className="z-50 !w-[450px] p-4">
                       <div className="flex grid-cols-2 flex-col gap-4 lg:grid">
                         <div className="flex h-full flex-col justify-between">
                           <div className="flex flex-col">

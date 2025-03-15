@@ -4,8 +4,8 @@ import {
   BadgeCheck,
   Bell,
   ChevronsUpDown,
-  CreditCard,
   LogOut,
+  Settings,
   Sparkles,
 } from "lucide-react";
 
@@ -27,6 +27,7 @@ import {
 import { useUser, useClerk } from "@clerk/nextjs";
 import Link from "next/link";
 import { SidebarMenuButton } from "./ui/sidebar";
+import { redirect } from "next/navigation";
 const UserProfileDropDown = () => {
   const clerk = useClerk();
   const { user } = useUser();
@@ -91,8 +92,8 @@ const UserProfileDropDown = () => {
             Conta
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => {}}>
-            <CreditCard />
-            Billing
+            <Settings />
+            Configurações
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Bell />
@@ -103,6 +104,7 @@ const UserProfileDropDown = () => {
         <DropdownMenuItem
           onClick={() => {
             clerk.signOut();
+            redirect("/get-started");
           }}
         >
           <LogOut />
