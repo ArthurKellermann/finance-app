@@ -31,48 +31,57 @@ const CreditCards = ({
   const displayedCreditCards = creditCards.slice(0, 3);
 
   return (
-    <Card className="border-3 h-full rounded-md">
+    <Card className="rounded-md">
       <CardHeader className="flex-row items-center justify-between rounded-t-md">
         <CardTitle className="font-bold">Cartões de Crédito</CardTitle>
         <AddCreditCardButton userCanAddCreditCard={true} />
       </CardHeader>
       <CardContent className="space-y-4 rounded-b-md">
-        {displayedCreditCards.map((card) => (
-          <div key={card.id} className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2">
-                <Image
-                  src={card.imagePath}
-                  height={24}
-                  width={40}
-                  alt="Cartão de Crédito"
-                  className="object-contain opacity-80"
-                />
+        {displayedCreditCards.length > 0 ? (
+          displayedCreditCards.map((card) => (
+            <div key={card.id} className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2">
+                  <Image
+                    src={card.imagePath}
+                    height={24}
+                    width={40}
+                    alt="Cartão de Crédito"
+                    className="object-contain opacity-80"
+                  />
+                </div>
+                <div>
+                  <p className="text-sm font-bold">{card.description}</p>
+                  <p className="text-sm text-muted-foreground">
+                    Fecha em {card.statementCloseDay} de{" "}
+                    {new Date(
+                      new Date().setMonth(new Date().getMonth() + 1),
+                    ).toLocaleString("pt-BR", {
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-bold">{card.description}</p>
+              <div className="flex items-center gap-3">
+                <p
+                  className={`text-sm font-bold ${getAmountColor(card.spent, card.limit)}`}
+                >
+                  {formatCurrency(
+                    totalSpentByCreditCardPerMonth[card.id as string] || 0,
+                  )}
+                </p>
                 <p className="text-sm text-muted-foreground">
-                  Fecha em {card.statementCloseDay} de{" "}
-                  {new Date(
-                    new Date().setMonth(new Date().getMonth() + 1),
-                  ).toLocaleString("pt-BR", { month: "long", year: "numeric" })}
+                  / {formatCurrency(card.limit)}
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <p
-                className={`text-sm font-bold ${getAmountColor(card.spent, card.limit)}`}
-              >
-                {formatCurrency(
-                  totalSpentByCreditCardPerMonth[card.id as string] || 0,
-                )}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                / {formatCurrency(card.limit)}
-              </p>
-            </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p className="text-center text-sm text-muted-foreground">
+            Nenhum cartão de crédito encontrado
+          </p>
+        )}
       </CardContent>
       <CardFooter>
         <div className="flex w-full space-x-4">

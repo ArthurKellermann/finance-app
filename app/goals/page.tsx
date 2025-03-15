@@ -31,7 +31,6 @@ const GoalsPage = async () => {
           )}
         </div>
       </div>
-      ;
     </>
   );
 };

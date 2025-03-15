@@ -36,7 +36,7 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
   const displayedTransactions = lastTransactions.slice(0, 5);
 
   return (
-    <Card className="border-3">
+    <Card className="h-full">
       <CardHeader className="flex-row items-center justify-between">
         <CardTitle className="font-bold">Últimas Transações</CardTitle>
         <Button variant="outline" className="rounded-full font-bold" asChild>
