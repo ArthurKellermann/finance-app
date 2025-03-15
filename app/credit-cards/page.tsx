@@ -10,7 +10,7 @@ const CreditCardsPage = async () => {
   const { userId } = auth();
 
   if (!userId) {
-    redirect("/login");
+    redirect("/get-started");
   }
 
   const creditCards = await getCreditCards({ userId });

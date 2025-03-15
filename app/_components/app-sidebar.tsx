@@ -11,7 +11,6 @@ import {
   DollarSign,
   Folder,
   Forward,
-  Frame,
   GalleryVerticalEnd,
   LineChart,
   MoreHorizontal,
@@ -222,11 +221,6 @@ const data = {
     },
   ],
   about: [
-    {
-      name: "Conheça a Fivest",
-      url: "/about",
-      icon: Frame,
-    },
     {
       name: "Fivest Learning",
       url: "#",
