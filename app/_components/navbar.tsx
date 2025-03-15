@@ -1,10 +1,6 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import UserProfileDropDown from "./user-profile-drop-down";
-import { useTheme } from "next-themes";
+import { Button } from "@/app/_components/ui/button";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -13,47 +9,220 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/app/_components/ui/navigation-menu";
-import { Button } from "@/app/_components/ui/button";
 import { Menu, MoveRight, X } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useTheme } from "next-themes";
+import Image from "next/image";
+import { ModeToggle } from "./ui/theme-provider";
+import {
+  AudioWaveform,
+  Bot,
+  Calendar,
+  Command,
+  DollarSign,
+  Frame,
+  GalleryVerticalEnd,
+  LineChart,
+  NotebookIcon,
+  SquareTerminal,
+  Target,
+  UserIcon,
+} from "lucide-react";
+import UserProfileDropDown from "./user-profile-drop-down";
+
+const data = {
+  dashboards: [
+    {
+      name: "Pessoal",
+      logo: GalleryVerticalEnd,
+      plan: "Premium",
+    },
+    {
+      name: "Família",
+      logo: AudioWaveform,
+      plan: "Free",
+    },
+    {
+      name: "Amigos",
+      logo: Command,
+      plan: "Free",
+    },
+  ],
+  navMain: [
+    {
+      title: "Dashboards",
+      url: "#",
+      icon: SquareTerminal,
+      isActive: true,
+      items: [
+        {
+          title: "Finanças",
+          url: "/transactions",
+        },
+        {
+          title: "Investimentos",
+          url: "#",
+        },
+        {
+          title: "Cartões de Crédito",
+          url: "/credit-cards",
+        },
+        {
+          title: "Categorias",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Transações",
+      url: "#",
+      icon: SquareTerminal,
+      isActive: true,
+      items: [
+        {
+          title: "Histórico",
+          url: "/transactions",
+        },
+        {
+          title: "Bancos",
+          url: "#",
+        },
+        {
+          title: "Cartões de Crédito",
+          url: "/credit-cards",
+        },
+        {
+          title: "Categorias",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Investimentos",
+      url: "#",
+      icon: DollarSign,
+      items: [
+        {
+          title: "Carteira de Investimentos",
+          url: "#",
+        },
+        {
+          title: "Explorar Ativos",
+          url: "#",
+        },
+        {
+          title: "Simulador",
+          url: "/investments/simulator",
+        },
+        {
+          title: "Recomentações de IA",
+          url: "#",
+        },
+        {
+          title: "Projeções de Mercado",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Mercado",
+      url: "#",
+      icon: LineChart,
+      items: [
+        {
+          title: "Bolsa de Valores",
+          url: "#",
+        },
+        {
+          title: "Ativos",
+          url: "#",
+        },
+        {
+          title: "Ordens",
+          url: "#",
+        },
+        {
+          title: "Análises e Relatórios",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Análise Inteligentes",
+      url: "#",
+      icon: Bot,
+      items: [
+        {
+          title: "Insights Financeiros",
+          url: "#",
+        },
+        {
+          title: "Padrões de Gasto",
+          url: "#",
+        },
+        {
+          title: "Alertas de Economia",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Calendário",
+      url: "#",
+      icon: Calendar,
+      items: [
+        {
+          title: "Ver",
+          url: "/calendar",
+        },
+        {
+          title: "Lista de Tarefas",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Metas Financeiras",
+      url: "#",
+      icon: Target,
+      items: [
+        {
+          title: "Metas Ativas",
+          url: "/goals",
+        },
+        {
+          title: "Progresso das Metas",
+          url: "#",
+        },
+      ],
+    },
+  ],
+  about: [
+    {
+      name: "Conheça a Fivest",
+      url: "/about",
+      icon: Frame,
+    },
+    {
+      name: "Fivest Learning",
+      url: "#",
+      icon: NotebookIcon,
+    },
+    {
+      name: "Suporte",
+      url: "#",
+      icon: UserIcon,
+    },
+  ],
+};
 
 const Navbar = () => {
   const pathname = usePathname();
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const [isOpen, setOpen] = useState(false);
-
-  const navigationItems = [
-    {
-      title: "Dashboards",
-      items: [
-        {
-          title: "Finanças",
-          href: "/",
-        },
-        {
-          title: "Investimentos",
-          href: "/investments",
-        },
-      ],
-    },
-    {
-      title: "Transações",
-      href: "/transactions",
-    },
-    {
-      title: "Carteira",
-      href: "/portfolio",
-    },
-    {
-      title: "Mercado",
-      href: "/market",
-    },
-    {
-      title: "Conexões",
-      href: "/connections",
-    },
-  ];
 
   return (
     <header className="flex min-h-16 justify-between bg-popover shadow-md">
@@ -68,37 +237,32 @@ const Navbar = () => {
         </Link>
 
         <div className="hidden flex-row items-center gap-4 lg:flex">
-          <NavigationMenu>
-            <NavigationMenuList className="flex flex-row gap-4">
-              {navigationItems.map((item) => (
+          <NavigationMenu className="flex items-start justify-start">
+            <NavigationMenuList className="flex flex-row justify-start gap-4">
+              {data.navMain.map((item) => (
                 <NavigationMenuItem key={item.title}>
-                  {item.href ? (
-                    <Link
-                      href={item.href}
-                      className={
-                        pathname === item.href
-                          ? "font-bold text-primary"
-                          : "text-muted-foreground"
-                      }
-                    >
-                      {item.title}
-                    </Link>
-                  ) : (
-                    <>
-                      <NavigationMenuTrigger
-                        className={
-                          pathname === "/" || pathname === "/investments"
-                            ? "font-bold text-primary"
-                            : "text-muted-foreground"
-                        }
-                      >
-                        {item.title}
-                      </NavigationMenuTrigger>
-                      <NavigationMenuContent className="!w-[300px] p-4">
-                        <div className="flex flex-col gap-2">
-                          {item.items?.map((subItem) => (
+                  <NavigationMenuTrigger className="text-sm font-medium">
+                    {item.title}
+                  </NavigationMenuTrigger>
+
+                  {item.items && item.items.length > 0 && (
+                    <NavigationMenuContent className="!w-[450px] p-4">
+                      <div className="flex grid-cols-2 flex-col gap-4 lg:grid">
+                        <div className="flex h-full flex-col justify-between">
+                          <div className="flex flex-col">
+                            <p className="text-base">{item.title}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {item.title || "Explore mais opções"}
+                            </p>
+                          </div>
+                          <Button size="sm" className="mt-10">
+                            Agendar uma reunião
+                          </Button>
+                        </div>
+                        <div className="flex h-full flex-col justify-end text-sm">
+                          {item.items.map((subItem) => (
                             <NavigationMenuLink
-                              href={subItem.href}
+                              href={subItem.url}
                               key={subItem.title}
                               className="flex flex-row items-center justify-between rounded px-4 py-2 hover:bg-muted"
                             >
@@ -107,8 +271,8 @@ const Navbar = () => {
                             </NavigationMenuLink>
                           ))}
                         </div>
-                      </NavigationMenuContent>
-                    </>
+                      </div>
+                    </NavigationMenuContent>
                   )}
                 </NavigationMenuItem>
               ))}
@@ -117,7 +281,9 @@ const Navbar = () => {
         </div>
       </div>
 
+      {/* Right Side */}
       <div className="flex items-center gap-4 px-6">
+        <ModeToggle />
         <UserProfileDropDown />
 
         <div className="flex lg:hidden">
@@ -127,19 +293,20 @@ const Navbar = () => {
         </div>
       </div>
 
+      {/* Mobile Menu */}
       {isOpen && (
         <div className="absolute left-0 top-20 w-full bg-background lg:hidden">
           <div className="container flex flex-col gap-4 px-8 py-4">
-            {navigationItems.map((item) => (
+            {data.navMain.map((item) => (
               <div key={item.title}>
-                {item.href ? (
+                {item.url ? (
                   <Link
-                    href={item.href}
+                    href={item.url}
                     className="flex items-center justify-between py-2"
                   >
                     <span
                       className={
-                        pathname === item.href
+                        pathname === item.url
                           ? "font-bold text-primary"
                           : "text-muted-foreground"
                       }
@@ -154,12 +321,12 @@ const Navbar = () => {
                     {item.items?.map((subItem) => (
                       <Link
                         key={subItem.title}
-                        href={subItem.href}
+                        href={subItem.url}
                         className="flex items-center justify-between rounded px-4 py-2 hover:bg-muted"
                       >
                         <span
                           className={
-                            pathname === subItem.href
+                            pathname === subItem.url
                               ? "font-bold text-primary"
                               : "text-muted-foreground"
                           }

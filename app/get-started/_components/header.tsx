@@ -126,7 +126,7 @@ export const Header = () => {
         <div className="flex lg:justify-center"></div>
 
         <div className="flex w-full justify-end gap-4">
-          <SignInButton>
+          <SignInButton mode="modal" fallbackRedirectUrl="/">
             <Button variant="outline">Entrar</Button>
           </SignInButton>
 

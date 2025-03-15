@@ -24,9 +24,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/app/_components/ui/dropdown-menu";
-import { SidebarMenuButton } from "@/app/_components/ui/sidebar";
 import { useUser, useClerk } from "@clerk/nextjs";
 import Link from "next/link";
+import { SidebarMenuButton } from "./ui/sidebar";
 const UserProfileDropDown = () => {
   const clerk = useClerk();
   const { user } = useUser();

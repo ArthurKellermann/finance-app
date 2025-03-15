@@ -34,7 +34,7 @@ export const Hero = () => {
       <div className="container mx-auto">
         <div className="flex flex-col items-center justify-center gap-8 py-20 lg:py-40">
           <div>
-            {isDark ? (
+            {!isDark ? (
               <Image
                 src="/logo-white.svg"
                 width={173}
