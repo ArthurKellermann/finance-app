@@ -28,6 +28,12 @@ import {
   TRANSACTION_PAYMENT_METHOD_LABELS,
   TRANSACTION_TYPE_OPTIONS,
 } from "@/app/_constants/transactions";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/app/_components/ui/tooltip";
 
 interface ExportDataFromTransactionTableDialogProps {
   userCanExportData?: boolean;
@@ -118,16 +124,25 @@ const ExportDataFromTransactionDialog = ({
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          size="icon"
-          className="rounded-md"
-          disabled={!userCanExportData}
-        >
-          <Download />
-        </Button>
-      </DialogTrigger>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DialogTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                className="rounded-md"
+                disabled={!userCanExportData}
+              >
+                <Download />
+              </Button>
+            </DialogTrigger>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Exportar transações</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader className="space-y-4">
           <DialogTitle>Exportar Transações</DialogTitle>
