@@ -1,12 +1,13 @@
 import { prisma } from "../_lib/_prisma/prisma";
-import { DataTable } from "./_columns/data-table";
-import { transactionColumns } from "./_columns";
 import AddTransactionButton from "../_components/add-transaction-button";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { ScrollArea } from "../_components/ui/scroll-area";
 import canUserAddTransaction from "../_data/can-user-add-transaction";
 import ImportDataToTransactionTableDialog from "./_components/import-data-to-transaction-table-button";
+
+import { columns } from "./_columns/data-table/columns";
+import { DataTable } from "./_columns/data-table/data-table";
 
 const TransactionsPage = async () => {
   const { userId } = await auth();
@@ -38,7 +39,7 @@ const TransactionsPage = async () => {
         <div className="col-span-1 space-y-6 rounded-md bg-card">
           <ScrollArea className="h-full">
             <DataTable
-              columns={transactionColumns}
+              columns={columns}
               data={JSON.parse(JSON.stringify(transactions))}
             />
           </ScrollArea>

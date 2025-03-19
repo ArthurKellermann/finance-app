@@ -57,12 +57,10 @@ export function DataTable<TData, TValue>({
     { categoryId: string; value: string; color: string; icon: string }[]
   >([]);
 
-  const [selectedCategory, setSelectedCategory] = useState<string | "">("");
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
-    string | ""
-  >("");
-
-  const [selectedName, setSelectedName] = useState<string | "">("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] =
+    useState<string>("");
+  const [selectedName, setSelectedName] = useState<string>("");
 
   const [filterByDeposit, setFilterByDeposit] = useState(false);
   const [filterByExpense, setFilterByExpense] = useState(false);
@@ -74,6 +72,8 @@ export function DataTable<TData, TValue>({
       if (categories) {
         setCategories(categories);
       }
+
+      console.log("categories", categories);
     }
     fetchFilterData();
   }, []);
@@ -89,9 +89,17 @@ export function DataTable<TData, TValue>({
     }
 
     if (selectedPaymentMethod && selectedPaymentMethod !== "all") {
+      console.log("selectedPaymentMethod", selectedPaymentMethod);
       filters.push({
         id: "payment_method",
         value: selectedPaymentMethod,
+      });
+    }
+
+    if (selectedName) {
+      filters.push({
+        id: "name",
+        value: selectedName,
       });
     }
 
@@ -107,10 +115,12 @@ export function DataTable<TData, TValue>({
       });
     }
 
+    console.log("filters being applied", filters); // Log dos filtros sendo aplicados
     setColumnFilters(filters);
   }, [
     selectedCategory,
     selectedPaymentMethod,
+    selectedName,
     filterByDeposit,
     filterByExpense,
     filterByInvestment,
@@ -164,7 +174,10 @@ export function DataTable<TData, TValue>({
             </Button>
             <Select
               value={selectedPaymentMethod}
-              onValueChange={setSelectedPaymentMethod}
+              onValueChange={(value) => {
+                console.log("onValueChange - selectedPaymentMethod", value); // Log do valor selecionado no dropdown
+                setSelectedPaymentMethod(value);
+              }}
             >
               <SelectTrigger className="w-[200px]">
                 <SelectValue placeholder="Filtrar por método de pagamento" />
