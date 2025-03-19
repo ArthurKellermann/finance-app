@@ -46,9 +46,8 @@ export function DataTableToolbar<TData>({
   useEffect(() => {
     async function fetchFilterData() {
       const categories = await getDefaultCategories();
-      if (!categories) {
-        return;
-      }
+      console.log("categories fetched:", categories);
+      if (!categories) return;
 
       const formattedCategories = categories.map((category) => ({
         label:
@@ -58,6 +57,7 @@ export function DataTableToolbar<TData>({
         value: category.categoryId,
       }));
 
+      console.log("formatted categories:", formattedCategories);
       setCategories(formattedCategories);
     }
     fetchFilterData();

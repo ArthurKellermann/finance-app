@@ -175,7 +175,6 @@ export function DataTable<TData, TValue>({
             <Select
               value={selectedPaymentMethod}
               onValueChange={(value) => {
-                console.log("onValueChange - selectedPaymentMethod", value); // Log do valor selecionado no dropdown
                 setSelectedPaymentMethod(value);
               }}
             >

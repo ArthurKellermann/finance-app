@@ -20,6 +20,20 @@ interface DataTableViewOptionsProps<TData> {
 export function DataTableViewOptions<TData>({
   table,
 }: DataTableViewOptionsProps<TData>) {
+  const columnsMapping = {
+    select: { accessorKey: "select", header: "Select" },
+    name: { accessorKey: "name", header: "Name" },
+    type: { accessorKey: "type", header: "Tipo" },
+    category: { accessorKey: "category", header: "Categoria" },
+    payment_method: {
+      accessorKey: "payment_method",
+      header: "Método de Pagamento",
+    },
+    amount: { accessorKey: "amount", header: "Valor" },
+    date: { accessorKey: "date", header: "Data" },
+    actions: { accessorKey: "actions", header: "Ações" },
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -33,7 +47,7 @@ export function DataTableViewOptions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[150px]">
-        <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+        <DropdownMenuLabel>Colunas visíveis</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {table
           .getAllColumns()
@@ -49,7 +63,10 @@ export function DataTableViewOptions<TData>({
                 checked={column.getIsVisible()}
                 onCheckedChange={(value) => column.toggleVisibility(!!value)}
               >
-                {column.id}
+                {
+                  columnsMapping[column.id as keyof typeof columnsMapping]
+                    .header
+                }
               </DropdownMenuCheckboxItem>
             );
           })}
