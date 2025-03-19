@@ -18,6 +18,8 @@ import {
   DialogTitle,
 } from "@/app/_components/ui/dialog";
 import { groupBy } from "lodash";
+import { useUser } from "@clerk/nextjs";
+import EditCreditCardButton from "../../_components/edit-credit-card-button";
 
 interface CreditCardDetailsProps {
   card: CreditCard;
@@ -26,6 +28,7 @@ interface CreditCardDetailsProps {
 
 const CreditCardDetails = ({ card, transactions }: CreditCardDetailsProps) => {
   const [isFaturasDialogOpen, setIsFaturasDialogOpen] = useState(false);
+  const { user } = useUser();
 
   const totalSpentThisMonth = useMemo(() => {
     const currentDate = new Date();
@@ -64,7 +67,12 @@ const CreditCardDetails = ({ card, transactions }: CreditCardDetailsProps) => {
   return (
     <Card className="h-full border-border shadow-sm">
       <CardHeader>
-        <CardTitle className="text-xl font-bold">{card.description}</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-xl font-bold">
+            {card.description}
+          </CardTitle>
+          {card && <EditCreditCardButton creditCard={card} />}
+        </div>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="relative rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white shadow-lg">
@@ -99,11 +107,7 @@ const CreditCardDetails = ({ card, transactions }: CreditCardDetailsProps) => {
           <div className="mt-4 flex justify-between">
             <div>
               <p className="text-sm">Titular</p>
-              <p className="text-lg">Seu nome</p>
-            </div>
-            <div>
-              <p className="text-sm">Validade</p>
-              <p className="text-lg">12/25</p>
+              <p className="text-lg">{user?.fullName}</p>
             </div>
           </div>
         </div>

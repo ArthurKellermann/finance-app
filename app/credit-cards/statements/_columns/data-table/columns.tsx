@@ -1,18 +1,16 @@
 "use client";
 
-import { Transaction } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
-import TransactionTypeBadge from "../_components/type-badge";
-import {
-  TRANSACTION_CATEGORY_LABELS,
-  TRANSACTION_PAYMENT_METHOD_LABELS,
-} from "@/app/_constants/transactions";
-import EditTransactionButton from "../_components/edit-transaction-button";
-import DeleteTransactionButton from "../_components/delete-transaction-button";
-import { Button } from "@/app/_components/ui/button";
-import { ArrowUpDown } from "lucide-react";
+
+import { DataTableColumnHeader } from "./data-table-column-header";
+import { Checkbox } from "@/app/_components/ui/checkbox";
+import type { Transaction } from "@prisma/client";
+import TransactionTypeBadge from "@/app/transactions/_components/type-badge";
 import { Badge } from "@/app/_components/ui/badge";
 import { IconRenderer } from "@/app/_components/ui/icon-renderer";
+import { TRANSACTION_CATEGORY_LABELS } from "@/app/_constants/transactions";
+import EditTransactionButton from "@/app/transactions/_components/edit-transaction-button";
+import DeleteTransactionButton from "@/app/transactions/_components/delete-transaction-button";
 
 type TransactionWithCategory = Transaction & {
   category: {
@@ -22,24 +20,56 @@ type TransactionWithCategory = Transaction & {
   };
 };
 
-export const transactionColumns: ColumnDef<TransactionWithCategory>[] = [
+export const columns: ColumnDef<TransactionWithCategory>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+        className="translate-y-0.5"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+        className="translate-y-0.5"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     accessorKey: "name",
-    header: "Nome",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Name" />
+    ),
     cell: ({ row: { original: transaction } }) => {
       return <strong>{transaction.name}</strong>;
     },
+    enableSorting: false,
+    enableHiding: false,
   },
   {
     accessorKey: "type",
-    header: "Tipo",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Tipo" />
+    ),
     cell: ({ row: { original: transaction } }) => (
       <TransactionTypeBadge transaction={transaction} />
     ),
   },
   {
     accessorKey: "category",
-    header: "Categoria",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Categoria" />
+    ),
     cell: ({ row }) => {
       const category = row.original.category;
       return (
@@ -59,26 +89,15 @@ export const transactionColumns: ColumnDef<TransactionWithCategory>[] = [
         </Badge>
       );
     },
-    enableColumnFilter: true,
-    filterFn: (row, columnId, filterValue) => {
-      const category = row.getValue(columnId);
-      return filterValue === "all" || category === filterValue;
-    },
-  },
-  {
-    accessorKey: "payment_method",
-    header: "Método de Pagamento",
-    cell: ({ row: { original: transaction } }) => {
-      return (
-        <Badge className="bg-muted bg-opacity-10 font-bold text-secondary-foreground hover:bg-background">
-          {TRANSACTION_PAYMENT_METHOD_LABELS[transaction.paymentMethod]}
-        </Badge>
-      );
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
     },
   },
   {
     accessorKey: "amount",
-    header: "Valor",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Valor" />
+    ),
     cell: ({ row: { original: transaction } }) => {
       return (
         <strong>
@@ -89,19 +108,14 @@ export const transactionColumns: ColumnDef<TransactionWithCategory>[] = [
         </strong>
       );
     },
-    enableSorting: true,
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
   },
   {
     accessorKey: "date",
     header: ({ column }) => (
-      <Button
-        variant="link"
-        className="text-muted-foreground"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Data
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
+      <DataTableColumnHeader column={column} title="Data" />
     ),
     cell: ({ row: { original: transaction } }) =>
       new Date(transaction.date).toLocaleDateString("pt-BR", {
@@ -109,7 +123,11 @@ export const transactionColumns: ColumnDef<TransactionWithCategory>[] = [
         month: "long",
         year: "numeric",
       }),
-    enableSorting: true,
+    filterFn: (row, id, value) => {
+      const rowDate = new Date(row.getValue(id));
+      const [startDate, endDate] = value;
+      return rowDate >= startDate && rowDate <= endDate;
+    },
   },
   {
     accessorKey: "actions",

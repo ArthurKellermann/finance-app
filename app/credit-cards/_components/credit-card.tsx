@@ -12,6 +12,7 @@ import {
 import { CREDIT_CARD_STATUS_LABELS } from "@/app/_constants/credit-cards";
 import DeleteCreditCardButton from "./delete-credit-card-button";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface CreditCardProps {
   id: string;
@@ -48,6 +49,7 @@ export default function CreditCard({
   type,
   spent,
 }: CreditCardProps) {
+  const router = useRouter();
   const [isDeleted, setIsDeleted] = useState(false);
 
   const handleDeleteSuccess = () => {
@@ -59,6 +61,10 @@ export default function CreditCard({
   const totalSpent = (parseFloat(spent) / parseFloat(limit)) * 100;
   const { icon: StatusIcon, color: statusColor } = statusIcons[status];
 
+  const handleClick = () => {
+    router.push(`/credit-cards/${id}`);
+  };
+
   return (
     <div>
       <Card
@@ -66,6 +72,7 @@ export default function CreditCard({
           "relative h-48 w-80 transform overflow-hidden rounded-xl p-2 text-white shadow-lg transition-transform duration-300 hover:scale-105",
           "bg-gradient-to-r from-blue-500 to-blue-800",
         )}
+        onClick={handleClick}
       >
         <CardContent className="flex h-full flex-col justify-between">
           <div className="flex items-center justify-between">
@@ -143,7 +150,7 @@ export default function CreditCard({
       <div className="mt-4 w-80 space-y-2">
         <Tooltip>
           <TooltipTrigger asChild>
-            <Progress value={totalSpent} className="bg-popover" />
+            <Progress value={totalSpent} className="bg-blue-500" />
           </TooltipTrigger>
           <TooltipContent side="top" align="start">
             {`${totalSpent.toFixed(2)}%`}

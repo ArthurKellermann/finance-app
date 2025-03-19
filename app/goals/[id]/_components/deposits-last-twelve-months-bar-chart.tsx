@@ -26,18 +26,18 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 const monthMapping: Record<string, string> = {
-  "jan.": "Jan",
-  "fev.": "Fev",
-  "mar.": "Mar",
-  "abr.": "Abr",
-  "mai.": "Mai",
-  "jun.": "Jun",
-  "jul.": "Jul",
-  "ago.": "Ago",
-  "set.": "Set",
-  "out.": "Out",
-  "nov.": "Nov",
-  "dez.": "Dez",
+  "jan.": "Jan.",
+  "fev.": "Fev.",
+  "mar.": "Mar.",
+  "abr.": "Abr.",
+  "mai.": "Mai.",
+  "jun.": "Jun.",
+  "jul.": "Jul.",
+  "ago.": "Ago.",
+  "set.": "Set.",
+  "out.": "Out.",
+  "nov.": "Nov.",
+  "dez.": "Dez.",
 };
 
 export function DepositsLastTwelveMonthsBarChart({
@@ -69,8 +69,6 @@ export function DepositsLastTwelveMonthsBarChart({
     month: monthMapping[month] || month,
     amount: monthlyDeposits[month] || 0,
   }));
-
-  console.log({ chartData });
 
   return (
     <Card className="flex flex-col p-6">
