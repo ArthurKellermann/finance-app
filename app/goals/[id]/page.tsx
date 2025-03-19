@@ -17,6 +17,7 @@ import { getDepositColumns } from "./_columns";
 import { CurrentGoalAmountPieChart } from "./_components/current-goal-amount-pie-chart";
 import { IconRenderer } from "@/app/_components/ui/use-icon-picker";
 import { useAuth } from "@clerk/nextjs";
+import { DepositsLastTwelveMonthsBarChart } from "./_components/deposits-last-twelve-months-bar-chart";
 
 const statusIcons: Record<GoalStatus, { icon: any; color: string }> = {
   PENDING: { icon: Clock, color: "text-yellow-500" },
@@ -177,6 +178,9 @@ export default function GoalDetailsPage() {
                   }}
                 />
               </div>
+            </div>
+            <div className="mt-8">
+              <DepositsLastTwelveMonthsBarChart deposits={deposits || []} />
             </div>
           </CardContent>
         </Card>
