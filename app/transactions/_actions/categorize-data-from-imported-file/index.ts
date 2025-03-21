@@ -7,13 +7,43 @@ import { TransactionPaymentMethod } from "@prisma/client";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
+const splitCSV = (csvText: string, chunkSize: number) => {
+  const lines = csvText.split("\n");
+  const header = lines[0];
+  const chunks = [];
+
+  for (let i = 1; i < lines.length; i += chunkSize) {
+    const chunk = [header, ...lines.slice(i, i + chunkSize)].join("\n");
+    chunks.push(chunk);
+  }
+
+  return chunks;
+};
+
 export const categorizeDataFromImportedFile = async (fileText: string) => {
   try {
-    const { userId } = auth();
+    const chunks = splitCSV(fileText, 10);
 
-    const categories = await getDefaultCategories();
+    let allTransactions: any[] = [];
 
-    const prompt = `
+    for (const chunk of chunks) {
+      const result = await processChunk(chunk);
+      allTransactions = [...allTransactions, ...result];
+    }
+
+    console.log("Todas as transações categorizadas:", allTransactions);
+    return { success: true, data: allTransactions };
+  } catch (error) {
+    console.error("Erro ao processar o arquivo:", error);
+    return { success: false, message: "Erro ao processar o arquivo." };
+  }
+};
+
+const processChunk = async (chunk: string) => {
+  const { userId } = auth();
+  const categories = await getDefaultCategories();
+
+  const prompt = `
       Você é um assistente especializado em categorizar transações financeiras. Sua tarefa é processar transações extraídas de um arquivo CSV de extrato bancário e convertê-las em um formato específico usado pela aplicação.
 
       ### Formato de Entrada (CSV):
@@ -64,45 +94,28 @@ export const categorizeDataFromImportedFile = async (fileText: string) => {
       ]
 
       ### Transações para Categorizar:
-      ${fileText}
+      ${chunk}
 
       ### Instrução Final:
       Retorne APENAS um array de objetos JSON no formato especificado, com exatamente 7 atributos, sem texto adicional, exemplos de código ou explicações.
-      A resposta deve começar com "[" e terminar com "]".
+      Sua resposta deve começar com "[" e terminar com "]". NÃO quero que me envie instruções de como fazer em uma linguagem de programação. QUERO que me envie APENAS o array de objetos JSON.
     `;
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4",
-      messages: [{ role: "user", content: prompt }],
-      max_tokens: 4000,
-    });
+  const response = await openai.chat.completions.create({
+    model: "gpt-4",
+    messages: [{ role: "user", content: prompt }],
+    max_tokens: 4000,
+  });
 
-    console.log("Resposta da OpenAI:", response.choices[0].message.content);
-    console.log("Tokens usados:", response.usage?.total_tokens);
-    console.log("Motivo de término:", response.choices[0].finish_reason);
+  console.log(
+    "Response directly from OpenAI:",
+    response.choices[0].message.content,
+  );
 
-    if (response.choices[0].finish_reason === "length") {
-      throw new Error(
-        "A resposta foi truncada devido ao limite de tokens. Aumente o limite ou divida o arquivo CSV.",
-      );
-    }
-
-    const responseContent = response.choices[0].message.content?.trim() || "";
-    if (!responseContent.startsWith("[") || !responseContent.endsWith("]")) {
-      throw new Error("Resposta da OpenAI não é um array JSON válido.");
-    }
-
-    let categorizedTransactions;
-    try {
-      categorizedTransactions = JSON.parse(responseContent);
-    } catch (error) {
-      throw new Error("Erro ao fazer parsing do JSON: " + error);
-    }
-
-    console.log("Transações Categorizadas:", categorizedTransactions);
-    return { success: true, data: categorizedTransactions };
-  } catch (error) {
-    console.error("Erro ao processar o arquivo:", error);
-    return { success: false, message: "Erro ao processar o arquivo." };
+  const responseContent = response.choices[0].message.content?.trim() || "";
+  if (!responseContent.startsWith("[") || !responseContent.endsWith("]")) {
+    throw new Error("Resposta da OpenAI não é um array JSON válido.");
   }
+
+  return JSON.parse(responseContent);
 };
