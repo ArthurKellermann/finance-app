@@ -83,6 +83,7 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
                   totalSpentByCreditCardPerMonth={
                     dashboard.totalSpentByCreditCardPerMonth
                   }
+                  month={month}
                 />
               </div>
             </div>

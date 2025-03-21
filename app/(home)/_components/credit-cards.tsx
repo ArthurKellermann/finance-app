@@ -15,17 +15,37 @@ import Link from "next/link";
 interface CreditCardsProps {
   creditCards: CreditCard[];
   totalSpentByCreditCardPerMonth: Record<string, number>;
+  month: string;
 }
 
 const CreditCards = ({
   creditCards,
   totalSpentByCreditCardPerMonth,
+  month,
 }: CreditCardsProps) => {
   const getAmountColor = (spent: number, limit: number) => {
     if (spent > limit) {
       return "text-red-500";
     }
     return "text-foreground";
+  };
+
+  const getMonthName = (monthNumber: number) => {
+    const monthNames = [
+      "Janeiro",
+      "Fevereiro",
+      "Março",
+      "Abril",
+      "Maio",
+      "Junho",
+      "Julho",
+      "Agosto",
+      "Setembro",
+      "Outubro",
+      "Novembro",
+      "Dezembro",
+    ];
+    return monthNames[monthNumber];
   };
 
   const displayedCreditCards = creditCards.slice(0, 3);
@@ -54,12 +74,7 @@ const CreditCards = ({
                   <p className="text-sm font-bold">{card.description}</p>
                   <p className="text-sm text-muted-foreground">
                     Fecha em {card.statementCloseDay} de{" "}
-                    {new Date(
-                      new Date().setMonth(new Date().getMonth() + 1),
-                    ).toLocaleString("pt-BR", {
-                      month: "long",
-                      year: "numeric",
-                    })}
+                    {getMonthName(Number(month))} de {new Date().getFullYear()}
                   </p>
                 </div>
               </div>

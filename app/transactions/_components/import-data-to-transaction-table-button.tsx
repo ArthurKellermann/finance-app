@@ -119,7 +119,7 @@ const ImportDataToTransactionTableDialog = () => {
                 <>
                   <DialogHeader>
                     <DialogTitle className="text-lg font-semibold">
-                      Importar Extrato Bancário
+                      Importar Extrato Bancário (CSV)
                     </DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4">
