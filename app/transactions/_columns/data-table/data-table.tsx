@@ -35,7 +35,7 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTable<TData, TValue>({
   columns,
-  data,
+  data: initialData,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
@@ -44,6 +44,8 @@ export function DataTable<TData, TValue>({
     [],
   );
   const [sorting, setSorting] = React.useState<SortingState>([]);
+
+  const [data, setData] = React.useState<TData[]>(initialData);
 
   const table = useReactTable({
     data,
@@ -67,9 +69,14 @@ export function DataTable<TData, TValue>({
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
+  // Função para remover as linhas deletadas do estado `data`
+  const removeDeletedRows = (ids: string[]) => {
+    setData((prevData) => prevData.filter((row: any) => !ids.includes(row.id)));
+  };
+
   return (
     <div className="mt-4 space-y-4">
-      <DataTableToolbar table={table} />
+      <DataTableToolbar table={table} removeDeletedRows={removeDeletedRows} />
       <div className="overflow-y-auto rounded-md border">
         <Table>
           <TableHeader>

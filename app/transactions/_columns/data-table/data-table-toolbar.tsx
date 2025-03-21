@@ -3,6 +3,17 @@
 import { Cross2Icon, PlusCircledIcon } from "@radix-ui/react-icons";
 import { Table } from "@tanstack/react-table";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/app/_components/ui/alert-dialog";
 import { Button } from "@/app/_components/ui/button";
 import { Input } from "@/app/_components/ui/input";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
@@ -24,13 +35,17 @@ import {
   TRANSACTION_CATEGORY_LABELS,
   TRANSACTION_PAYMENT_METHOD_OPTIONS,
 } from "@/app/_constants/transactions";
+import { deleteTransactions } from "../../_actions/delete-transactions";
+import { toast } from "sonner";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
+  removeDeletedRows: (ids: string[]) => void;
 }
 
 export function DataTableToolbar<TData>({
   table,
+  removeDeletedRows,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
@@ -46,7 +61,7 @@ export function DataTableToolbar<TData>({
   useEffect(() => {
     async function fetchFilterData() {
       const categories = await getDefaultCategories();
-      console.log("categories fetched:", categories);
+
       if (!categories) return;
 
       const formattedCategories = categories.map((category) => ({
@@ -57,7 +72,6 @@ export function DataTableToolbar<TData>({
         value: category.categoryId,
       }));
 
-      console.log("formatted categories:", formattedCategories);
       setCategories(formattedCategories);
     }
     fetchFilterData();
@@ -90,6 +104,24 @@ export function DataTableToolbar<TData>({
     setDateRange({ from, to });
     // Filter table data based on selected date range
     table.getColumn("date")?.setFilterValue([from, to]);
+  };
+
+  const handleDeleteSelectedRows = async (table: Table<any>) => {
+    const selectedRows = table.getFilteredSelectedRowModel().rows;
+    const selectedIds = selectedRows.map((row) => row.original.id);
+
+    if (selectedIds.length > 0) {
+      try {
+        await deleteTransactions(selectedIds);
+
+        removeDeletedRows(selectedIds);
+
+        table.resetRowSelection();
+        toast.success("Transações deletadas com sucesso!");
+      } catch (error) {
+        console.error("Erro ao deletar transações:", error);
+      }
+    }
   };
 
   return (
@@ -147,10 +179,36 @@ export function DataTableToolbar<TData>({
 
       <div className="flex items-center gap-2">
         {table.getFilteredSelectedRowModel().rows.length > 0 ? (
-          <Button variant="outline" size="sm">
-            <TrashIcon className="mr-2 size-4" aria-hidden="true" />
-            Deletar ({table.getFilteredSelectedRowModel().rows.length})
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline" size="sm">
+                <TrashIcon className="mr-2 size-4" aria-hidden="true" />
+                Deletar ({table.getFilteredSelectedRowModel().rows.length})
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  {table.getFilteredSelectedRowModel().rows.length > 1 ? (
+                    <>Você deseja realmente deletar essas transações?</>
+                  ) : (
+                    <>Você deseja realmente deletar essa transação?</>
+                  )}
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  Essa ação não pode ser desfeita.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => handleDeleteSelectedRows(table)}
+                >
+                  Continuar
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         ) : null}
         <ExportDataFromTransactionDialog userCanExportData={true} />
         <DataTableViewOptions table={table} />

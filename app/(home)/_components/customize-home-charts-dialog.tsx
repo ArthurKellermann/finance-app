@@ -111,8 +111,6 @@ function CustomizeHomeChartsDialog() {
       .filter((chart) => chart.selected)
       .map((chart) => chart.name);
 
-    console.log("selectedChartNames:", selectedChartNames);
-
     localStorage.setItem("selectedCharts", JSON.stringify(selectedChartNames));
     window.location.reload();
     setIsOpen(false);
