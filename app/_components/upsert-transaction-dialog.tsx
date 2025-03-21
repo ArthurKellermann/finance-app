@@ -134,6 +134,9 @@ const UpsertTransactionDialog = ({
 
   const onSubmit = async (data: FormSchema) => {
     try {
+      if (unableToSelectCreditCard()) {
+        return;
+      }
       await upsertTransaction({ ...data, id: transactionId });
       setIsOpen(false);
       form.reset();
@@ -147,6 +150,11 @@ const UpsertTransactionDialog = ({
   const paymentMethod = form.watch("paymentMethod");
   const showCreditCardField =
     paymentMethod === TransactionPaymentMethod.CREDIT_CARD;
+
+  const unableToSelectCreditCard = () => {
+    form.setValue("creditCardId", undefined);
+    return showCreditCardField && form.getValues("type") !== "EXPENSE";
+  };
 
   return (
     <Dialog
@@ -289,7 +297,7 @@ const UpsertTransactionDialog = ({
                 </FormItem>
               )}
             />
-            {showCreditCardField && (
+            {showCreditCardField && form.getValues("type") === "EXPENSE" && (
               <FormField
                 control={form.control}
                 name="creditCardId"
@@ -317,6 +325,14 @@ const UpsertTransactionDialog = ({
                   </FormItem>
                 )}
               />
+            )}
+            {unableToSelectCreditCard() && (
+              <>
+                <p className="text-sm text-muted-foreground">
+                  Para selecionar um cartão de crédito, selecione o tipo de
+                  transação como Despesa.
+                </p>
+              </>
             )}
             <FormField
               control={form.control}

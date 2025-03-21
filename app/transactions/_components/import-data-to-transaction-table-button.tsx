@@ -12,6 +12,7 @@ import { Import, Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -121,6 +122,12 @@ const ImportDataToTransactionTableDialog = () => {
                     <DialogTitle className="text-lg font-semibold">
                       Importar Extrato Bancário (CSV)
                     </DialogTitle>
+                    <DialogDescription>
+                      <p className="text-sm text-muted-foreground">
+                        Importe um extrato bancário e deixe que nossa IA
+                        registre e categorize todas as suas transações.
+                      </p>
+                    </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4">
                     <div>
