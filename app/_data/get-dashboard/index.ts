@@ -131,12 +131,19 @@ export const getDashboard = async (month: string) => {
   );
 
   const creditCards = await prisma.creditCard.findMany({
-    where: { userId },
+    where: {
+      userId,
+    },
+    include: {
+      Transaction: {
+        where,
+      },
+    },
     orderBy: { createdAt: "desc" },
   });
-
   const totalCreditCardSpent = creditCards.reduce(
-    (acc, card) => acc + card.spent,
+    (acc, card) =>
+      acc + card.Transaction.reduce((acc, t) => acc + Number(t.amount), 0),
     0,
   );
 

@@ -31,6 +31,9 @@ const EditCreditCardButton = ({ creditCard }: EditCreditCardButtonProps) => {
           type: creditCard.type,
           status: creditCard.status,
           bank: creditCard.bank,
+          description: creditCard.description,
+          dueDay: creditCard.dueDay.toString(),
+          statementCloseDay: creditCard.statementCloseDay.toString(),
         }}
         creditCardId={creditCard.id}
       />

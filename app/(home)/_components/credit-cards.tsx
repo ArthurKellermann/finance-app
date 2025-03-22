@@ -15,11 +15,13 @@ import Link from "next/link";
 interface CreditCardsProps {
   creditCards: CreditCard[];
   totalSpentByCreditCardPerMonth: Record<string, number>;
+  month: string;
 }
 
 const CreditCards = ({
   creditCards,
   totalSpentByCreditCardPerMonth,
+  month,
 }: CreditCardsProps) => {
   const getAmountColor = (spent: number, limit: number) => {
     if (spent > limit) {
@@ -28,53 +30,81 @@ const CreditCards = ({
     return "text-foreground";
   };
 
+  const getMonthName = (monthNumber: number) => {
+    const monthNames = [
+      "Janeiro",
+      "Fevereiro",
+      "Março",
+      "Abril",
+      "Maio",
+      "Junho",
+      "Julho",
+      "Agosto",
+      "Setembro",
+      "Outubro",
+      "Novembro",
+      "Dezembro",
+    ];
+    return monthNames[monthNumber];
+  };
+
   const displayedCreditCards = creditCards.slice(0, 3);
 
   return (
-    <Card className="border-3 h-full rounded-md">
+    <Card className="flex min-h-[380px] flex-col justify-between rounded-md">
       <CardHeader className="flex-row items-center justify-between rounded-t-md">
         <CardTitle className="font-bold">Cartões de Crédito</CardTitle>
         <AddCreditCardButton userCanAddCreditCard={true} />
       </CardHeader>
-      <CardContent className="space-y-4 rounded-b-md">
-        {displayedCreditCards.map((card) => (
-          <div key={card.id} className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2">
-                <Image
-                  src={card.imagePath}
-                  height={24}
-                  width={40}
-                  alt="Cartão de Crédito"
-                  className="object-contain opacity-80"
-                />
+      <CardContent
+        className={
+          displayedCreditCards.length > 0
+            ? "mt-4 flex-1 space-y-4 rounded-b-md"
+            : "flex flex-grow items-center justify-center space-y-6"
+        }
+      >
+        {displayedCreditCards.length > 0 ? (
+          displayedCreditCards.map((card) => (
+            <div key={card.id} className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2">
+                  <Image
+                    src={card.imagePath}
+                    height={24}
+                    width={40}
+                    alt="Cartão de Crédito"
+                    className="object-contain opacity-80"
+                  />
+                </div>
+                <div>
+                  <p className="text-sm font-bold">{card.description}</p>
+                  <p className="text-sm text-muted-foreground">
+                    Fecha em {card.statementCloseDay} de{" "}
+                    {getMonthName(Number(month))} de {new Date().getFullYear()}
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-bold">{card.description}</p>
+              <div className="flex items-center gap-3">
+                <p
+                  className={`text-sm font-bold ${getAmountColor(card.spent, card.limit)}`}
+                >
+                  {formatCurrency(
+                    totalSpentByCreditCardPerMonth[card.id as string] || 0,
+                  )}
+                </p>
                 <p className="text-sm text-muted-foreground">
-                  Fecha em {card.statementCloseDay} de{" "}
-                  {new Date(
-                    new Date().setMonth(new Date().getMonth() + 1),
-                  ).toLocaleString("pt-BR", { month: "long", year: "numeric" })}
+                  / {formatCurrency(card.limit)}
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <p
-                className={`text-sm font-bold ${getAmountColor(card.spent, card.limit)}`}
-              >
-                {formatCurrency(
-                  totalSpentByCreditCardPerMonth[card.id as string] || 0,
-                )}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                / {formatCurrency(card.limit)}
-              </p>
-            </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p className="text-center text-sm text-muted-foreground">
+            Nenhum cartão de crédito encontrado
+          </p>
+        )}
       </CardContent>
-      <CardFooter>
+      <CardFooter className="flex items-end justify-center">
         <div className="flex w-full space-x-4">
           <Button variant="outline" className="flex-1 rounded-full">
             <Link href="/credit-cards/statements">Conferir faturas</Link>

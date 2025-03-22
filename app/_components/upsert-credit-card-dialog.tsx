@@ -97,7 +97,6 @@ const UpsertCreditCardDialog = ({
 
   const onSubmit = async (data: FormSchema) => {
     try {
-      console.log("data:", data);
       await upsertCreditCard({ ...data, id: creditCardId });
       setIsOpen(false);
       form.reset();

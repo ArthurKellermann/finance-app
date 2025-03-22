@@ -12,7 +12,8 @@ import {
 import { Menu, MoveRight, X } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
-import { SignInButton, SignUpButton } from "@clerk/nextjs";
+import { SignInButton, SignUpButton, useAuth } from "@clerk/nextjs";
+import UserProfileDropDown from "@/app/_components/user-profile-drop-down";
 
 export const Header = () => {
   const navigationItems = [
@@ -22,12 +23,12 @@ export const Header = () => {
       description: "",
     },
     {
-      title: "Produto",
+      title: "Plataforma",
       description: "Simplifique sua gestão financeira com nossas ferramentas.",
       items: [
         {
-          title: "Relatórios",
-          href: "/relatorios",
+          title: "Comentários",
+          href: "/comments",
         },
         {
           title: "Estatísticas",
@@ -68,6 +69,7 @@ export const Header = () => {
   ];
 
   const [isOpen, setOpen] = useState(false);
+  const { userId } = useAuth();
 
   return (
     <header className="fixed left-0 top-0 z-40 w-full bg-background">
@@ -125,15 +127,23 @@ export const Header = () => {
 
         <div className="flex lg:justify-center"></div>
 
-        <div className="flex w-full justify-end gap-4">
-          <SignInButton>
-            <Button variant="outline">Entrar</Button>
-          </SignInButton>
+        {!userId ? (
+          <div className="flex w-full justify-end gap-4">
+            <SignInButton mode="modal" fallbackRedirectUrl="/">
+              <Button variant="outline">Entrar</Button>
+            </SignInButton>
 
-          <SignUpButton>
-            <Button>Conhecer plataforma</Button>
-          </SignUpButton>
-        </div>
+            <SignUpButton fallbackRedirectUrl="/">
+              <Button>Conhecer plataforma</Button>
+            </SignUpButton>
+          </div>
+        ) : (
+          <div className="flex flex-grow justify-end">
+            <div className="w-[230px]">
+              <UserProfileDropDown />
+            </div>
+          </div>
+        )}
 
         <div className="flex w-12 shrink items-end justify-end lg:hidden">
           <Button variant="ghost" onClick={() => setOpen(!isOpen)}>

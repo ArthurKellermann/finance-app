@@ -30,8 +30,8 @@ export function CurrentGoalAmountPieChart({
   const chartData = [
     { name: "Valor depositado ", amount: currentAmount, fill: color },
     {
-      name: "Valor da meta",
-      amount: goalAmount,
+      name: "Valor restante",
+      amount: goalAmount - currentAmount,
       fill: "#A9A9A9",
     },
   ];

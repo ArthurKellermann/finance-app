@@ -27,10 +27,10 @@ const DeleteGoalButton = ({
     try {
       await deleteGoal({ goalId });
       onDeleteSuccess();
-      toast.success("Cartão deletado com sucesso!");
+      toast.success("Meta deletada com sucesso!");
     } catch (error) {
       console.error(error);
-      toast.error("Ocorreu um erro ao deletar a categoria.");
+      toast.error("Ocorreu um erro ao deletar a meta.");
     }
   };
   return (

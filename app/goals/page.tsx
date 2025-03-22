@@ -12,7 +12,6 @@ const GoalsPage = async () => {
   }
 
   const goals = await getGoals();
-  console.log("Goals:", goals);
 
   return (
     <>
@@ -31,7 +30,6 @@ const GoalsPage = async () => {
           )}
         </div>
       </div>
-      ;
     </>
   );
 };

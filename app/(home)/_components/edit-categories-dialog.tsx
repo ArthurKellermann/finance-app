@@ -169,7 +169,6 @@ const EditCategoryDialog = () => {
                       onChange={(color) => {
                         const hexColor = `#${color.hex}`;
                         colorRef.current = hexColor;
-                        console.log("Selected color:", hexColor);
                       }}
                     />
                   </PopoverContent>
@@ -204,7 +203,6 @@ const EditCategoryDialog = () => {
                       onChange={(icon) => {
                         setSelected(icon);
                         setOpenIconDialog(false);
-                        console.log({ icon });
                       }}
                     />
                   </DialogContent>

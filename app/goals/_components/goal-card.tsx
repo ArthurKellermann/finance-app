@@ -16,6 +16,7 @@ import { GOALS_STATUS_LABELS } from "@/app/_constants/goals";
 import DeleteGoalButton from "./delete-goal-button";
 import { useState } from "react";
 import EditGoalButton from "./edit-goal-button";
+import { completeGoal } from "@/app/_actions/complete-goal";
 
 interface GoalCardProps {
   id: string;
@@ -74,6 +75,9 @@ export default function GoalCard(goal: GoalCardProps) {
 
   const handleCompleteGoal = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    await completeGoal({
+      id: goal.id,
+    });
   };
 
   const { icon: StatusIcon, color: statusColor } = statusIcons[goal.status];
@@ -151,23 +155,25 @@ export default function GoalCard(goal: GoalCardProps) {
       </Card>
 
       <div className="mt-4 flex">
-        <Button
-          variant="secondary"
-          size="icon"
-          className="rounded-full"
-          onClick={handleCompleteGoal}
-        >
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span>
-                <Check className="h-5 w-5" />
-              </span>
-            </TooltipTrigger>
-            <TooltipContent side="bottom" align="start">
-              Concluir meta
-            </TooltipContent>
-          </Tooltip>
-        </Button>
+        {goal.status != "COMPLETED" && (
+          <Button
+            variant="secondary"
+            size="icon"
+            className="rounded-full"
+            onClick={handleCompleteGoal}
+          >
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span>
+                  <Check className="h-5 w-5" />
+                </span>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" align="start">
+                Concluir meta
+              </TooltipContent>
+            </Tooltip>
+          </Button>
+        )}
 
         <Tooltip>
           <TooltipTrigger asChild>

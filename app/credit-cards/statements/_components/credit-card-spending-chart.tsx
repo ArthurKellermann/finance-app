@@ -82,7 +82,7 @@ const CreditCardSpendingBarChart = ({
         }));
 
   return (
-    <div className="h-full space-y-6 rounded-md bg-card p-4" ref={ref}>
+    <div className="h-full space-y-6 rounded-md border bg-card p-4" ref={ref}>
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold">
           Gastos Diários por Cartão (Últimos 30 Dias)

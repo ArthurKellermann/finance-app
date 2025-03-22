@@ -1,8 +1,10 @@
 import getTransactionsByPaymentMethod from "@/app/_actions/get-transactions-by-payment-method";
 import TimeSelectCreditCard from "../_components/time-select-credit-card";
-import CreditCardTable from "./_components/credit-card-table";
 import { Button } from "@/app/_components/ui/button";
 import Link from "next/link";
+import CreditCardSpendingBarChart from "./_components/credit-card-spending-chart";
+import { DataTable } from "./_columns/data-table/data-table";
+import { columns } from "./_columns/data-table/columns";
 
 const CreditCardsStatementsPage = async () => {
   const { transactions } = await getTransactionsByPaymentMethod("CREDIT_CARD");
@@ -48,8 +50,8 @@ const CreditCardsStatementsPage = async () => {
           <TimeSelectCreditCard />
         </div>
       </div>
-      <CreditCardTable
-        transactions={transactions}
+      <DataTable data={transactions} columns={columns} />
+      <CreditCardSpendingBarChart
         chartData={chartData}
         uniqueCards={uniqueCards}
       />
