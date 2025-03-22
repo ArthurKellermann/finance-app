@@ -10,6 +10,7 @@ import { auth } from "@clerk/nextjs/server";
 import Navbar from "./_components/navbar";
 import { SidebarProvider } from "./_components/ui/sidebar";
 import { ThemeProvider } from "next-themes";
+import { NotificationsProvider } from "./_contexts/notifications-context";
 
 const mulish = Mulish({
   subsets: ["latin-ext"],
@@ -39,20 +40,22 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ClerkProvider localization={ptBR} appearance={{ baseTheme: dark }}>
-            <TooltipProvider>
-              <SidebarProvider>
-                <div className="flex h-full flex-col overflow-hidden">
-                  {userId ? (
-                    <>
-                      <Navbar />
-                      {children}
-                    </>
-                  ) : (
-                    children
-                  )}
-                </div>
-              </SidebarProvider>
-            </TooltipProvider>
+            <NotificationsProvider>
+              <TooltipProvider>
+                <SidebarProvider>
+                  <div className="flex h-full flex-col overflow-hidden">
+                    {userId ? (
+                      <>
+                        <Navbar />
+                        {children}
+                      </>
+                    ) : (
+                      children
+                    )}
+                  </div>
+                </SidebarProvider>
+              </TooltipProvider>
+            </NotificationsProvider>
           </ClerkProvider>
 
           <Toaster theme="dark" />

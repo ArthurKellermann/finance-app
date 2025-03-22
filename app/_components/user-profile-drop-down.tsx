@@ -2,7 +2,6 @@
 
 import {
   BadgeCheck,
-  Bell,
   ChevronsUpDown,
   LogOut,
   Settings,
@@ -94,10 +93,6 @@ const UserProfileDropDown = () => {
           <DropdownMenuItem onClick={() => {}}>
             <Settings />
             Configurações
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Bell />
-            Notificações
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />

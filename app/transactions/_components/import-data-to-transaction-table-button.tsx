@@ -22,7 +22,10 @@ import { Input } from "@/app/_components/ui/input";
 import { Label } from "@/app/_components/ui/label";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
-import { categorizeDataFromImportedFile } from "../_actions/categorize-data-from-imported-file";
+import { useAuth } from "@clerk/nextjs";
+
+import axios from "axios";
+import { useNotifications } from "@/app/_contexts/notifications-context";
 
 const loadingMessages = [
   "Categorizando transações...",
@@ -36,6 +39,10 @@ const ImportDataToTransactionTableDialog = () => {
   const [file, setFile] = useState<File | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentMessage, setCurrentMessage] = useState(loadingMessages[0]);
+
+  const { userId } = useAuth();
+
+  const { addNotification } = useNotifications();
 
   useEffect(() => {
     if (loading) {
@@ -64,24 +71,54 @@ const ImportDataToTransactionTableDialog = () => {
       toast.error("Nenhum arquivo selecionado.");
       return;
     }
-
     setLoading(true);
-    try {
-      const fileText = await file.text();
-      const result = await categorizeDataFromImportedFile(fileText);
 
-      if (result.success) {
-        toast.success("Arquivo processado com sucesso!");
-        setIsDialogOpen(false);
-      } else {
-        toast.error(result.message || "Erro ao processar o arquivo.");
-      }
+    // const fileText = await file.text();
+
+    // try {
+    //   const response = await axios.post(
+    //     "http://localhost:3002/categorize-data-from-imported-file",
+    //     {
+    //       fileText,
+    //     },
+    //     {
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //     },
+    //   );
+
+    //   console.log("Notification created:", response);
+    //   toast.success("Notificação criada com sucesso!");
+    // } catch (error) {
+    //   console.error("Error creating notification:", error);
+    //   toast.error("Erro ao criar notificação.");
+    // }
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/notifications",
+        {
+          recipientId: userId,
+          content: `O arquivo "${file?.name}" foi importado e categorizado com sucesso. Você já pode conferir a tabela de transações.`,
+          category: `📂 Importação concluída! `,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      addNotification(response.data);
+
+      console.log("Notification created:", response);
+      toast.success("Você tem uma nova notificação!");
     } catch (error) {
-      console.error(error);
-      toast.error("Ocorreu um erro ao processar o arquivo.");
+      console.error("Error creating notification:", error);
+      toast.error("Erro ao criar notificação.");
     } finally {
       setLoading(false);
-      setFile(null);
     }
   };
 

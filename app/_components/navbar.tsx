@@ -30,6 +30,7 @@ import {
   UserIcon,
 } from "lucide-react";
 import UserProfileDropDown from "./user-profile-drop-down";
+import NotificationsButton from "./notifications-button";
 
 const data = {
   dashboards: [
@@ -282,7 +283,10 @@ const Navbar = () => {
 
       {/* Right Side */}
       <div className="flex items-center gap-4 px-6">
-        <ModeToggle />
+        <div className="hidden flex-row items-center gap-4 lg:flex">
+          <ModeToggle />
+          <NotificationsButton />
+        </div>
         <UserProfileDropDown />
 
         <div className="flex lg:hidden">
