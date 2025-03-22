@@ -51,12 +51,18 @@ const CreditCards = ({
   const displayedCreditCards = creditCards.slice(0, 3);
 
   return (
-    <Card className="rounded-md">
+    <Card className="flex min-h-[380px] flex-col justify-between rounded-md">
       <CardHeader className="flex-row items-center justify-between rounded-t-md">
         <CardTitle className="font-bold">Cartões de Crédito</CardTitle>
         <AddCreditCardButton userCanAddCreditCard={true} />
       </CardHeader>
-      <CardContent className="space-y-4 rounded-b-md">
+      <CardContent
+        className={
+          displayedCreditCards.length > 0
+            ? "mt-4 flex-1 space-y-4 rounded-b-md"
+            : "flex flex-grow items-center justify-center space-y-6"
+        }
+      >
         {displayedCreditCards.length > 0 ? (
           displayedCreditCards.map((card) => (
             <div key={card.id} className="flex items-center justify-between">
@@ -98,7 +104,7 @@ const CreditCards = ({
           </p>
         )}
       </CardContent>
-      <CardFooter>
+      <CardFooter className="flex items-end justify-center">
         <div className="flex w-full space-x-4">
           <Button variant="outline" className="flex-1 rounded-full">
             <Link href="/credit-cards/statements">Conferir faturas</Link>

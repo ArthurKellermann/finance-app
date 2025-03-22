@@ -2,6 +2,7 @@ import { Button } from "@/app/_components/ui/button";
 import {
   Card,
   CardContent,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/app/_components/ui/card";
@@ -33,17 +34,23 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
     return "-";
   };
 
-  const displayedTransactions = lastTransactions.slice(0, 5);
+  const displayedTransactions = lastTransactions.slice(0, 4);
 
   return (
-    <Card className="h-full">
+    <Card className="flex min-h-[430px] flex-col justify-between">
       <CardHeader className="flex-row items-center justify-between">
         <CardTitle className="font-bold">Últimas Transações</CardTitle>
         <Button variant="outline" className="rounded-full font-bold" asChild>
           <Link href="/transactions">Contas</Link>
         </Button>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent
+        className={
+          displayedTransactions.length > 0
+            ? "flex-grow space-y-6"
+            : "flex flex-grow items-center justify-center space-y-6"
+        }
+      >
         {displayedTransactions.length > 0 ? (
           displayedTransactions.map((transaction) => (
             <div
@@ -78,10 +85,11 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
           ))
         ) : (
           <p className="text-center text-sm text-muted-foreground">
-            Nenhuma transação encontrada
+            Nenhuma transação encontrada.
           </p>
         )}
-
+      </CardContent>
+      <CardFooter>
         <div className="mt-4 flex w-full space-x-4">
           <Button variant="outline" className="flex-1 rounded-full">
             <Link href="/transactions">Mostrar gráficos</Link>
@@ -90,7 +98,7 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
             <Link href="/transactions">Ver mais</Link>
           </Button>
         </div>
-      </CardContent>
+      </CardFooter>
     </Card>
   );
 };
