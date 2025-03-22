@@ -63,9 +63,15 @@ const NotificationsButton = () => {
           {notifications.length > 0 ? (
             <>
               {notifications.slice(0, 3).map((notification) => (
-                <div key={notification.id} className="flex items-center">
+                <motion.div
+                  key={notification.id}
+                  initial={{ opacity: 1 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0, transition: { duration: 1 } }}
+                  className="flex items-center"
+                >
                   <div className="flex-1">
-                    <div className="text-sm font-medium">
+                    <div className="mt-2 text-sm font-medium">
                       {notification.category}
                     </div>
                     <div className="mt-2 text-sm text-gray-500">
@@ -84,7 +90,7 @@ const NotificationsButton = () => {
                       <Check />
                     </Button>
                   </div>
-                </div>
+                </motion.div>
               ))}
               <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
@@ -134,11 +140,7 @@ const NotificationsButton = () => {
               </Dialog>
             </>
           ) : (
-            <>
-              <p className="text-sm text-gray-500">
-                Você não tem notificações.
-              </p>
-            </>
+            <p className="text-sm text-gray-500">Você não tem notificações.</p>
           )}
         </div>
       </PopoverContent>
