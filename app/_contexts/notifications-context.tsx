@@ -1,14 +1,9 @@
 "use client";
-
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  useCallback,
-} from "react";
-import axios from "axios";
+import { useEffect, useState, useCallback } from "react";
+import { createContext, useContext } from "react";
 import { useAuth } from "@clerk/nextjs";
+import axios from "axios";
+import io from "socket.io-client";
 
 interface NotificationProps {
   id: string;
@@ -45,20 +40,35 @@ export const NotificationsProvider = ({
       const res = await axios.get(
         `http://localhost:3001/notifications/from/${userId}`,
       );
-
       const data = res.data.notifications.map((n: any) => ({
         ...n,
         date: new Date(n.date).toLocaleString(),
       }));
-
       setNotifications(data);
     } catch (error) {
-      console.error("Error fetching notifications:", error);
+      console.error("Erro ao buscar notificações:", error);
     }
   }, [userId]);
 
+  useEffect(() => {
+    if (!userId) return;
+
+    const socket = io("http://localhost:3001");
+
+    socket.on("new-notification", () => {
+      fetchNotifications();
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [fetchNotifications, userId]);
+
   const addNotification = (notification: NotificationProps) => {
-    setNotifications((prev) => [notification, ...prev]);
+    setNotifications((prevNotifications) => [
+      notification,
+      ...prevNotifications,
+    ]);
   };
 
   const removeNotification = async (id: string) => {
@@ -69,10 +79,6 @@ export const NotificationsProvider = ({
       console.error("Error removing notification:", error);
     }
   };
-
-  useEffect(() => {
-    fetchNotifications();
-  }, [userId, fetchNotifications]);
 
   return (
     <NotificationsContext.Provider
