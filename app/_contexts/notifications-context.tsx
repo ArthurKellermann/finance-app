@@ -55,7 +55,8 @@ export const NotificationsProvider = ({
 
     const socket = io("http://localhost:3001");
 
-    socket.on("new-notification", () => {
+    socket.on("new-notification", (event) => {
+      console.log("Web socket event called:", JSON.stringify(event, null, 2));
       fetchNotifications();
     });
 

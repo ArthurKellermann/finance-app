@@ -23,12 +23,12 @@ import { IconRenderer } from "@/app/_components/ui/icon-renderer";
 import { useAuth } from "@clerk/nextjs";
 import { createCategory } from "../../_actions/create-category";
 import { findCategoryByName } from "../../_actions/find-category-by-name";
-import { toast } from "sonner";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/app/_components/ui/popover";
+import { useToast } from "@/app/_hooks/use-toast";
 
 const EditCategoryDialog = () => {
   const { userId } = useAuth();
@@ -40,6 +40,7 @@ const EditCategoryDialog = () => {
     { value: string; categoryId: string; color: string; icon: string }[]
   >([]);
   const colorRef = useRef("");
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchDefaultCategories = async () => {
@@ -74,7 +75,10 @@ const EditCategoryDialog = () => {
     });
 
     if (existingCategory) {
-      toast.error("Essa categoria já existe. Por favor, escolha outra.");
+      toast({
+        title: "❌ Categoria já existente",
+        description: "Por favor, escolha outra.",
+      });
       return;
     }
 
@@ -96,12 +100,17 @@ const EditCategoryDialog = () => {
       colorRef.current = "";
       setIsAdding(false);
 
-      toast.success("Categoria criada com sucesso!");
+      toast({
+        title: "✅ Categoria deletada com sucesso",
+      });
     } catch (error) {
-      toast.error("Erro ao criar categoria");
+      toast({
+        title: "❌ Erro ao criar categoria",
+        description: "Tente novamente mais tarde",
+      });
       console.error(error);
     }
-  }, [userId, newCategory, selected]);
+  }, [userId, selected, newCategory, toast]);
 
   const handleDeleteCategory = useCallback((categoryId: string) => {
     setCategories((prev) =>

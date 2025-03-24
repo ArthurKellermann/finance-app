@@ -18,7 +18,7 @@ import {
   Menu,
 } from "lucide-react";
 import { useState, useEffect } from "react";
-import { toast } from "sonner";
+import { useToast } from "@/app/_hooks/use-toast";
 
 const availableCharts = [
   {
@@ -62,6 +62,7 @@ const availableCharts = [
 function CustomizeHomeChartsDialog() {
   const [selectedCharts, setSelectedCharts] = useState(availableCharts);
   const [isOpen, setIsOpen] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     const savedCharts = localStorage.getItem("selectedCharts");
@@ -100,7 +101,10 @@ function CustomizeHomeChartsDialog() {
     } else if (currentSize + chart.size <= 3) {
       chart.selected = true;
     } else {
-      toast.error("Você só pode selecionar até 3 espaços de gráficos!");
+      toast({
+        title: "❌ Erro",
+        description: "Você só pode selecionar até 3 espaços de gráficos!",
+      });
     }
 
     setSelectedCharts(newCharts);

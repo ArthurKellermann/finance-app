@@ -12,7 +12,7 @@ import {
 import { Button } from "@/app/_components/ui/button";
 import { TrashIcon } from "lucide-react";
 import { deleteCategory } from "../../_actions/delete-category";
-import { toast } from "sonner";
+import { useToast } from "@/app/_hooks/use-toast";
 
 interface DeleteCategoryButtonProps {
   categoryId: string;
@@ -23,14 +23,21 @@ const DeleteCategoryButton = ({
   categoryId,
   onDeleteSuccess,
 }: DeleteCategoryButtonProps) => {
+  const { toast } = useToast();
+
   const handleConfirmDeleteClick = async () => {
     try {
       await deleteCategory({ categoryId });
       onDeleteSuccess();
-      toast.success("Categoria deletada com sucesso!");
+      toast({
+        title: "✅ Categoria deletada com sucesso",
+      });
     } catch (error) {
       console.error(error);
-      toast.error("Ocorreu um erro ao deletar a categoria.");
+      toast({
+        title: "❌ Erro ao deletar categoria",
+        description: "Tente novamente mais tarde",
+      });
     }
   };
   return (

@@ -12,7 +12,7 @@ import {
 import { Button } from "@/app/_components/ui/button";
 import { TrashIcon } from "lucide-react";
 import { deleteDeposit } from "@/app/_actions/delete-goal";
-import { toast } from "sonner";
+import { useToast } from "@/app/_hooks/use-toast";
 
 interface DeleteDepositButtonProps {
   depositId: string;
@@ -23,14 +23,21 @@ const DeleteDepositButton = ({
   depositId,
   onDepositDeleted,
 }: DeleteDepositButtonProps) => {
+  const { toast } = useToast();
+
   const handleConfirmDeleteClick = async () => {
     try {
       await deleteDeposit({ depositId });
       onDepositDeleted();
-      toast.success("Depósito deletado com sucesso!");
+      toast({
+        title: "✅ Depósito deletado com sucesso!",
+      });
     } catch (error) {
       console.error(error);
-      toast.error("Ocorreu um erro ao deletar o depósito.");
+      toast({
+        title: "❌ Erro ao deletar depósito",
+        description: "Tente novamente mais tarde",
+      });
     }
   };
   return (

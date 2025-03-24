@@ -12,7 +12,7 @@ import {
 import { Button } from "@/app/_components/ui/button";
 import { TrashIcon } from "lucide-react";
 import { deleteGoal } from "../_actions/delete-goal";
-import { toast } from "sonner";
+import { useToast } from "@/app/_hooks/use-toast";
 
 interface DeleteGoalButtonProps {
   goalId: string;
@@ -23,14 +23,21 @@ const DeleteGoalButton = ({
   goalId,
   onDeleteSuccess,
 }: DeleteGoalButtonProps) => {
+  const { toast } = useToast();
+
   const handleConfirmDeleteClick = async () => {
     try {
       await deleteGoal({ goalId });
       onDeleteSuccess();
-      toast.success("Meta deletada com sucesso!");
+      toast({
+        title: "✅ Meta deletada com sucesso!",
+      });
     } catch (error) {
       console.error(error);
-      toast.error("Ocorreu um erro ao deletar a meta.");
+      toast({
+        title: "❌ Erro ao deletar meta",
+        description: "Tente novamente mais tarde",
+      });
     }
   };
   return (

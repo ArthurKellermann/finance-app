@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/app/_components/ui/button";
 import {
   Tooltip,
@@ -27,32 +27,21 @@ import { useAuth } from "@clerk/nextjs";
 import axios from "axios";
 import { useNotifications } from "@/app/_contexts/notifications-context";
 
-const loadingMessages = [
-  "Categorizando transações...",
-  "Personalizando categorias...",
-  "Identificando padrões...",
-  "Quase pronto...",
-];
-
 const ImportDataToTransactionTableDialog = () => {
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [currentMessage, setCurrentMessage] = useState(loadingMessages[0]);
-
   const { userId } = useAuth();
-
   const { addNotification } = useNotifications();
+  const [showNotificationMessage, setShowNotificationMessage] = useState(false);
 
   useEffect(() => {
     if (loading) {
-      let i = 0;
-      const interval = setInterval(() => {
-        setCurrentMessage(loadingMessages[i]);
-        i = (i + 1) % loadingMessages.length;
-      }, 2000);
+      const timer = setTimeout(() => {
+        setShowNotificationMessage(true);
+      }, 3000);
 
-      return () => clearInterval(interval);
+      return () => clearTimeout(timer);
     }
   }, [loading]);
 
@@ -73,53 +62,33 @@ const ImportDataToTransactionTableDialog = () => {
     }
     setLoading(true);
 
-    // const fileText = await file.text();
-
-    // try {
-    //   const response = await axios.post(
-    //     "http://localhost:3002/categorize-data-from-imported-file",
-    //     {
-    //       fileText,
-    //     },
-    //     {
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //     },
-    //   );
-
-    //   console.log("Notification created:", response);
-    //   toast.success("Notificação criada com sucesso!");
-    // } catch (error) {
-    //   console.error("Error creating notification:", error);
-    //   toast.error("Erro ao criar notificação.");
-    // }
-
-    try {
-      const response = await axios.post(
-        "http://localhost:3001/notifications",
-        {
-          recipientId: userId,
-          content: `O arquivo "${file?.name}" foi importado e categorizado com sucesso. Você já pode conferir a tabela de transações.`,
-          category: `📂 Importação concluída! `,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
+    setTimeout(async () => {
+      try {
+        const response = await axios.post(
+          "http://localhost:3001/notifications",
+          {
+            recipientId: userId,
+            content: `O arquivo "${file?.name}" foi importado e categorizado com sucesso. Você já pode conferir a tabela de transações.`,
+            category: `📂 Importação concluída! `,
           },
-        },
-      );
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
 
-      addNotification(response.data);
+        addNotification(response.data);
 
-      console.log("Notification created:", response);
-      toast.success("Você tem uma nova notificação!");
-    } catch (error) {
-      console.error("Error creating notification:", error);
-      toast.error("Erro ao criar notificação.");
-    } finally {
-      setLoading(false);
-    }
+        console.log("Notification created:", response);
+        toast.success("Você tem uma nova notificação!");
+      } catch (error) {
+        console.error("Error creating notification:", error);
+        toast.error("Erro ao criar notificação.");
+      } finally {
+        setLoading(false);
+      }
+    }, 15000);
   };
 
   return (
@@ -139,19 +108,47 @@ const ImportDataToTransactionTableDialog = () => {
             <DialogContent className="sm:max-w-md">
               {loading ? (
                 <div className="flex h-48 flex-col items-center justify-center space-y-4">
-                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
                   <AnimatePresence mode="popLayout">
                     <motion.p
-                      key={currentMessage}
-                      initial={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.5 }}
-                      className="text-sm text-muted-foreground"
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.5, ease: "easeInOut" }}
+                      className="text-center text-sm text-muted-foreground"
                     >
-                      {currentMessage}
+                      Categorizando transações...
                     </motion.p>
                   </AnimatePresence>
+
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+
+                  {showNotificationMessage && (
+                    <div className="mt-4">
+                      <AnimatePresence mode="popLayout">
+                        <motion.p
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -20 }}
+                          transition={{ duration: 0.5, ease: "easeInOut" }}
+                          className="text-center text-sm text-muted-foreground"
+                        >
+                          Você pode fechar essa aba. Enviaremos uma notificação
+                          quando tudo estiver pronto.
+                        </motion.p>
+                      </AnimatePresence>
+
+                      <Button
+                        variant="link"
+                        onClick={() => {
+                          setIsDialogOpen(false);
+                          setLoading(false);
+                        }}
+                        className="mt-4"
+                      >
+                        Fechar
+                      </Button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <>

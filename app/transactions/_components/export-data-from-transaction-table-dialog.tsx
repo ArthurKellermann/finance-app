@@ -22,7 +22,6 @@ import { Transaction } from "@prisma/client";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import { DatePicker } from "@/app/_components/ui/date-picker";
-import { toast } from "sonner";
 import {
   TRANSACTION_CATEGORY_LABELS,
   TRANSACTION_PAYMENT_METHOD_LABELS,
@@ -34,6 +33,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/app/_components/ui/tooltip";
+import { useToast } from "@/app/_hooks/use-toast";
 
 interface ExportDataFromTransactionTableDialogProps {
   userCanExportData?: boolean;
@@ -53,10 +53,13 @@ const ExportDataFromTransactionDialog = ({
   const [fileType, setFileType] = useState<"excel" | "csv">("excel");
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { toast } = useToast();
 
   const handleExport = async () => {
     if (!startDate) {
-      toast.error("Por favor, selecione uma data.");
+      toast({
+        title: "❌ Por favor, selecione uma data.",
+      });
       return;
     }
 
@@ -66,7 +69,10 @@ const ExportDataFromTransactionDialog = ({
       const transactions = await getTransactionsByDate(new Date(startDate));
 
       if (transactions.length === 0) {
-        toast.error("Nenhuma transação encontrada para a data selecionada.");
+        toast({
+          title: "❌ Nenhuma transação encontrada para a data selecionada.",
+          description: "Escolha uma outra data.",
+        });
         return;
       }
 
@@ -116,7 +122,10 @@ const ExportDataFromTransactionDialog = ({
       }
     } catch (error) {
       console.error("Erro ao exportar dados:", error);
-      toast.error("Ocorreu um erro ao exportar os dados.");
+      toast({
+        title: "❌ Ocorreu um erro ao exportar os dados.",
+        description: "Tente novamente mais tarde",
+      });
     } finally {
       setIsLoading(false);
     }

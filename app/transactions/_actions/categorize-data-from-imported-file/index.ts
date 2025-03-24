@@ -39,7 +39,7 @@ export const categorizeDataFromImportedFile = async (fileText: string) => {
   }
 };
 
-const processChunk = async (chunk: string) => {
+const processChunk = async (fileText: string) => {
   const { userId } = auth();
   const categories = await getDefaultCategories();
 
@@ -94,7 +94,7 @@ const processChunk = async (chunk: string) => {
       ]
 
       ### Transações para Categorizar:
-      ${chunk}
+      ${fileText}
 
       ### Instrução Final:
       Retorne APENAS um array de objetos JSON no formato especificado, com exatamente 7 atributos, sem texto adicional, exemplos de código ou explicações.

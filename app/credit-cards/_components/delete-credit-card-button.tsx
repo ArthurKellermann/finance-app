@@ -12,7 +12,7 @@ import {
 import { Button } from "@/app/_components/ui/button";
 import { TrashIcon } from "lucide-react";
 import { deleteCreditCard } from "../_actions/delete-credit-card";
-import { toast } from "sonner";
+import { useToast } from "@/app/_hooks/use-toast";
 
 interface DeleteCreditCardButtonProps {
   creditCardId: string;
@@ -23,14 +23,20 @@ const DeleteCreditCardButton = ({
   creditCardId,
   onDeleteSuccess,
 }: DeleteCreditCardButtonProps) => {
+  const { toast } = useToast();
   const handleConfirmDeleteClick = async () => {
     try {
       await deleteCreditCard({ creditCardId });
       onDeleteSuccess();
-      toast.success("Cartão deletado com sucesso!");
+      toast({
+        title: "✅ Cartão deletado com sucesso",
+      });
     } catch (error) {
       console.error(error);
-      toast.error("Ocorreu um erro ao deletar a categoria.");
+      toast({
+        title: "❌ Ocorreu um erro ao deletar o cartão.",
+        description: "Tente novamente mais tarde",
+      });
     }
   };
   return (

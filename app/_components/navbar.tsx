@@ -21,13 +21,9 @@ import {
   Calendar,
   Command,
   DollarSign,
-  Frame,
   GalleryVerticalEnd,
   LineChart,
-  NotebookIcon,
   SquareTerminal,
-  Target,
-  UserIcon,
 } from "lucide-react";
 import UserProfileDropDown from "./user-profile-drop-down";
 import NotificationsButton from "./notifications-button";
@@ -66,11 +62,7 @@ const data = {
           url: "#",
         },
         {
-          title: "Cartões de Crédito",
-          url: "/credit-cards",
-        },
-        {
-          title: "Categorias",
+          title: "Análises e Relatórios",
           url: "#",
         },
       ],
@@ -86,7 +78,7 @@ const data = {
           url: "/transactions",
         },
         {
-          title: "Bancos",
+          title: "Programar Transação",
           url: "#",
         },
         {
@@ -127,12 +119,12 @@ const data = {
       ],
     },
     {
-      title: "Mercado",
+      title: "Conexões",
       url: "#",
       icon: LineChart,
       items: [
         {
-          title: "Bolsa de Valores",
+          title: "Bancos",
           url: "#",
         },
         {
@@ -141,10 +133,6 @@ const data = {
         },
         {
           title: "Ordens",
-          url: "#",
-        },
-        {
-          title: "Análises e Relatórios",
           url: "#",
         },
       ],
@@ -181,39 +169,11 @@ const data = {
           title: "Lista de Tarefas",
           url: "#",
         },
-      ],
-    },
-    {
-      title: "Metas",
-      url: "#",
-      icon: Target,
-      items: [
         {
           title: "Metas Financeiras",
           url: "/goals",
         },
-        {
-          title: "Programar Transação",
-          url: "#",
-        },
       ],
-    },
-  ],
-  about: [
-    {
-      name: "Conheça a Fivest",
-      url: "/about",
-      icon: Frame,
-    },
-    {
-      name: "Fivest Learning",
-      url: "#",
-      icon: NotebookIcon,
-    },
-    {
-      name: "Suporte",
-      url: "#",
-      icon: UserIcon,
     },
   ],
 };

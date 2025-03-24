@@ -36,7 +36,7 @@ import {
   TRANSACTION_PAYMENT_METHOD_OPTIONS,
 } from "@/app/_constants/transactions";
 import { deleteTransactions } from "../../_actions/delete-transactions";
-import { toast } from "sonner";
+import { useToast } from "@/app/_hooks/use-toast";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -47,6 +47,7 @@ export function DataTableToolbar<TData>({
   table,
   removeDeletedRows,
 }: DataTableToolbarProps<TData>) {
+  const { toast } = useToast();
   const isFiltered = table.getState().columnFilters.length > 0;
 
   const [dateRange, setDateRange] = useState<{ from: Date; to: Date }>({
@@ -117,7 +118,9 @@ export function DataTableToolbar<TData>({
         removeDeletedRows(selectedIds);
 
         table.resetRowSelection();
-        toast.success("Transações deletadas com sucesso!");
+        toast({
+          title: "✅ Transações deletadas com sucesso!",
+        });
       } catch (error) {
         console.error("Erro ao deletar transações:", error);
       }

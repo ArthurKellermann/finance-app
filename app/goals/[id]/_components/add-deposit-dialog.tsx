@@ -22,7 +22,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import createGoalDeposit from "../../_actions/create-goal-deposit";
-import { toast } from "sonner";
+import { useToast } from "@/app/_hooks/use-toast";
 
 interface AddDepositDialogProps {
   isOpen: boolean;
@@ -52,6 +52,7 @@ const AddDepositDialog = ({
   setIsOpen,
   onDepositAdded,
 }: AddDepositDialogProps) => {
+  const { toast } = useToast();
   const form = useForm<DepositSchema>({
     resolver: zodResolver(depositSchema),
     defaultValues: {
@@ -64,11 +65,17 @@ const AddDepositDialog = ({
     try {
       await createGoalDeposit({ ...data, goalId });
       setIsOpen(false);
-      toast.success("Depósito adicionado com sucesso!");
+      toast({
+        title: "✅ Depósito adicionado com sucesso",
+      });
       form.reset();
       onDepositAdded();
     } catch (error) {
       console.error("Erro ao enviar o formulário:", error);
+      toast({
+        title: "❌ Erro ao adicionar depósito",
+        description: "Tente novamente mais tarde",
+      });
     }
   };
 

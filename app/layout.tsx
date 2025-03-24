@@ -3,7 +3,6 @@ import { Mulish } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ptBR } from "@clerk/localizations";
-import { Toaster } from "sonner";
 import { dark } from "@clerk/themes";
 import { TooltipProvider } from "./_components/ui/tooltip";
 import { auth } from "@clerk/nextjs/server";
@@ -11,6 +10,7 @@ import Navbar from "./_components/navbar";
 import { SidebarProvider } from "./_components/ui/sidebar";
 import { ThemeProvider } from "next-themes";
 import { NotificationsProvider } from "./_contexts/notifications-context";
+import { Toaster } from "@/app/_components/ui/toaster";
 
 const mulish = Mulish({
   subsets: ["latin-ext"],
@@ -58,7 +58,7 @@ export default function RootLayout({
             </NotificationsProvider>
           </ClerkProvider>
 
-          <Toaster theme="dark" />
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
