@@ -1,9 +1,10 @@
 "use client";
-import AddTransactionButton from "@/app/_components/add-transaction-button";
 import { Card, CardContent, CardHeader } from "@/app/_components/ui/card";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { ReactNode } from "react";
 import { useAmountVisibility } from "@/app/_contexts/amount-visibility-context";
+import AddExpenseButton from "@/app/_components/add-expense-button";
+import AddRevenueButton from "@/app/_components/add-revenue-button";
 
 interface SummaryCardProps {
   icon: ReactNode;
@@ -51,7 +52,10 @@ const SummaryCard = ({
         </p>
 
         {size === "large" && (
-          <AddTransactionButton userCanAddTransaction={userCanAddTransaction} />
+          <div className="flex items-center gap-3">
+            <AddRevenueButton userCanAddTransaction={userCanAddTransaction} />
+            <AddExpenseButton userCanAddTransaction={userCanAddTransaction} />
+          </div>
         )}
       </CardContent>
     </Card>

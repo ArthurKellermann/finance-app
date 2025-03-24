@@ -73,11 +73,11 @@ export const TRANSACTION_PAYMENT_METHOD_OPTIONS = [
       TRANSACTION_PAYMENT_METHOD_LABELS[TransactionPaymentMethod.DEBIT_CARD],
   },
   {
-    value: TransactionPaymentMethod.OTHER,
-    label: TRANSACTION_PAYMENT_METHOD_LABELS[TransactionPaymentMethod.OTHER],
-  },
-  {
     value: TransactionPaymentMethod.PIX,
     label: TRANSACTION_PAYMENT_METHOD_LABELS[TransactionPaymentMethod.PIX],
+  },
+  {
+    value: TransactionPaymentMethod.OTHER,
+    label: TRANSACTION_PAYMENT_METHOD_LABELS[TransactionPaymentMethod.OTHER],
   },
 ];
