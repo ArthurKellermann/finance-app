@@ -11,11 +11,17 @@ const getDefaultCategories = async () => {
       where: {
         isDefault: true,
       },
+      include: {
+        subCategories: true,
+      },
     });
 
     const categoriesByUser = await prisma.category.findMany({
       where: {
         userId,
+      },
+      include: {
+        subCategories: true,
       },
     });
 

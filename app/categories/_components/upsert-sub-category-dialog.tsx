@@ -22,6 +22,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { upsertSubCategory } from "../_actions/upsert-sub-category";
+import { useToast } from "@/app/_hooks/use-toast";
 
 interface UpsertSubCategoryDialogProps {
   isOpen: boolean;
@@ -29,6 +30,7 @@ interface UpsertSubCategoryDialogProps {
   subCategoryId?: string;
   categoryId?: string;
   setIsOpen: (isOpen: boolean) => void;
+  onSuccess?: () => void;
 }
 
 const formSchema = z.object({
@@ -43,7 +45,9 @@ const UpsertSubCategoryDialog = ({
   subCategoryId,
   categoryId,
   setIsOpen,
+  onSuccess,
 }: UpsertSubCategoryDialogProps) => {
+  const { toast } = useToast();
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues ?? {
@@ -58,10 +62,24 @@ const UpsertSubCategoryDialog = ({
         id: subCategoryId,
         categoryId: categoryId,
       });
+
       setIsOpen(false);
+
+      toast({
+        title: `Sub categoria ${data.name} ${subCategoryId ? "atualizada" : "criada"} com sucesso!`,
+        variant: "default",
+      });
+
       form.reset();
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error) {
-      console.error("Erro ao salvar o cartão de crédito:", error);
+      toast({
+        title: "Erro ao salvar sub categoria",
+        variant: "destructive",
+      });
+      console.error("Erro ao salvar a sub categoria.", error);
     }
   };
 

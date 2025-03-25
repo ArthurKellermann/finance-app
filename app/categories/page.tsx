@@ -17,6 +17,14 @@ const CategoriesPage = () => {
   }
 
   const [categories, setCategories] = useState<Category[]>([]);
+  const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
+
+  const toggleExpand = (id: string) => {
+    setExpandedRows((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
 
   const fetchCategories = async () => {
     try {
@@ -32,7 +40,11 @@ const CategoriesPage = () => {
     fetchCategories();
   }, [userId]);
 
-  const columns = getColumns({ refreshData: fetchCategories }) as ColumnDef<{
+  const columns = getColumns({
+    refreshData: fetchCategories,
+    expandedRows,
+    toggleExpand,
+  }) as ColumnDef<{
     userId: string | null;
     name: string;
     id: string;
@@ -57,6 +69,9 @@ const CategoriesPage = () => {
         columns={columns}
         data={categories}
         onCategoriesChange={setCategories}
+        refreshData={fetchCategories}
+        expandedRows={expandedRows}
+        toggleExpand={toggleExpand}
       />
     </div>
   );

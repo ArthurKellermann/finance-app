@@ -1,25 +1,25 @@
 "use client";
 
-import { Plus } from "lucide-react";
 import { Button } from "@/app/_components/ui/button";
 import { useState } from "react";
+import UpsertSubCategoryDialog from "./upsert-sub-category-dialog";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/app/_components/ui/tooltip";
-import UpsertSubCategoryDialog from "./upsert-sub-category-dialog";
+import { Edit } from "lucide-react";
+import type { SubCategory } from "@prisma/client";
 
-interface AddSubCategoryButtonProps {
-  categoryId: string;
+interface EditSubCategoryButtonProps {
+  subcategory: SubCategory;
   onSuccess?: () => void;
 }
-
-const AddSubCategoryButton = ({
-  categoryId,
+const EditSubCategoryButton = ({
+  subcategory,
   onSuccess,
-}: AddSubCategoryButtonProps) => {
+}: EditSubCategoryButtonProps) => {
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
 
   return (
@@ -33,20 +33,22 @@ const AddSubCategoryButton = ({
               size="icon"
               className="rounded-full text-muted-foreground"
             >
-              <Plus />
+              <Edit />
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Adicionar subcategoria</TooltipContent>
+          <TooltipContent></TooltipContent>
         </Tooltip>
       </TooltipProvider>
       <UpsertSubCategoryDialog
         isOpen={dialogIsOpen}
         setIsOpen={setDialogIsOpen}
-        categoryId={categoryId}
+        defaultValues={subcategory}
+        subCategoryId={subcategory.id}
+        categoryId={subcategory.categoryId}
         onSuccess={onSuccess}
       />
     </>
   );
 };
 
-export default AddSubCategoryButton;
+export default EditSubCategoryButton;

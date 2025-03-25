@@ -151,7 +151,7 @@ const UpsertCategoryDialog = ({
                 </FormItem>
               )}
             />
-            <div className="flex justify-between gap-6">
+            <div className="flex gap-5">
               <div className="flex gap-4">
                 <FormField
                   control={form.control}

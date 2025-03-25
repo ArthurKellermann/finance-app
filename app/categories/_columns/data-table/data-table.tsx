@@ -29,6 +29,8 @@ import { DataTablePagination } from "./data-table-pagination";
 import { DataTableToolbar } from "./data-table-toolbar";
 import getDefaultCategories from "@/app/_actions/get-default-categories";
 import type { Category, SubCategory } from "@prisma/client";
+import DeleteSubCategoryButton from "../../_components/delete-sub-category-button";
+import EditSubCategoryButton from "../../_components/edit-sub-category-button";
 
 type CategoryWithSubs = Category & {
   subCategories?: SubCategory[];
@@ -39,12 +41,15 @@ interface DataTableProps<TData extends CategoryWithSubs> {
   data: TData[];
   onCategoriesChange?: (data: TData[]) => void;
   refreshData?: () => void;
+  expandedRows: Record<string, boolean>;
+  toggleExpand: (id: string) => void;
 }
 
 export function DataTable<TData extends CategoryWithSubs>({
   columns,
   data: initialData,
   onCategoriesChange,
+  expandedRows,
 }: DataTableProps<TData>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
@@ -122,23 +127,60 @@ export function DataTable<TData extends CategoryWithSubs>({
               </TableRow>
             ))}
           </TableHeader>
+
           <TableBody>
             {table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
+              table.getRowModel().rows.flatMap((row) => {
+                const category = row.original;
+                const isExpanded = expandedRows[category.id];
+
+                return [
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>,
+                  isExpanded &&
+                    category.subCategories?.map((sub) => (
+                      <TableRow
+                        key={sub.id}
+                        className="bg-muted/50 hover:bg-muted/30"
+                      >
+                        <TableCell></TableCell>
+                        <TableCell>{sub.name}</TableCell>
+                        <TableCell></TableCell>
+
+                        <TableCell>
+                          <div className="space-x-1">
+                            <EditSubCategoryButton
+                              subcategory={sub}
+                              onSuccess={refreshData}
+                            />
+                            <DeleteSubCategoryButton
+                              subcategoryId={sub.id}
+                              onDeleteSuccess={refreshData}
+                            />
+                          </div>
+                        </TableCell>
+                        <TableCell></TableCell>
+                      </TableRow>
+                    )),
+                ];
+              })
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   Nenhuma categoria encontrada.
                 </TableCell>
               </TableRow>
