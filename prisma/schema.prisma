@@ -12,6 +12,7 @@ model Transaction {
   name          String
   type          TransactionType
   categoryId    String
+  subCategoryId String?
   amount        Decimal                  @db.Decimal(10, 2)
   paymentMethod TransactionPaymentMethod
   creditCardId  String?
@@ -20,8 +21,9 @@ model Transaction {
   updatedAt     DateTime                 @updatedAt
   userId        String
 
-  category   Category    @relation(fields: [categoryId], references: [id])
-  creditCard CreditCard? @relation(fields: [creditCardId], references: [id])
+  category    Category     @relation(fields: [categoryId], references: [id])
+  subCategory SubCategory? @relation(fields: [subCategoryId], references: [id])
+  creditCard  CreditCard?  @relation(fields: [creditCardId], references: [id])
 
   @@map("transactions")
 }
@@ -33,17 +35,34 @@ enum TransactionType {
 }
 
 model Category {
-  id          String        @id @default(uuid())
-  name        String        @unique
-  isDefault   Boolean       @default(false)
-  userId      String?
-  icon        String
-  color       String
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  Transaction Transaction[]
+  id        String          @id @default(uuid())
+  name      String          @unique
+  isDefault Boolean         @default(false)
+  userId    String?
+  icon      String
+  color     String
+  type      TransactionType
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  subCategories SubCategory[]
+  transactions  Transaction[]
 
   @@map("categories")
+}
+
+model SubCategory {
+  id         String   @id @default(uuid())
+  name       String
+  categoryId String
+  userId     String
+  createdAt  DateTime @default(now())
+  updatedAi  DateTime @updatedAt
+
+  category     Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+
+  @@map("sub_category")
 }
 
 enum TransactionPaymentMethod {
@@ -70,7 +89,8 @@ model CreditCard {
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
   userId            String
-  Transaction       Transaction[]
+
+  transactions Transaction[]
 
   @@map("credit_cards")
 }
@@ -110,7 +130,7 @@ enum Banks {
 }
 
 model Goal {
-  id            String        @id @default(uuid())
+  id            String     @id @default(uuid())
   name          String
   description   String
   status        GoalStatus
@@ -120,9 +140,10 @@ model Goal {
   color         String
   icon          String
   userId        String
-  createdAt     DateTime      @default(now())
-  updatedAi     DateTime      @updatedAt
-  goalDeposit   GoalDeposit[]
+  createdAt     DateTime   @default(now())
+  updatedAi     DateTime   @updatedAt
+
+  goalDeposits GoalDeposit[]
 
   @@map("goals")
 }

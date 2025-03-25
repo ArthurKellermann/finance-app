@@ -29,6 +29,7 @@ import {
   PopoverTrigger,
 } from "@/app/_components/ui/popover";
 import { useToast } from "@/app/_hooks/use-toast";
+import type { Category } from "@prisma/client";
 
 const EditCategoryDialog = () => {
   const { userId } = useAuth();
@@ -36,9 +37,7 @@ const EditCategoryDialog = () => {
   const [newCategory, setNewCategory] = useState("");
   const [openIconDialog, setOpenIconDialog] = useState(false);
   const [selected, setSelected] = useState<null | string>(null);
-  const [categories, setCategories] = useState<
-    { value: string; categoryId: string; color: string; icon: string }[]
-  >([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const colorRef = useRef("");
   const { toast } = useToast();
 
@@ -88,7 +87,7 @@ const EditCategoryDialog = () => {
       setCategories((prev) => [
         ...prev,
         {
-          value: newCategory,
+          name: newCategory,
           categoryId: newCategoryData.categoryId,
           color: colorRef.current,
           icon: selected,

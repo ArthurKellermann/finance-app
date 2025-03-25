@@ -135,7 +135,7 @@ export const getDashboard = async (month: string) => {
       userId,
     },
     include: {
-      Transaction: {
+      transactions: {
         where,
       },
     },
@@ -143,7 +143,7 @@ export const getDashboard = async (month: string) => {
   });
   const totalCreditCardSpent = creditCards.reduce(
     (acc, card) =>
-      acc + card.Transaction.reduce((acc, t) => acc + Number(t.amount), 0),
+      acc + card.transactions.reduce((acc, t) => acc + Number(t.amount), 0),
     0,
   );
 

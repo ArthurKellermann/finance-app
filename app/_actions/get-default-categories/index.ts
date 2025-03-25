@@ -1,22 +1,29 @@
 "use server";
 
 import { prisma } from "@/app/_lib/_prisma/prisma";
+import { auth } from "@clerk/nextjs/server";
 
 const getDefaultCategories = async () => {
-  const defaultCategories = await prisma.category.findMany({});
+  const { userId } = auth();
 
-  if (!defaultCategories || defaultCategories.length === 0) {
-    return null;
+  try {
+    const defaultCategories = await prisma.category.findMany({
+      where: {
+        isDefault: true,
+      },
+    });
+
+    const categoriesByUser = await prisma.category.findMany({
+      where: {
+        userId,
+      },
+    });
+
+    return [...defaultCategories, ...categoriesByUser];
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return [];
   }
-
-  const categories = defaultCategories.map((category) => ({
-    value: category.name,
-    categoryId: category.id,
-    color: category.color,
-    icon: category.icon,
-  }));
-
-  return categories;
 };
 
 export default getDefaultCategories;

@@ -33,7 +33,12 @@ import {
 } from "../_constants/transactions";
 import { DatePicker } from "./ui/date-picker";
 import { z } from "zod";
-import { TransactionType, TransactionPaymentMethod } from "@prisma/client";
+import {
+  TransactionType,
+  TransactionPaymentMethod,
+  type Category,
+  type SubCategory,
+} from "@prisma/client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { upsertTransaction } from "../_actions/upsert-transaction";
@@ -41,6 +46,7 @@ import { useEffect, useState } from "react";
 import getDefaultCategories from "../_actions/get-default-categories";
 import getCreditCards from "../_actions/get-credit-cards";
 import { useAuth } from "@clerk/nextjs";
+import { getSubCategoriesByCategoryId } from "../_actions/get-sub-categories-by-category-id";
 
 interface UpsertTransactionDialogProps {
   isOpen: boolean;
@@ -64,6 +70,7 @@ const formSchema = z.object({
     required_error: "O tipo é obrigatório.",
   }),
   categoryId: z.string().uuid(),
+  subCategoryId: z.string().uuid().optional(),
   paymentMethod: z.nativeEnum(TransactionPaymentMethod, {
     required_error: "O método de pagamento é obrigatório.",
   }),
@@ -83,12 +90,26 @@ const UpsertTransactionDialog = ({
 }: UpsertTransactionDialogProps) => {
   const { userId } = useAuth();
 
-  const [defaultCategories, setDefaultCategories] = useState<
-    { value: string; categoryId: string }[]
-  >([]);
+  const [defaultCategories, setDefaultCategories] = useState<Category[]>([]);
+  const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
   const [creditCards, setCreditCards] = useState<
     { id: string; description: string; userId: string }[]
   >([]);
+
+  const form = useForm<FormSchema>({
+    resolver: zodResolver(formSchema),
+    defaultValues: defaultValues ?? {
+      amount: 50,
+      categoryId: defaultCategories[0]?.id,
+      date: new Date(),
+      name: "",
+      paymentMethod: TransactionPaymentMethod.CASH,
+      type: TransactionType.EXPENSE,
+    },
+  });
+
+  const { watch } = form;
+  const categoryId = watch("categoryId");
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -100,6 +121,17 @@ const UpsertTransactionDialog = ({
 
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    const fetchSubCategoriesForCategory = async () => {
+      const subs = await getSubCategoriesByCategoryId(categoryId);
+      setSubCategories(subs || []);
+    };
+
+    if (categoryId) {
+      fetchSubCategoriesForCategory();
+    }
+  }, [categoryId]);
 
   useEffect(() => {
     const fetchCreditCards = async () => {
@@ -120,18 +152,6 @@ const UpsertTransactionDialog = ({
     fetchCreditCards();
   }, [userId]);
 
-  const form = useForm<FormSchema>({
-    resolver: zodResolver(formSchema),
-    defaultValues: defaultValues ?? {
-      amount: 50,
-      categoryId: defaultCategories[0]?.categoryId,
-      date: new Date(),
-      name: "",
-      paymentMethod: TransactionPaymentMethod.CASH,
-      type: TransactionType.EXPENSE,
-    },
-  });
-
   const onSubmit = async (data: FormSchema) => {
     try {
       if (unableToSelectCreditCard()) {
@@ -148,6 +168,7 @@ const UpsertTransactionDialog = ({
   const isUpdate = Boolean(transactionId);
 
   const paymentMethod = form.watch("paymentMethod");
+
   const showCreditCardField =
     paymentMethod === TransactionPaymentMethod.CREDIT_CARD;
 
@@ -155,6 +176,10 @@ const UpsertTransactionDialog = ({
     form.setValue("creditCardId", undefined);
     return showCreditCardField && form.getValues("type") !== "EXPENSE";
   };
+
+  const currentCategoryHasSubCategories = subCategories.some(
+    (subCategory) => subCategory.categoryId === form.watch("categoryId"),
+  );
 
   return (
     <Dialog
@@ -255,13 +280,10 @@ const UpsertTransactionDialog = ({
                     </FormControl>
                     <SelectContent>
                       {defaultCategories.map((option) => (
-                        <SelectItem
-                          key={option.categoryId}
-                          value={option.categoryId}
-                        >
+                        <SelectItem key={option.id} value={option.id}>
                           {TRANSACTION_CATEGORY_LABELS[
-                            option.value as keyof typeof TRANSACTION_CATEGORY_LABELS
-                          ] || option.value}
+                            option.name as keyof typeof TRANSACTION_CATEGORY_LABELS
+                          ] || option.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -270,6 +292,42 @@ const UpsertTransactionDialog = ({
                 </FormItem>
               )}
             />
+
+            {currentCategoryHasSubCategories && (
+              <FormField
+                control={form.control}
+                name="subCategoryId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Sub Categoria</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione a sub categoria..." />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {subCategories
+                          .filter(
+                            (option) =>
+                              option.categoryId === form.watch("categoryId"),
+                          )
+                          .map((option) => (
+                            <SelectItem key={option.id} value={option.id}>
+                              {option.name}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
             <FormField
               control={form.control}
               name="paymentMethod"

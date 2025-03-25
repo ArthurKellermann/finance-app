@@ -16,7 +16,7 @@ import { useToast } from "@/app/_hooks/use-toast";
 
 interface DeleteCategoryButtonProps {
   categoryId: string;
-  onDeleteSuccess: () => void;
+  onDeleteSuccess?: () => void;
 }
 
 const DeleteCategoryButton = ({
@@ -28,7 +28,11 @@ const DeleteCategoryButton = ({
   const handleConfirmDeleteClick = async () => {
     try {
       await deleteCategory({ categoryId });
-      onDeleteSuccess();
+
+      if (onDeleteSuccess) {
+        onDeleteSuccess();
+      }
+
       toast({
         title: "✅ Categoria deletada com sucesso",
       });

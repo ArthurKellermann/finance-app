@@ -87,7 +87,7 @@ const data = {
         },
         {
           title: "Categorias",
-          url: "#",
+          url: "/categories",
         },
       ],
     },
