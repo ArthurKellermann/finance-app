@@ -51,7 +51,7 @@ const CreditCards = ({
   const displayedCreditCards = creditCards.slice(0, 3);
 
   return (
-    <Card className="flex min-h-[380px] flex-col justify-between rounded-md">
+    <Card className="card-shadow flex min-h-[380px] flex-col justify-between rounded-md">
       <CardHeader className="flex-row items-center justify-between rounded-t-md">
         <CardTitle className="font-bold">Cartões de Crédito</CardTitle>
         <AddCreditCardButton userCanAddCreditCard={true} />

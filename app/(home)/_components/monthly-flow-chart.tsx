@@ -44,7 +44,7 @@ interface MonthlyFlowChartProps {
 
 export function MonthlyFlowChart({ chartData }: MonthlyFlowChartProps) {
   return (
-    <Card className="flex flex-col p-6">
+    <Card className="card-shadow flex flex-col p-6">
       <CardContent className="flex-1 pb-0">
         <h3 className="text-center text-lg font-semibold">Fluxo Mensal</h3>
 

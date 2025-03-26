@@ -78,7 +78,7 @@ export function DataTable<TData, TValue>({
     <div className="mt-4 space-y-4">
       <DataTableToolbar table={table} removeDeletedRows={removeDeletedRows} />
       <div className="overflow-y-auto rounded-md border">
-        <Table>
+        <Table className="bg-card">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

@@ -25,7 +25,7 @@ const SummaryCard = ({
 
   const maskedAmount = "********";
   return (
-    <Card>
+    <Card className="card-shadow bg-card">
       <CardHeader className="flex-row items-center gap-4">
         {icon}
         <p

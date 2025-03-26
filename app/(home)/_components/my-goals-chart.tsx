@@ -11,7 +11,7 @@ interface MyGoalsProps {
 
 const MyGoalsChart = ({ expensesPerCategory }: MyGoalsProps) => {
   return (
-    <Card className="border-3 flex h-full flex-col">
+    <Card className="border-3 card-shadow flex h-full flex-col">
       <CardHeader className="flex items-center justify-center">
         <h3 className="text-lg font-semibold">Meus Objetivos</h3>
       </CardHeader>

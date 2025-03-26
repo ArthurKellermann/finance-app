@@ -110,7 +110,7 @@ export function DataTable<TData extends CategoryWithSubs>({
         refreshData={refreshData}
       />
       <div className="overflow-y-auto rounded-md border">
-        <Table>
+        <Table className="bg-card">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

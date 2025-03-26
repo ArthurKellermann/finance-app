@@ -68,9 +68,9 @@ export function DataTableToolbar<TData>({
       const formattedCategories = categories.map((category) => ({
         label:
           TRANSACTION_CATEGORY_LABELS[
-            category.value as keyof typeof TRANSACTION_CATEGORY_LABELS
-          ] || category.value,
-        value: category.categoryId,
+            category.name as keyof typeof TRANSACTION_CATEGORY_LABELS
+          ] || category.name,
+        value: category.id,
       }));
 
       setCategories(formattedCategories);
@@ -128,7 +128,7 @@ export function DataTableToolbar<TData>({
   };
 
   return (
-    <div className="flex flex-wrap items-center justify-between">
+    <div className="flex flex-wrap items-center justify-between rounded-md border-2 bg-card px-4 py-4">
       <div className="flex flex-1 flex-wrap items-center gap-2">
         <Input
           placeholder="Buscar por nome..."

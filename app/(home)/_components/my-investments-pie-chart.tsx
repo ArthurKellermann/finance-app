@@ -16,31 +16,31 @@ import Link from "next/link";
 const chartConfig = {
   "Tesouro Direto": {
     label: "Tesouro Direto",
-    color: "#FFAB00",
+    color: "#0D47A1", // azul escuro profundo
   },
   "Renda Fixa": {
     label: "Renda Fixa",
-    color: "#00B5E2",
+    color: "#1565C0", // azul marinho
   },
   "Renda Variável": {
     label: "Renda Variável",
-    color: "#FF5733",
+    color: "#1976D2", // azul royal
   },
   FIIs: {
     label: "Fundos Imobiliários (FIIs)",
-    color: "#8E44AD",
+    color: "#1E88E5", // azul médio
   },
   ETFs: {
     label: "ETFs",
-    color: "#3498DB",
+    color: "#42A5F5", // azul claro
   },
   Criptomoedas: {
     label: "Criptomoedas",
-    color: "#F39C12",
+    color: "#64B5F6", // azul claro suave
   },
   "Previdência Privada": {
     label: "Previdência Privada",
-    color: "#1ABC9C",
+    color: "#90CAF9", // azul bem claro
   },
 } satisfies ChartConfig;
 
@@ -55,42 +55,42 @@ const MyInvestmentsPieChart = ({
     {
       type: "Tesouro Direto",
       amount: investmentsPercentage["Tesouro Direto"] || 20,
-      fill: "#FFAB00",
+      fill: "#0D47A1", // azul escuro profundo
     },
     {
       type: "Renda Fixa",
       amount: investmentsPercentage["Renda Fixa"] || 15,
-      fill: "#00B5E2",
+      fill: "#1E88E5", // azul médio
     },
     {
       type: "Renda Variável",
       amount: investmentsPercentage["Renda Variável"] || 25,
-      fill: "#FF5733",
+      fill: "#42A5F5", // azul claro
     },
     {
       type: "FIIs",
       amount: investmentsPercentage["FIIs"] || 10,
-      fill: "#8E44AD",
+      fill: "#64B5F6", // azul suave
     },
     {
       type: "ETFs",
       amount: investmentsPercentage["ETFs"] || 15,
-      fill: "#3498DB",
+      fill: "#90CAF9", // azul bem claro
     },
     {
       type: "Criptomoedas",
       amount: investmentsPercentage["Criptomoedas"] || 5,
-      fill: "#F39C12",
+      fill: "#BBDEFB", // azul muito claro
     },
     {
       type: "Previdência Privada",
       amount: investmentsPercentage["Previdência Privada"] || 10,
-      fill: "#1ABC9C",
+      fill: "#E1F5FE", // azul quase branco
     },
   ];
 
   return (
-    <Card className="flex flex-col p-6">
+    <Card className="card-shadow flex flex-col p-6">
       <CardContent className="flex-1 pb-0">
         <h3 className="text-center text-lg font-semibold">
           Meus Investimentos
