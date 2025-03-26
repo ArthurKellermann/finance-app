@@ -86,7 +86,10 @@ export const getColumns = ({
           categoryId={category.id}
           onSuccess={refreshData}
         />
-        <EditCategoryButton category={category} onSuccess={refreshData} />
+        {!category.isDefault && (
+          <EditCategoryButton category={category} onSuccess={refreshData} />
+        )}
+
         {!category.isDefault && (
           <DeleteCategoryButton
             categoryId={category.id}
@@ -95,12 +98,5 @@ export const getColumns = ({
         )}
       </div>
     ),
-  },
-  {
-    id: "select",
-    header: "",
-    cell: "",
-    enableSorting: false,
-    enableHiding: false,
   },
 ];

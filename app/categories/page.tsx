@@ -8,6 +8,7 @@ import getDefaultCategories from "../_actions/get-default-categories";
 import { getColumns } from "./_columns/data-table/columns";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useAuth } from "@clerk/nextjs";
+import { TRANSACTION_CATEGORY_LABELS } from "../_constants/transactions";
 
 const CategoriesPage = () => {
   const { userId } = useAuth();
@@ -29,7 +30,14 @@ const CategoriesPage = () => {
   const fetchCategories = async () => {
     try {
       const data = await getDefaultCategories();
-      setCategories(data || []);
+      const formattedCategories = data.map((category) => ({
+        ...category,
+        name:
+          TRANSACTION_CATEGORY_LABELS[
+            category.name as keyof typeof TRANSACTION_CATEGORY_LABELS
+          ] || category.name,
+      }));
+      setCategories(formattedCategories || []);
     } catch (error) {
       console.error("Erro ao carregar categorias:", error);
       setCategories([]);
