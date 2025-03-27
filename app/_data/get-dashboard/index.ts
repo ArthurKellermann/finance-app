@@ -1,6 +1,9 @@
 import { prisma } from "@/app/_lib/_prisma/prisma";
 import { TransactionType } from "@prisma/client";
-import { TotalExpensePerCategory, TransactionPercentagePerType } from "./types";
+import {
+  TransactionPercentagePerType,
+  type TotalExpensePerCategory,
+} from "./types";
 import { auth } from "@clerk/nextjs/server";
 
 export const getDashboard = async (month: string) => {
@@ -67,7 +70,7 @@ export const getDashboard = async (month: string) => {
     ),
   };
 
-  const totalExpensePerCategory: TotalExpensePerCategory[] = (
+  const totalExpensePerCategoryData = (
     await prisma.transaction.groupBy({
       by: ["categoryId"],
       where: {
@@ -79,7 +82,7 @@ export const getDashboard = async (month: string) => {
       },
     })
   ).map((category) => ({
-    category: category.categoryId,
+    id: category.categoryId,
     totalAmount: Number(category._sum.amount),
     percentageOfTotal: Math.round(
       (Number(category._sum.amount) / Number(expensesTotal)) * 100,
@@ -87,22 +90,23 @@ export const getDashboard = async (month: string) => {
   }));
 
   const categories = await prisma.category.findMany({
-    where: { id: { in: totalExpensePerCategory.map((c) => c.category) } },
+    where: { id: { in: totalExpensePerCategoryData.map((c) => c.id) } },
   });
 
-  totalExpensePerCategory.forEach((item) => {
-    const category = categories.find((c) => c.id === item.category);
-    if (category) {
-      item.category = category.name;
+  const totalExpensePerCategory: TotalExpensePerCategory[] = [];
+
+  totalExpensePerCategoryData.forEach((item) => {
+    const category = categories.find((c) => c.id === item.id);
+    if (!category) {
+      return;
     }
 
-    if (category?.color) {
-      item.color = category.color;
-    }
-
-    if (category?.icon) {
-      item.icon = category.icon;
-    }
+    totalExpensePerCategory.push({
+      ...item,
+      name: category.name,
+      color: category.color,
+      icon: category.icon,
+    });
   });
 
   const lastTransactions = await prisma.transaction.findMany({

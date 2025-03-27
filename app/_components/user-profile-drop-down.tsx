@@ -88,7 +88,7 @@ const UserProfileDropDown = () => {
             }}
           >
             <BadgeCheck />
-            Conta
+            Perfil
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => {}}>
             <Settings />

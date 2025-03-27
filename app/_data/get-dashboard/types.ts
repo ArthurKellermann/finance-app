@@ -5,7 +5,8 @@ export type TransactionPercentagePerType = {
 };
 
 export interface TotalExpensePerCategory {
-  category: string;
+  id: string;
+  name?: string;
   icon?: string;
   color?: string;
   totalAmount: number;

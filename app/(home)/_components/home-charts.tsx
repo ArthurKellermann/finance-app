@@ -2,7 +2,7 @@
 import { redirect } from "next/navigation";
 import { isMatch } from "date-fns";
 import TransactionsPieChart from "./transactions-pie-chart";
-import ExpensesPerCategory from "./expenses-per-category";
+import ExpensesPerCategory from "./expenses-per-category-card";
 import MyInvestmentsPieChart from "./my-investments-pie-chart";
 import { useEffect, useState } from "react";
 import MyGoalsChart from "./my-goals-chart";

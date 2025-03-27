@@ -147,6 +147,10 @@ const data = {
           url: "#",
         },
         {
+          title: "Meu Desempenho",
+          url: "#",
+        },
+        {
           title: "Padrões de Gasto",
           url: "#",
         },
@@ -189,7 +193,7 @@ const NavItem = ({
 }) => (
   <NavigationMenu>
     <NavigationMenuItem className="list-none">
-      <NavigationMenuTrigger>
+      <NavigationMenuTrigger className="bg-card">
         <Icon className="mr-2 h-4 w-4" />
         {title}
       </NavigationMenuTrigger>
@@ -218,7 +222,7 @@ const Navbar = () => {
   const [isOpen, setOpen] = useState(false);
 
   return (
-    <header className="flex min-h-16 justify-between overflow-visible bg-popover shadow-md">
+    <header className="flex min-h-16 justify-between overflow-visible bg-card shadow-md">
       {/* Left Side */}
       <div className="flex items-center gap-10 px-6">
         <Link href="/">
