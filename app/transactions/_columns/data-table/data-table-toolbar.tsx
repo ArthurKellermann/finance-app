@@ -1,6 +1,6 @@
 "use client";
 
-import { Cross2Icon, PlusCircledIcon } from "@radix-ui/react-icons";
+import { Cross2Icon } from "@radix-ui/react-icons";
 import { Table } from "@tanstack/react-table";
 
 import {
@@ -17,18 +17,11 @@ import {
 import { Button } from "@/app/_components/ui/button";
 import { Input } from "@/app/_components/ui/input";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
-// import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
+import { CreditCard, Menu, Search, Filter, Trash2 } from "lucide-react";
 import { CalendarDatePicker } from "@/app/_components/calendar-date-picker";
 import { useEffect, useState } from "react";
 import { DataTableViewOptions } from "./data-table-view-options";
-import {
-  CreditCard,
-  Menu,
-  PiggyBankIcon,
-  TrashIcon,
-  TrendingDownIcon,
-  TrendingUpIcon,
-} from "lucide-react";
+import { PiggyBankIcon, TrendingDownIcon, TrendingUpIcon } from "lucide-react";
 import ExportDataFromTransactionDialog from "../../_components/export-data-from-transaction-table-dialog";
 import getDefaultCategories from "@/app/_actions/get-default-categories";
 import {
@@ -42,6 +35,12 @@ interface DataTableToolbarProps<TData> {
   table: Table<TData>;
   removeDeletedRows: (ids: string[]) => void;
 }
+
+const types = [
+  { label: "Depósito", value: "DEPOSIT", icon: () => <TrendingUpIcon /> },
+  { label: "Despesa", value: "EXPENSE", icon: () => <TrendingDownIcon /> },
+  { label: "Investimento", value: "INVESTMENT", icon: () => <PiggyBankIcon /> },
+];
 
 export function DataTableToolbar<TData>({
   table,
@@ -62,7 +61,6 @@ export function DataTableToolbar<TData>({
   useEffect(() => {
     async function fetchFilterData() {
       const categories = await getDefaultCategories();
-
       if (!categories) return;
 
       const formattedCategories = categories.map((category) => ({
@@ -83,27 +81,8 @@ export function DataTableToolbar<TData>({
     value: method.value,
   }));
 
-  const types = [
-    {
-      label: "Depósito",
-      value: "DEPOSIT",
-      icon: TrendingUpIcon,
-    },
-    {
-      label: "Despesa",
-      value: "EXPENSE",
-      icon: TrendingDownIcon,
-    },
-    {
-      label: "Investimento",
-      value: "INVESTMENT",
-      icon: PiggyBankIcon,
-    },
-  ];
-
   const handleDateSelect = ({ from, to }: { from: Date; to: Date }) => {
     setDateRange({ from, to });
-    // Filter table data based on selected date range
     table.getColumn("date")?.setFilterValue([from, to]);
   };
 
@@ -114,13 +93,9 @@ export function DataTableToolbar<TData>({
     if (selectedIds.length > 0) {
       try {
         await deleteTransactions(selectedIds);
-
         removeDeletedRows(selectedIds);
-
         table.resetRowSelection();
-        toast({
-          title: "✅ Transações deletadas com sucesso!",
-        });
+        toast({ title: "✅ Transações deletadas com sucesso!" });
       } catch (error) {
         console.error("Erro ao deletar transações:", error);
       }
@@ -128,93 +103,105 @@ export function DataTableToolbar<TData>({
   };
 
   return (
-    <div className="flex flex-wrap items-center justify-between rounded-md border-2 bg-card px-4 py-4">
-      <div className="flex flex-1 flex-wrap items-center gap-2">
-        <Input
-          placeholder="Buscar por nome..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => {
-            table.getColumn("name")?.setFilterValue(event.target.value);
-          }}
-          className="h-8 w-[150px] lg:w-[250px]"
-        />
-        {table.getColumn("type") && (
-          <DataTableFacetedFilter
-            column={table.getColumn("type")}
-            title="Tipo"
-            options={types}
-            icon={PlusCircledIcon}
-          />
-        )}
-        {table.getColumn("category") && (
-          <DataTableFacetedFilter
-            column={table.getColumn("category")}
-            title="Categoria"
-            options={categories}
-            icon={Menu}
-          />
-        )}
-        {table.getColumn("payment_method") && (
-          <DataTableFacetedFilter
-            column={table.getColumn("payment_method")}
-            title="Método de Pagamento"
-            options={paymentMethods}
-            icon={CreditCard}
-          />
-        )}
-        {isFiltered && (
-          <Button
-            variant="ghost"
-            onClick={() => table.resetColumnFilters()}
-            className="h-8 px-2 lg:px-3"
-          >
-            Resetar
-            <Cross2Icon className="ml-2 h-4 w-4" />
-          </Button>
-        )}
-        <CalendarDatePicker
-          date={dateRange}
-          onDateSelect={handleDateSelect}
-          className="h-9 w-[250px]"
-          variant="outline"
-        />
-      </div>
+    <div className="rounded-t-xl border-b bg-gradient-to-r from-blue-50 to-purple-50 p-4">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <Input
+              placeholder="Buscar por nome..."
+              value={
+                (table.getColumn("name")?.getFilterValue() as string) ?? ""
+              }
+              onChange={(event) => {
+                table.getColumn("name")?.setFilterValue(event.target.value);
+              }}
+              className="h-10 w-64 rounded-full border-gray-300 pl-10"
+            />
+          </div>
 
-      <div className="flex items-center gap-2">
-        {table.getFilteredSelectedRowModel().rows.length > 0 ? (
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="outline" size="sm">
-                <TrashIcon className="mr-2 size-4" aria-hidden="true" />
-                Deletar ({table.getFilteredSelectedRowModel().rows.length})
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>
-                  {table.getFilteredSelectedRowModel().rows.length > 1 ? (
-                    <>Você deseja realmente deletar essas transações?</>
-                  ) : (
-                    <>Você deseja realmente deletar essa transação?</>
-                  )}
-                </AlertDialogTitle>
-                <AlertDialogDescription>
-                  Essa ação não pode ser desfeita.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={() => handleDeleteSelectedRows(table)}
+          <div className="flex items-center gap-2">
+            {table.getColumn("type") && (
+              <DataTableFacetedFilter
+                column={table.getColumn("type")}
+                title="Tipo"
+                options={types}
+                icon={Filter}
+              />
+            )}
+            {table.getColumn("category") && (
+              <DataTableFacetedFilter
+                column={table.getColumn("category")}
+                title="Categoria"
+                options={categories}
+                icon={Menu}
+              />
+            )}
+            {table.getColumn("payment_method") && (
+              <DataTableFacetedFilter
+                column={table.getColumn("payment_method")}
+                title="Método"
+                options={paymentMethods}
+                icon={CreditCard}
+              />
+            )}
+          </div>
+
+          <CalendarDatePicker
+            date={dateRange}
+            onDateSelect={handleDateSelect}
+            className="h-10 w-64"
+            variant="outline"
+          />
+
+          {isFiltered && (
+            <Button
+              variant="ghost"
+              onClick={() => table.resetColumnFilters()}
+              className="h-10 rounded-full px-4"
+            >
+              Limpar
+              <Cross2Icon className="ml-2 h-4 w-4" />
+            </Button>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2">
+          {table.getFilteredSelectedRowModel().rows.length > 0 && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="destructive"
+                  className="flex items-center gap-2 rounded-full"
                 >
-                  Continuar
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        ) : null}
-        <ExportDataFromTransactionDialog userCanExportData={true} />
-        <DataTableViewOptions table={table} />
+                  <Trash2 className="h-4 w-4" />
+                  Deletar ({table.getFilteredSelectedRowModel().rows.length})
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    Deletar transações selecionadas?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Esta ação não pode ser desfeita.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => handleDeleteSelectedRows(table)}
+                  >
+                    Confirmar
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
+
+          <ExportDataFromTransactionDialog userCanExportData={true} />
+          <DataTableViewOptions table={table} />
+        </div>
       </div>
     </div>
   );

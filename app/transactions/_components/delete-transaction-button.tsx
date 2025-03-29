@@ -10,7 +10,7 @@ import {
   AlertDialogTrigger,
 } from "@/app/_components/ui/alert-dialog";
 import { Button } from "@/app/_components/ui/button";
-import { TrashIcon } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { deleteTransaction } from "../_actions/delete-transaction";
 import { useToast } from "@/app/_hooks/use-toast";
 
@@ -40,8 +40,12 @@ const DeleteTransactionButton = ({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="ghost" size="icon" className="text-muted-foreground">
-          <TrashIcon />
+        <Button
+          variant="ghost"
+          size="icon"
+          className="rounded-full p-2 transition-colors hover:bg-red-50"
+        >
+          <Trash2 className="h-4 w-4 text-red-500" />
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

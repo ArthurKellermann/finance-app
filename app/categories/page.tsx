@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import type { Category, TransactionType } from "@prisma/client";
 import { DataTable } from "./_columns/data-table/data-table";
-import AddCategoryButton from "./_components/add-category-button";
 import getDefaultCategories from "../_actions/get-default-categories";
 import { getColumns } from "./_columns/data-table/columns";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -66,13 +65,6 @@ const CategoriesPage = () => {
 
   return (
     <div className="flex flex-col space-y-6 overflow-hidden p-6">
-      <div className="flex w-full items-center justify-between">
-        <h1 className="text-2xl font-bold">Categorias</h1>
-        <div className="flex items-center gap-3">
-          <AddCategoryButton onSuccess={fetchCategories} />
-        </div>
-      </div>
-
       <DataTable
         columns={columns}
         data={categories}

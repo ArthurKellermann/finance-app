@@ -31,6 +31,8 @@ import getDefaultCategories from "@/app/_actions/get-default-categories";
 import type { Category, SubCategory } from "@prisma/client";
 import DeleteSubCategoryButton from "../../_components/delete-sub-category-button";
 import EditSubCategoryButton from "../../_components/edit-sub-category-button";
+import AddCategoryButton from "../../_components/add-category-button";
+import { Menu } from "lucide-react";
 
 type CategoryWithSubs = Category & {
   subCategories?: SubCategory[];
@@ -103,19 +105,38 @@ export function DataTable<TData extends CategoryWithSubs>({
   });
 
   return (
-    <div className="mt-4 space-y-4">
+    <div className="mt-6 space-y-6">
+      <div className="flex items-center justify-between rounded-t-xl bg-gradient-to-r from-blue-500 to-purple-500 p-5 shadow-md">
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <Menu className="h-8 w-8 text-white" />
+            <h2 className="text-xl font-bold text-white">Categorias</h2>
+          </div>
+
+          <p className="text-sm text-white/80">
+            Gerencie suas categorias e subcategorias de transações
+          </p>
+        </div>
+
+        <AddCategoryButton onSuccess={refreshData} />
+      </div>
+
       <DataTableToolbar
         table={table}
         removeDeletedRows={removeDeletedRows}
         refreshData={refreshData}
       />
-      <div className="overflow-y-auto rounded-md border">
-        <Table className="bg-card">
-          <TableHeader>
+
+      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+        <Table>
+          <TableHeader className="bg-gray-50">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="hover:bg-gray-50/80">
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    key={header.id}
+                    className="py-4 font-semibold text-gray-700"
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -138,9 +159,10 @@ export function DataTable<TData extends CategoryWithSubs>({
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
+                    className="border-b border-gray-100 transition-colors hover:bg-blue-50/30"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
+                      <TableCell key={cell.id} className="py-4">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext(),
@@ -152,14 +174,21 @@ export function DataTable<TData extends CategoryWithSubs>({
                     category.subCategories?.map((sub) => (
                       <TableRow
                         key={sub.id}
-                        className="bg-muted/50 hover:bg-muted/30"
+                        className="border-l-4 border-l-blue-200 bg-gray-50/70 hover:bg-blue-50/20"
                       >
                         <TableCell></TableCell>
-                        <TableCell>{sub.name}</TableCell>
+                        <TableCell className="py-3 pl-10">
+                          <div className="flex items-center gap-2">
+                            <div className="h-2 w-2 rounded-full bg-gray-400"></div>
+                            <span className="font-medium text-gray-700">
+                              {sub.name}
+                            </span>
+                          </div>
+                        </TableCell>
                         <TableCell></TableCell>
 
                         <TableCell>
-                          <div className="space-x-1">
+                          <div className="flex space-x-2">
                             <EditSubCategoryButton
                               subcategory={sub}
                               onSuccess={refreshData}
@@ -179,16 +208,26 @@ export function DataTable<TData extends CategoryWithSubs>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-32 text-center"
                 >
-                  Nenhuma categoria encontrada.
+                  <div className="flex flex-col items-center justify-center text-gray-500">
+                    <p className="mb-1 text-lg font-medium">
+                      Nenhuma categoria encontrada
+                    </p>
+                    <p className="text-sm">
+                      Adicione categorias para organizar suas transações
+                    </p>
+                  </div>
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+
+      <div className="rounded-b-xl border border-t-0 border-gray-200 bg-gray-50 p-4">
+        <DataTablePagination table={table} />
+      </div>
     </div>
   );
 }

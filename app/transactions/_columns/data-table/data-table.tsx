@@ -69,21 +69,23 @@ export function DataTable<TData, TValue>({
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
-  // Função para remover as linhas deletadas do estado `data`
   const removeDeletedRows = (ids: string[]) => {
     setData((prevData) => prevData.filter((row: any) => !ids.includes(row.id)));
   };
 
   return (
-    <div className="mt-4 space-y-4">
+    <div className="space-y-4 rounded-xl border-none bg-white shadow-lg">
       <DataTableToolbar table={table} removeDeletedRows={removeDeletedRows} />
-      <div className="overflow-y-auto rounded-md border">
-        <Table className="bg-card">
-          <TableHeader>
+      <div className="overflow-hidden rounded-b-xl">
+        <Table className="bg-white">
+          <TableHeader className="bg-gradient-to-r from-blue-50 to-purple-50">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="hover:bg-gray-50">
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    key={header.id}
+                    className="py-4 text-sm font-semibold text-gray-700"
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -97,10 +99,16 @@ export function DataTable<TData, TValue>({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
+              table.getRowModel().rows.map((row, index) => (
+                <TableRow
+                  key={row.id}
+                  className={`transition-colors hover:bg-gray-50 ${index % 2 === 0 ? "bg-white" : "bg-gray-100/50"} `}
+                >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      key={cell.id}
+                      className="py-4 text-sm text-gray-700"
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
@@ -111,7 +119,10 @@ export function DataTable<TData, TValue>({
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="py-10 text-center text-gray-500"
+                >
                   Nenhuma transação encontrada.
                 </TableCell>
               </TableRow>

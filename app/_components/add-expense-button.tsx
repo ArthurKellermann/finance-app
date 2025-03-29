@@ -24,11 +24,10 @@ const AddExpenseButton = ({ userCanAddTransaction }: AddExpenseButtonProps) => {
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
-              className="rounded-full font-bold"
-              style={{ border: "1px solid" }}
+              className="rounded-full bg-red-50 text-red-600 transition-colors hover:bg-red-100"
               onClick={() => setDialogIsOpen(true)}
               disabled={!userCanAddTransaction}
-              variant="outline"
+              variant="ghost"
             >
               Despesa
               <ArrowDown className="mr-2" />

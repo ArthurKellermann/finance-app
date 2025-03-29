@@ -12,9 +12,7 @@ import { Menu, MoveRight, X } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useTheme } from "next-themes";
 import Image from "next/image";
-import { ModeToggle } from "./ui/theme-provider";
 import {
   AudioWaveform,
   Bot,
@@ -63,7 +61,7 @@ const data = {
         },
         {
           title: "Análises e Relatórios",
-          url: "#",
+          url: "/reports",
         },
       ],
     },
@@ -193,17 +191,17 @@ const NavItem = ({
 }) => (
   <NavigationMenu>
     <NavigationMenuItem className="list-none">
-      <NavigationMenuTrigger className="bg-card">
+      <NavigationMenuTrigger className="bg-transparent text-white/80 transition-colors hover:bg-white/10 hover:text-white">
         <Icon className="mr-2 h-4 w-4" />
         {title}
       </NavigationMenuTrigger>
       <NavigationMenuContent>
-        <div className="grid w-56 gap-1 p-2">
+        <div className="grid w-56 gap-1 rounded-lg bg-white p-2 shadow-lg">
           {items.map((item) => (
             <NavigationMenuLink key={item.title} asChild>
               <Link
                 href={item.url}
-                className="block rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted"
+                className="block rounded-md px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100 hover:text-blue-600"
               >
                 {item.title}
               </Link>
@@ -217,94 +215,90 @@ const NavItem = ({
 
 const Navbar = () => {
   const pathname = usePathname();
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
+
   const [isOpen, setOpen] = useState(false);
 
   return (
-    <header className="flex min-h-16 justify-between overflow-visible bg-card shadow-md">
-      {/* Left Side */}
-      <div className="flex items-center gap-10 px-6">
-        <Link href="/">
-          {isDark ? (
-            <Image src="/logo-white.svg" width={173} height={39} alt="Fivest" />
-          ) : (
-            <Image src="/logo.svg" width={173} height={39} alt="Fivest" />
-          )}
-        </Link>
+    <header className="">
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg">
+        <div className="mx-auto flex min-h-16 items-center justify-between px-12">
+          {/* Left Side - Logo */}
+          <div className="flex items-center">
+            <Link href="/" className="flex items-center">
+              <Image
+                src="/logo-white.svg"
+                width={140}
+                height={39}
+                alt="Fivest"
+                className="brightness-0 invert"
+              />
+            </Link>
+          </div>
 
-        <div className="hidden flex-row items-center gap-4 lg:flex">
-          {data.navMain.map((item) => (
-            <NavItem
-              key={item.title}
-              title={item.title}
-              icon={item.icon}
-              items={item.items}
-            />
-          ))}
-        </div>
-      </div>
+          {/* Center - Navigation Items */}
+          <div className="flex flex-1 justify-center gap-4">
+            {data.navMain.map((item) => (
+              <NavItem
+                key={item.title}
+                title={item.title}
+                icon={item.icon}
+                items={item.items}
+              />
+            ))}
+          </div>
 
-      {/* Right Side */}
-      <div className="flex items-center gap-4 px-6">
-        <div className="hidden flex-row items-center gap-4 lg:flex">
-          <ModeToggle />
-          <NotificationsButton />
-        </div>
-        <UserProfileDropDown />
+          {/* Right Side - Theme Toggle, Notifications and User Profile */}
+          <div className="flex items-center gap-4">
+            <div className="hidden flex-row items-center gap-4 lg:flex">
+              <NotificationsButton />
+            </div>
 
-        <div className="flex lg:hidden">
-          <Button variant="ghost" onClick={() => setOpen(!isOpen)}>
-            {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </Button>
+            <UserProfileDropDown />
+
+            <div className="flex lg:hidden">
+              <Button
+                variant="ghost"
+                className="text-white hover:bg-white/10"
+                onClick={() => setOpen(!isOpen)}
+              >
+                {isOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Menu className="h-5 w-5" />
+                )}
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="absolute left-0 top-20 w-full bg-background lg:hidden">
+        <div className="absolute left-0 top-full w-full bg-white shadow-lg lg:hidden">
           <div className="container flex flex-col gap-4 px-8 py-4">
             {data.navMain.map((item) => (
-              <div key={item.title}>
-                {item.url ? (
+              <div key={item.title} className="border-b pb-2 last:border-b-0">
+                <p className="mb-2 text-sm font-semibold text-gray-600">
+                  {item.title}
+                </p>
+                {item.items?.map((subItem) => (
                   <Link
-                    href={item.url}
-                    className="flex items-center justify-between py-2"
+                    key={subItem.title}
+                    href={subItem.url}
+                    className="flex items-center justify-between rounded px-4 py-3 transition-colors hover:bg-gray-100"
                   >
                     <span
                       className={
-                        pathname === item.url
-                          ? "font-bold text-primary"
-                          : "text-muted-foreground"
+                        pathname === subItem.url
+                          ? "font-bold text-blue-600"
+                          : "text-gray-700"
                       }
                     >
-                      {item.title}
+                      {subItem.title}
                     </span>
-                    <MoveRight className="h-4 w-4 text-muted-foreground" />
+                    <MoveRight className="h-4 w-4 text-gray-400" />
                   </Link>
-                ) : (
-                  <div className="flex flex-col gap-2">
-                    <p className="py-2 font-bold">{item.title}</p>
-                    {item.items?.map((subItem) => (
-                      <Link
-                        key={subItem.title}
-                        href={subItem.url}
-                        className="flex items-center justify-between rounded px-4 py-2 hover:bg-muted"
-                      >
-                        <span
-                          className={
-                            pathname === subItem.url
-                              ? "font-bold text-primary"
-                              : "text-muted-foreground"
-                          }
-                        >
-                          {subItem.title}
-                        </span>
-                        <MoveRight className="h-4 w-4 text-muted-foreground" />
-                      </Link>
-                    ))}
-                  </div>
-                )}
+                ))}
               </div>
             ))}
           </div>

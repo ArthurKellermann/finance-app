@@ -6,6 +6,7 @@ import {
   LogOut,
   Settings,
   Sparkles,
+  UserCircle,
 } from "lucide-react";
 
 import {
@@ -27,6 +28,7 @@ import { useUser, useClerk } from "@clerk/nextjs";
 import Link from "next/link";
 import { SidebarMenuButton } from "./ui/sidebar";
 import { redirect } from "next/navigation";
+
 const UserProfileDropDown = () => {
   const clerk = useClerk();
   const { user } = useUser();
@@ -36,73 +38,99 @@ const UserProfileDropDown = () => {
     email: user?.emailAddresses[0]?.emailAddress || "guest@example.com",
     avatar: user?.imageUrl || "/avatars/default.jpg",
   };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <SidebarMenuButton
           size="lg"
-          className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+          className="rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 transition-all duration-300 hover:from-blue-100 hover:to-purple-100"
         >
-          <Avatar className="h-8 w-8 rounded-lg">
+          <Avatar className="h-10 w-10 border-2 border-white shadow-sm">
             <AvatarImage src={userData.avatar} alt={userData.name} />
-            <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+            <AvatarFallback className="bg-blue-500 text-white">
+              {userData.name.charAt(0).toUpperCase()}
+            </AvatarFallback>
           </Avatar>
-          <div className="grid flex-1 text-left text-sm leading-tight">
-            <span className="truncate font-semibold">{userData.name}</span>
+          <div className="ml-3 flex-1 text-left">
+            <p className="max-w-[120px] truncate text-sm font-semibold text-gray-800">
+              {userData.name}
+            </p>
+            <p className="max-w-[120px] truncate text-xs text-gray-500">
+              {userData.email}
+            </p>
           </div>
-          <ChevronsUpDown className="ml-auto size-4" />
+          <ChevronsUpDown className="ml-auto size-4 text-gray-400" />
         </SidebarMenuButton>
       </DropdownMenuTrigger>
+
       <DropdownMenuContent
-        className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+        className="w-[--radix-dropdown-menu-trigger-width] min-w-64 rounded-xl border-none bg-white p-2 shadow-2xl"
         side="bottom"
         align="end"
-        sideOffset={4}
+        sideOffset={8}
       >
-        <DropdownMenuLabel className="p-0 font-normal">
-          <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-            <Avatar className="h-8 w-8 rounded-lg">
+        <DropdownMenuLabel className="mb-2 p-0">
+          <div className="flex items-center gap-4 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 p-3">
+            <Avatar className="border-3 h-12 w-12 border-white shadow-md">
               <AvatarImage src={userData.avatar} alt={userData.name} />
-              <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+              <AvatarFallback className="bg-blue-500 text-white">
+                {userData.name.charAt(0).toUpperCase()}
+              </AvatarFallback>
             </Avatar>
-            <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-semibold">{userData.name}</span>
-              <span className="truncate text-xs">{userData.email}</span>
+            <div className="flex-1">
+              <p className="text-sm font-bold text-gray-800">{userData.name}</p>
+              <p className="text-xs text-gray-500">{userData.email}</p>
             </div>
+            <UserCircle className="h-6 w-6 text-blue-500" />
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
+
+        <DropdownMenuGroup className="mt-2 space-y-1">
           <Link href="/subscription">
-            <DropdownMenuItem>
-              <Sparkles />
-              Assinaturas
+            <DropdownMenuItem className="group cursor-pointer rounded-lg transition-colors hover:bg-blue-50">
+              <Sparkles className="mr-2 h-4 w-4 text-purple-500 group-hover:text-purple-600" />
+              <span className="text-gray-700 group-hover:text-gray-900">
+                Assinaturas
+              </span>
             </DropdownMenuItem>
           </Link>
         </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
+
+        <DropdownMenuSeparator className="my-2 bg-gray-200" />
+
+        <DropdownMenuGroup className="space-y-1">
           <DropdownMenuItem
-            onClick={() => {
-              clerk.openUserProfile();
-            }}
+            onClick={() => clerk.openUserProfile()}
+            className="group cursor-pointer rounded-lg transition-colors hover:bg-green-50"
           >
-            <BadgeCheck />
-            Perfil
+            <BadgeCheck className="mr-2 h-4 w-4 text-green-500 group-hover:text-green-600" />
+            <span className="text-gray-700 group-hover:text-gray-900">
+              Perfil
+            </span>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => {}}>
-            <Settings />
-            Configurações
+
+          <DropdownMenuItem
+            onClick={() => {}}
+            className="group cursor-pointer rounded-lg transition-colors hover:bg-yellow-50"
+          >
+            <Settings className="mr-2 h-4 w-4 text-yellow-500 group-hover:text-yellow-600" />
+            <span className="text-gray-700 group-hover:text-gray-900">
+              Configurações
+            </span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
-        <DropdownMenuSeparator />
+
+        <DropdownMenuSeparator className="my-2 bg-gray-200" />
+
         <DropdownMenuItem
           onClick={() => {
             clerk.signOut();
             redirect("/get-started");
           }}
+          className="group cursor-pointer rounded-lg text-red-600 transition-colors hover:bg-red-50 hover:text-red-700"
         >
-          <LogOut />
+          <LogOut className="mr-2 h-4 w-4 text-red-500 group-hover:text-red-600" />
           Sair
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -1,9 +1,22 @@
 "use client";
-import { Card, CardContent } from "@/app/_components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/app/_components/ui/card";
 import { Progress } from "@/app/_components/ui/progress";
 import { cn } from "@/app/_lib/utils";
 import { GoalStatus } from "@prisma/client";
-import { Ban, CheckCircle, Clock, XCircle, Check } from "lucide-react";
+import {
+  Ban,
+  CheckCircle,
+  Clock,
+  XCircle,
+  Check,
+  Target,
+  TrendingUp,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/app/_components/ui/button";
 import {
@@ -34,10 +47,10 @@ interface GoalCardProps {
 }
 
 const statusIcons: Record<GoalStatus, { icon: any; color: string }> = {
-  PENDING: { icon: Clock, color: "text-yellow-500" },
-  IN_PROGRESS: { icon: CheckCircle, color: "text-blue-500" },
-  COMPLETED: { icon: CheckCircle, color: "text-green-500" },
-  FAILED: { icon: XCircle, color: "text-red-500" },
+  PENDING: { icon: Clock, color: "text-yellow-600" },
+  IN_PROGRESS: { icon: TrendingUp, color: "text-blue-600" },
+  COMPLETED: { icon: CheckCircle, color: "text-green-600" },
+  FAILED: { icon: XCircle, color: "text-red-600" },
   CANCELLED: { icon: Ban, color: "text-gray-500" },
 };
 
@@ -83,123 +96,115 @@ export default function GoalCard(goal: GoalCardProps) {
   const { icon: StatusIcon, color: statusColor } = statusIcons[goal.status];
 
   return (
-    <div>
+    <div className="space-y-6">
       <Card
-        className={cn(
-          "relative h-64 w-full transform cursor-pointer overflow-hidden rounded-xl p-6 shadow-lg transition-transform duration-300 hover:scale-105",
-          "bg-card text-card-foreground",
-        )}
+        className="transform overflow-hidden rounded-xl border-none bg-white shadow-lg transition-transform hover:scale-[1.02]"
         onClick={handleClick}
       >
-        <CardContent className="flex h-full flex-col justify-between">
-          <div className="flex items-center justify-between">
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center gap-2">
-                <span className="text-2xl font-bold">{goal.name}</span>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                {goal.description}
+        <CardHeader className="flex flex-row items-center justify-between p-4">
+          <div className="flex items-center gap-3">
+            <Target className="h-6 w-6" />
+            <h2 className="text-xl font-bold">{goal.name}</h2>
+          </div>
+          <div
+            className="flex h-10 w-10 items-center justify-center rounded-lg"
+            style={{ backgroundColor: goal.color }}
+          >
+            <IconRenderer
+              icon={goal.icon}
+              style={{
+                height: "1.5rem",
+                width: "1.5rem",
+                color: "white",
+              }}
+            />
+          </div>
+        </CardHeader>
+
+        <CardContent className="space-y-4 p-6">
+          <p className="text-sm text-gray-600">{goal.description}</p>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="rounded-lg bg-gray-50 p-3">
+              <p className="text-xs text-gray-500">Data Final</p>
+              <p className="text-sm font-semibold text-gray-800">
+                {formattedDate}
               </p>
             </div>
-            <div
-              className="flex h-8 w-8 items-center justify-center rounded-md text-3xl"
-              style={{ backgroundColor: goal.color }}
-            >
-              <IconRenderer
-                icon={goal.icon}
-                style={{
-                  height: "1.5rem",
-                  width: "1.5rem",
-                  color: "white",
-                }}
-              />
+            <div className="rounded-lg bg-gray-50 p-3 text-right">
+              <p className="text-xs text-gray-500">Progresso</p>
+              <p className="text-lg font-bold text-blue-700">{`${progress.toFixed(2)}%`}</p>
             </div>
           </div>
-          <div className="flex justify-between">
-            <div className="flex flex-col gap-1">
-              <span className="text-xs font-semibold text-muted-foreground">
-                Data final
-              </span>
-              <span className="text-sm font-semibold">{formattedDate}</span>
-            </div>
 
-            <span className="text-xl font-bold font-medium">{`${progress.toFixed(2)}%`}</span>
-          </div>
-
-          <div className="flex items-center gap-3">
+          <div className="space-y-2">
             <Progress
               value={progress}
               colorBar={goal.color}
-              className="h-4 flex-1"
+              className="h-3 w-full"
               style={{ backgroundColor: `var(--${goal.color}-200)` }}
             />
-          </div>
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-semibold">
-                {formattedCurrentAmount} / {formattedGoalAmount}
+            <div className="flex justify-between text-sm">
+              <span className="font-semibold text-gray-700">
+                {formattedCurrentAmount}
               </span>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span>
-                    <StatusIcon className={cn("h-6 w-6", statusColor)} />
-                  </span>
-                </TooltipTrigger>
-                <TooltipContent side="left" align="start">
-                  {GOALS_STATUS_LABELS[goal.status]}
-                </TooltipContent>
-              </Tooltip>
+              <span className="font-semibold text-gray-700">
+                {formattedGoalAmount}
+              </span>
             </div>
           </div>
-        </CardContent>
-      </Card>
 
-      <div className="mt-4 flex">
-        {goal.status != "COMPLETED" && (
-          <Button
-            variant="secondary"
-            size="icon"
-            className="rounded-full"
-            onClick={handleCompleteGoal}
-          >
+          <div className="flex items-center justify-between">
             <Tooltip>
               <TooltipTrigger asChild>
                 <span>
-                  <Check className="h-5 w-5" />
+                  <StatusIcon className={cn("h-6 w-6", statusColor)} />
                 </span>
               </TooltipTrigger>
-              <TooltipContent side="bottom" align="start">
-                Concluir meta
+              <TooltipContent side="right">
+                {GOALS_STATUS_LABELS[goal.status]}
               </TooltipContent>
             </Tooltip>
-          </Button>
-        )}
+          </div>
+        </CardContent>
+        <CardFooter>
+          <div className="flex justify-center space-x-4">
+            {goal.status !== "COMPLETED" && (
+              <Button
+                variant="outline"
+                className="flex items-center gap-2 rounded-full border-green-500 text-green-600 hover:bg-green-50"
+                onClick={handleCompleteGoal}
+              >
+                <Check className="h-4 w-4" />
+                Concluir meta
+              </Button>
+            )}
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span>
-              <EditGoalButton goal={goal} />
-            </span>
-          </TooltipTrigger>
-          <TooltipContent side="bottom" align="start">
-            Editar meta
-          </TooltipContent>
-        </Tooltip>
+            <Button
+              variant="outline"
+              className="flex items-center gap-2 rounded-full border-blue-500 text-blue-600 hover:bg-blue-50"
+              asChild
+            >
+              <span>
+                <EditGoalButton goal={goal} />
+              </span>
+            </Button>
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span>
-              <DeleteGoalButton
-                goalId={goal.id}
-                onDeleteSuccess={handleDeleteSuccess}
-              />
-            </span>
-          </TooltipTrigger>
-          <TooltipContent side="bottom" align="start">
-            Deletar meta
-          </TooltipContent>
-        </Tooltip>
-      </div>
+            <Button
+              variant="outline"
+              className="flex items-center gap-2 rounded-full border-red-500 text-red-600 hover:bg-red-50"
+              asChild
+            >
+              <span>
+                <DeleteGoalButton
+                  goalId={goal.id}
+                  onDeleteSuccess={handleDeleteSuccess}
+                />
+              </span>
+            </Button>
+          </div>
+        </CardFooter>
+      </Card>
     </div>
   );
 }

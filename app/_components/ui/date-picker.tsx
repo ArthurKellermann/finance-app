@@ -18,7 +18,10 @@ interface DatePickerProps {
 export const DatePicker = ({ value, onChange }: DatePickerProps) => {
   return (
     <Popover>
-      <PopoverTrigger asChild>
+      <PopoverTrigger
+        asChild
+        className="border-gray-300 transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+      >
         <Button
           variant={"outline"}
           className={cn(

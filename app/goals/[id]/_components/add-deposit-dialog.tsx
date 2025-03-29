@@ -23,6 +23,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import createGoalDeposit from "../../_actions/create-goal-deposit";
 import { useToast } from "@/app/_hooks/use-toast";
+import { Calendar, DollarSign, PiggyBank } from "lucide-react";
 
 interface AddDepositDialogProps {
   isOpen: boolean;
@@ -89,65 +90,96 @@ const AddDepositDialog = ({
         }
       }}
     >
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Adicionar Depósito</DialogTitle>
-          <DialogDescription>
-            Insira o valor e a data do depósito.
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent className="overflow-hidden rounded-xl border-none p-0 shadow-lg sm:max-w-md">
+        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-6 text-white">
+          <DialogHeader>
+            <DialogTitle className="mb-1 text-xl font-bold">
+              <div className="flex items-center gap-2">
+                <PiggyBank className="h-6 w-6" />
+                Adicionar Depósito
+              </div>
+            </DialogTitle>
+            <DialogDescription className="text-white/80">
+              Insira o valor e a data do seu depósito para a meta
+            </DialogDescription>
+          </DialogHeader>
+        </div>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-              control={form.control}
-              name="amount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Valor</FormLabel>
-                  <FormControl>
-                    <MoneyInput
-                      placeholder="Digite o valor..."
-                      value={field.value}
-                      onValueChange={({ floatValue }) => {
-                        field.onChange(floatValue || 0);
-                      }}
-                      onBlur={field.onBlur}
-                      disabled={field.disabled}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="date"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Data</FormLabel>
-                  <DatePicker
-                    value={field.value}
-                    onChange={(date) => {
-                      if (date) {
-                        field.onChange(date);
-                      }
-                    }}
-                  />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button type="button" variant="outline">
-                  Cancelar
+        <div className="p-6">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="amount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-medium text-gray-700">
+                      Valor
+                    </FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                        <MoneyInput
+                          className="rounded-lg border-gray-200 pl-10 focus:border-blue-500"
+                          placeholder="Digite o valor..."
+                          value={field.value}
+                          onValueChange={({ floatValue }) => {
+                            field.onChange(floatValue || 0);
+                          }}
+                          onBlur={field.onBlur}
+                          disabled={field.disabled}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage className="text-red-500" />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="date"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-medium text-gray-700">
+                      Data
+                    </FormLabel>
+                    <div className="relative">
+                      <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                      <DatePicker
+                        value={field.value}
+                        onChange={(date) => {
+                          if (date) {
+                            field.onChange(date);
+                          }
+                        }}
+                      />
+                    </div>
+                    <FormMessage className="text-red-500" />
+                  </FormItem>
+                )}
+              />
+
+              <DialogFooter className="mt-6 flex gap-3">
+                <DialogClose asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="flex-1 rounded-lg border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
+                  >
+                    Cancelar
+                  </Button>
+                </DialogClose>
+                <Button
+                  type="submit"
+                  className="flex-1 rounded-lg border-none bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:from-blue-600 hover:to-indigo-700"
+                >
+                  Adicionar
                 </Button>
-              </DialogClose>
-              <Button type="submit">Adicionar</Button>
-            </DialogFooter>
-          </form>
-        </Form>
+              </DialogFooter>
+            </form>
+          </Form>
+        </div>
       </DialogContent>
     </Dialog>
   );

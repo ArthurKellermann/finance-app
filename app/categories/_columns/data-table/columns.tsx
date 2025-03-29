@@ -34,16 +34,16 @@ export const getColumns = ({
             e.stopPropagation();
             toggleExpand(category.id);
           }}
-          className="flex h-6 w-6 items-center justify-center rounded hover:bg-accent"
+          className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-blue-100"
         >
           {expandedRows[category.id] ? (
-            <ChevronDown className="h-6 w-6" />
+            <ChevronDown className="h-5 w-5 text-blue-600" />
           ) : (
-            <ChevronRight className="h-6 w-6" />
+            <ChevronRight className="h-5 w-5 text-blue-600" />
           )}
         </button>
       ) : (
-        <div className="h-6 w-6" />
+        <div className="h-8 w-8" />
       );
     },
     enableSorting: false,
@@ -53,12 +53,14 @@ export const getColumns = ({
     accessorKey: "name",
     header: "Nome",
     cell: ({ row: { original: category } }) => (
-      <div className="flex items-center gap-2">
-        <IconRenderer
-          icon={category.icon}
-          style={{ height: "1.2rem", width: "1.2rem", color: category.color }}
-        />
-        <span>
+      <div className="flex items-center gap-3">
+        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 shadow-sm">
+          <IconRenderer
+            icon={category.icon}
+            style={{ height: "1.4rem", width: "1.4rem", color: category.color }}
+          />
+        </div>
+        <span className="font-medium text-gray-800">
           {TRANSACTION_CATEGORY_LABELS[
             category.name as keyof typeof TRANSACTION_CATEGORY_LABELS
           ] || category.name}
@@ -69,19 +71,40 @@ export const getColumns = ({
   {
     accessorKey: "type",
     header: "Tipo",
-    cell: ({ row: { original: category } }) => (
-      <span className="font-bold">
-        {TRANSACTION_TYPE_OPTIONS.find(
-          (option) => option.value === category.type,
-        )?.label || category.type}
-      </span>
-    ),
+    cell: ({ row: { original: category } }) => {
+      const typeOption = TRANSACTION_TYPE_OPTIONS.find(
+        (option) => option.value === category.type,
+      );
+      const typeLabel = typeOption?.label || category.type;
+
+      let bgColor = "bg-gray-100";
+      let textColor = "text-gray-800";
+
+      if (category.type === "EXPENSE") {
+        bgColor = "bg-red-50";
+        textColor = "text-red-600";
+      } else if (category.type === "DEPOSIT") {
+        bgColor = "bg-green-50";
+        textColor = "text-green-600";
+      } else if (category.type === "INVESTMENT") {
+        bgColor = "bg-purple-50";
+        textColor = "text-purple-600";
+      }
+
+      return (
+        <span
+          className={`inline-flex rounded-full px-3 py-1 text-sm font-medium ${bgColor} ${textColor}`}
+        >
+          {typeLabel}
+        </span>
+      );
+    },
   },
   {
     accessorKey: "actions",
     header: "Ações",
     cell: ({ row: { original: category } }) => (
-      <div className="space-x-1">
+      <div className="flex items-center space-x-2">
         <AddSubCategoryButton
           categoryId={category.id}
           onSuccess={refreshData}

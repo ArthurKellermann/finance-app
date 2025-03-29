@@ -24,7 +24,8 @@ const CreateGoalButton = ({ userCanAddCreditCard }: CreateGoalButtonProps) => {
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
-              className="rounded-full font-bold"
+              variant="secondary"
+              className="rounded-full bg-white/20 text-white transition-colors hover:bg-white/30"
               onClick={() => setDialogIsOpen(true)}
               disabled={!userCanAddCreditCard}
             >

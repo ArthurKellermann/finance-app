@@ -11,6 +11,11 @@ import { formatCurrency } from "@/app/_utils/currency";
 import { CreditCard } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
+import {
+  CreditCard as CreditCardIcon,
+  FileText,
+  MoreHorizontal,
+} from "lucide-react";
 
 interface CreditCardsProps {
   creditCards: CreditCard[];
@@ -24,10 +29,14 @@ const CreditCards = ({
   month,
 }: CreditCardsProps) => {
   const getAmountColor = (spent: number, limit: number) => {
-    if (spent > limit) {
-      return "text-red-500";
+    const percentSpent = (spent / limit) * 100;
+    if (percentSpent > 100) {
+      return "text-red-600";
     }
-    return "text-foreground";
+    if (percentSpent > 80) {
+      return "text-yellow-600";
+    }
+    return "text-green-600";
   };
 
   const getMonthName = (monthNumber: number) => {
@@ -51,66 +60,101 @@ const CreditCards = ({
   const displayedCreditCards = creditCards.slice(0, 3);
 
   return (
-    <Card className="card-shadow flex min-h-[380px] flex-col justify-between rounded-md">
-      <CardHeader className="flex-row items-center justify-between rounded-t-md">
-        <CardTitle className="font-bold">Cartões de Crédito</CardTitle>
+    <Card className="overflow-hidden rounded-xl border-none bg-white shadow-lg">
+      <CardHeader className="flex flex-row items-center justify-between p-4">
+        <div className="flex items-center gap-3">
+          <CreditCardIcon className="h-6 w-6" />
+          <CardTitle className="text-xl font-bold">
+            Cartões de Crédito
+          </CardTitle>
+        </div>
         <AddCreditCardButton userCanAddCreditCard={true} />
       </CardHeader>
-      <CardContent
-        className={
-          displayedCreditCards.length > 0
-            ? "mt-4 flex-1 space-y-4 rounded-b-md"
-            : "flex flex-grow items-center justify-center space-y-6"
-        }
-      >
+
+      <CardContent className="space-y-4 p-6">
         {displayedCreditCards.length > 0 ? (
-          displayedCreditCards.map((card) => (
-            <div key={card.id} className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="p-2">
-                  <Image
-                    src={card.imagePath}
-                    height={24}
-                    width={40}
-                    alt="Cartão de Crédito"
-                    className="object-contain opacity-80"
-                  />
+          displayedCreditCards.map((card) => {
+            const spentThisMonth =
+              totalSpentByCreditCardPerMonth[card.id as string] || 0;
+            const percentSpent = (spentThisMonth / card.limit) * 100;
+
+            return (
+              <div
+                key={card.id}
+                className="flex items-center justify-between rounded-lg bg-gray-50 p-3 transition-colors hover:bg-gray-100"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="rounded-lg bg-white p-2 shadow-sm">
+                    <Image
+                      src={card.imagePath}
+                      height={32}
+                      width={48}
+                      alt="Cartão de Crédito"
+                      className="rounded-md object-contain opacity-80"
+                    />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800">
+                      {card.description}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      Fecha em {card.statementCloseDay} de{" "}
+                      {getMonthName(Number(month))} de{" "}
+                      {new Date().getFullYear()}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-bold">{card.description}</p>
-                  <p className="text-sm text-muted-foreground">
-                    Fecha em {card.statementCloseDay} de{" "}
-                    {getMonthName(Number(month))} de {new Date().getFullYear()}
-                  </p>
+                <div className="flex items-center gap-3">
+                  <div className="text-right">
+                    <p
+                      className={`text-sm font-bold ${getAmountColor(spentThisMonth, card.limit)}`}
+                    >
+                      {formatCurrency(spentThisMonth)}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      de {formatCurrency(card.limit)}
+                      <span className="ml-2 text-xs text-gray-400">
+                        ({percentSpent.toFixed(1)}%)
+                      </span>
+                    </p>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <p
-                  className={`text-sm font-bold ${getAmountColor(card.spent, card.limit)}`}
-                >
-                  {formatCurrency(
-                    totalSpentByCreditCardPerMonth[card.id as string] || 0,
-                  )}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  / {formatCurrency(card.limit)}
-                </p>
-              </div>
-            </div>
-          ))
+            );
+          })
         ) : (
-          <p className="text-center text-sm text-muted-foreground">
-            Nenhum cartão de crédito encontrado
-          </p>
+          <div className="flex flex-col items-center justify-center py-10 text-center">
+            <p className="mb-2 text-sm text-gray-500">
+              Nenhum cartão de crédito encontrado
+            </p>
+            <p className="text-xs text-gray-400">
+              Adicione um cartão para começar a acompanhar seus gastos
+            </p>
+          </div>
         )}
       </CardContent>
-      <CardFooter className="flex items-end justify-center">
+
+      <CardFooter className="border-t bg-gray-50 p-4">
         <div className="flex w-full space-x-4">
-          <Button variant="outline" className="flex-1 rounded-full">
-            <Link href="/credit-cards/statements">Conferir faturas</Link>
+          <Button
+            variant="outline"
+            className="flex flex-1 items-center justify-center gap-2 rounded-full border-blue-500 text-blue-600 hover:bg-blue-50"
+            asChild
+          >
+            <Link href="/credit-cards/statements">
+              <FileText className="h-4 w-4" />
+              Conferir faturas
+            </Link>
           </Button>
-          <Button variant="outline" className="flex-1 rounded-full">
-            <Link href="/credit-cards">Ver mais</Link>
+          <Button
+            variant="outline"
+            className="flex flex-1 items-center justify-center gap-2 rounded-full border-green-500 text-green-600 hover:bg-green-50"
+            asChild
+          >
+            <Link href="/credit-cards">
+              <MoreHorizontal className="h-4 w-4" />
+              Ver mais
+            </Link>
           </Button>
         </div>
       </CardFooter>

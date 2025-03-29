@@ -1,6 +1,6 @@
 "use client";
 
-import { Cross2Icon, PlusCircledIcon } from "@radix-ui/react-icons";
+import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { Table } from "@tanstack/react-table";
 
 import {
@@ -23,6 +23,8 @@ import {
   TrashIcon,
   TrendingDownIcon,
   TrendingUpIcon,
+  SearchIcon,
+  XIcon,
 } from "lucide-react";
 
 import { deleteCategories } from "../../_actions/delete-categories";
@@ -46,16 +48,22 @@ export function DataTableToolbar<TData>({
       label: "Depósito",
       value: "DEPOSIT",
       icon: TrendingUpIcon,
+      color: "text-green-500",
+      bgColor: "bg-green-50",
     },
     {
       label: "Despesa",
       value: "EXPENSE",
       icon: TrendingDownIcon,
+      color: "text-red-500",
+      bgColor: "bg-red-50",
     },
     {
       label: "Investimento",
       value: "INVESTMENT",
       icon: PiggyBankIcon,
+      color: "text-purple-500",
+      bgColor: "bg-purple-50",
     },
   ];
 
@@ -80,16 +88,20 @@ export function DataTableToolbar<TData>({
   };
 
   return (
-    <div className="flex flex-wrap items-center justify-between rounded-md border-2 bg-card px-4 py-4">
-      <div className="flex flex-1 flex-wrap items-center gap-2">
-        <Input
-          placeholder="Buscar por nome..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => {
-            table.getColumn("name")?.setFilterValue(event.target.value);
-          }}
-          className="h-8 w-[150px] lg:w-[250px]"
-        />
+    <div className="flex flex-wrap items-center justify-between rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div className="flex flex-1 flex-wrap items-center gap-3">
+        <div className="relative">
+          <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <Input
+            placeholder="Buscar por nome..."
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+            onChange={(event) => {
+              table.getColumn("name")?.setFilterValue(event.target.value);
+            }}
+            className="h-10 min-w-[250px] rounded-full border-gray-200 bg-gray-50 pl-10 pr-4 text-gray-700 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+          />
+        </div>
+
         {table.getColumn("type") && (
           <DataTableFacetedFilter
             column={table.getColumn("type")}
@@ -101,44 +113,52 @@ export function DataTableToolbar<TData>({
 
         {isFiltered && (
           <Button
-            variant="ghost"
+            variant="outline"
             onClick={() => table.resetColumnFilters()}
-            className="h-8 px-2 lg:px-3"
+            className="h-10 rounded-full border-gray-200 px-4 text-gray-700 hover:bg-red-50 hover:text-red-600"
           >
-            Resetar
-            <Cross2Icon className="ml-2 h-4 w-4" />
+            Limpar filtros
+            <XIcon className="ml-2 h-4 w-4" />
           </Button>
         )}
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
         {table.getFilteredSelectedRowModel().rows.length > 0 ? (
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="outline" size="sm">
-                <TrashIcon className="mr-2 size-4" aria-hidden="true" />
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-10 rounded-full border-red-200 bg-red-50 text-red-600 hover:bg-red-100"
+              >
+                <TrashIcon className="mr-2 h-4 w-4" aria-hidden="true" />
                 Deletar ({table.getFilteredSelectedRowModel().rows.length})
               </Button>
             </AlertDialogTrigger>
-            <AlertDialogContent>
+            <AlertDialogContent className="rounded-xl border-none bg-white shadow-lg">
               <AlertDialogHeader>
-                <AlertDialogTitle>
+                <AlertDialogTitle className="text-xl text-gray-800">
                   {table.getFilteredSelectedRowModel().rows.length > 1 ? (
-                    <>Você deseja realmente deletar essas transações?</>
+                    <>Você deseja realmente deletar essas categorias?</>
                   ) : (
-                    <>Você deseja realmente deletar essa transação?</>
+                    <>Você deseja realmente deletar essa categoria?</>
                   )}
                 </AlertDialogTitle>
-                <AlertDialogDescription>
-                  Essa ação não pode ser desfeita.
+                <AlertDialogDescription className="text-gray-600">
+                  Essa ação não pode ser desfeita e todas as subcategorias
+                  associadas também serão removidas.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogCancel className="rounded-full border-gray-200 text-gray-700 hover:bg-gray-100">
+                  Cancelar
+                </AlertDialogCancel>
                 <AlertDialogAction
                   onClick={() => handleDeleteSelectedRows(table)}
+                  className="rounded-full bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700"
                 >
-                  Continuar
+                  Confirmar
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>

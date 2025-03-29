@@ -43,7 +43,11 @@ const DeleteDepositButton = ({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="ghost" size="icon" className="text-muted-foreground">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="transition-colors hover:bg-red-50 hover:text-red-600"
+        >
           <TrashIcon />
         </Button>
       </AlertDialogTrigger>

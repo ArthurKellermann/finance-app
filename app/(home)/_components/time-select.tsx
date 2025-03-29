@@ -37,7 +37,7 @@ const TimeSelect = () => {
   return (
     //remove value from Select tag
     <Select onValueChange={(value) => handleMonthChange(value)}>
-      <SelectTrigger className="w-[150px] bg-secondary">
+      <SelectTrigger className="mr-6 w-[150px] rounded-full bg-secondary">
         <div className="flex items-center gap-2">
           <SelectValue placeholder="Mês" />
           <Calendar className="-4 w-4" />

@@ -46,7 +46,15 @@ import { useEffect, useState } from "react";
 import getDefaultCategories from "../_actions/get-default-categories";
 import getCreditCards from "../_actions/get-credit-cards";
 import { useAuth } from "@clerk/nextjs";
-import { ArrowDown } from "lucide-react";
+import {
+  CreditCard,
+  Calendar,
+  Wallet,
+  Tag,
+  DollarSign,
+  AlertCircle,
+  CheckCircle,
+} from "lucide-react";
 import { useToast } from "../_hooks/use-toast";
 import { getSubCategoriesByCategoryId } from "../_actions/get-sub-categories-by-category-id";
 
@@ -209,230 +217,325 @@ const AddExpenseDialog = ({
       }}
     >
       <DialogTrigger asChild></DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>
-            <div className="flex items-center gap-2">
-              {isUpdate ? "Atualizar" : "Criar"} despesa <ArrowDown />
-            </div>
-          </DialogTitle>
-          <DialogDescription>Insira as informações abaixo</DialogDescription>
-        </DialogHeader>
+      <DialogContent className="overflow-hidden rounded-xl border-none p-0 shadow-lg sm:max-w-md">
+        <div className="bg-gradient-to-r from-red-500 to-pink-600 p-6 text-white">
+          <DialogHeader>
+            <DialogTitle className="mb-1 text-xl font-bold">
+              <div className="flex items-center gap-2">
+                {isUpdate ? (
+                  <CheckCircle className="h-6 w-6" />
+                ) : (
+                  <DollarSign className="h-6 w-6" />
+                )}
+                {isUpdate ? "Atualizar" : "Nova"} Despesa
+              </div>
+            </DialogTitle>
+            <DialogDescription className="text-white/80">
+              Preencha os detalhes abaixo para{" "}
+              {isUpdate ? "atualizar" : "registrar"} sua despesa
+            </DialogDescription>
+          </DialogHeader>
+        </div>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nome</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Digite o nome..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="amount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Valor</FormLabel>
-                  <FormControl>
-                    <MoneyInput
-                      placeholder="Digite o valor..."
-                      value={field.value}
-                      onValueChange={({ floatValue }) =>
-                        field.onChange(floatValue)
-                      }
-                      onBlur={field.onBlur}
-                      disabled={field.disabled}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tipo</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {availableTypes.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="categoryId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Categoria</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione a categoria..." />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {defaultCategories.map((option) => (
-                        <SelectItem key={option.id} value={option.id}>
-                          {TRANSACTION_CATEGORY_LABELS[
-                            option.name as keyof typeof TRANSACTION_CATEGORY_LABELS
-                          ] || option.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {currentCategoryHasSubCategories && (
+        <div className="p-6">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
-                name="subCategoryId"
+                name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Sub Categoria</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione a sub categoria..." />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {subCategories
-                          .filter(
-                            (option) =>
-                              option.categoryId === form.watch("categoryId"),
-                          )
-                          .map((option) => (
-                            <SelectItem key={option.id} value={option.id}>
-                              {option.name}
-                            </SelectItem>
-                          ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
+                    <FormLabel className="font-medium text-gray-700">
+                      Nome
+                    </FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                        <Input
+                          placeholder="Digite o nome..."
+                          className="rounded-lg border-gray-200 pl-10 focus:border-blue-500"
+                          {...field}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage className="text-red-500" />
                   </FormItem>
                 )}
               />
-            )}
-            <FormField
-              control={form.control}
-              name="paymentMethod"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Método de pagamento</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione um método de pagamento..." />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {TRANSACTION_PAYMENT_METHOD_OPTIONS.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {showCreditCardField && form.getValues("type") === "EXPENSE" && (
+
               <FormField
                 control={form.control}
-                name="creditCardId"
+                name="amount"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Cartão de Crédito</FormLabel>
+                    <FormLabel className="font-medium text-gray-700">
+                      Valor
+                    </FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                        <MoneyInput
+                          className="rounded-lg border-gray-200 pl-10 focus:border-blue-500"
+                          placeholder="Digite o valor..."
+                          value={field.value}
+                          onValueChange={({ floatValue }) =>
+                            field.onChange(floatValue)
+                          }
+                          onBlur={field.onBlur}
+                          disabled={field.disabled}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage className="text-red-500" />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-medium text-gray-700">
+                        Tipo
+                      </FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="rounded-lg border-gray-200 focus:border-blue-500">
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="rounded-lg border-none shadow-lg">
+                          {availableTypes.map((option) => (
+                            <SelectItem
+                              key={option.value}
+                              value={option.value}
+                              className="cursor-pointer hover:bg-blue-50"
+                            >
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="date"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-medium text-gray-700">
+                        Data
+                      </FormLabel>
+                      <div className="relative">
+                        <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                        <DatePicker
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      </div>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="categoryId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-medium text-gray-700">
+                      Categoria
+                    </FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione o cartão..." />
-                        </SelectTrigger>
+                        <div className="relative">
+                          <Tag className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                          <SelectTrigger className="rounded-lg border-gray-200 pl-10 focus:border-blue-500">
+                            <SelectValue placeholder="Selecione a categoria..." />
+                          </SelectTrigger>
+                        </div>
                       </FormControl>
-                      <SelectContent>
-                        {creditCards.map((card) => (
-                          <SelectItem key={card.id} value={card.id}>
-                            {card.description}
+                      <SelectContent className="max-h-60 rounded-lg border-none shadow-lg">
+                        {defaultCategories.map((option) => (
+                          <SelectItem
+                            key={option.id}
+                            value={option.id}
+                            className="cursor-pointer hover:bg-blue-50"
+                          >
+                            {TRANSACTION_CATEGORY_LABELS[
+                              option.name as keyof typeof TRANSACTION_CATEGORY_LABELS
+                            ] || option.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
-                    <FormMessage />
+                    <FormMessage className="text-red-500" />
                   </FormItem>
                 )}
               />
-            )}
-            {unableToSelectCreditCard() && (
-              <>
-                <p className="text-sm text-muted-foreground">
-                  Para selecionar um cartão de crédito, selecione o tipo de
-                  transação como despesa.
-                </p>
-              </>
-            )}
-            <FormField
-              control={form.control}
-              name="date"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Data</FormLabel>
-                  <DatePicker value={field.value} onChange={field.onChange} />
-                  <FormMessage />
-                </FormItem>
+
+              {currentCategoryHasSubCategories && (
+                <FormField
+                  control={form.control}
+                  name="subCategoryId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-medium text-gray-700">
+                        Sub Categoria
+                      </FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <div className="relative">
+                            <Tag className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                            <SelectTrigger className="rounded-lg border-gray-200 pl-10 focus:border-blue-500">
+                              <SelectValue placeholder="Selecione a sub categoria..." />
+                            </SelectTrigger>
+                          </div>
+                        </FormControl>
+                        <SelectContent className="rounded-lg border-none shadow-lg">
+                          {subCategories
+                            .filter(
+                              (option) =>
+                                option.categoryId === form.watch("categoryId"),
+                            )
+                            .map((option) => (
+                              <SelectItem
+                                key={option.id}
+                                value={option.id}
+                                className="cursor-pointer hover:bg-blue-50"
+                              >
+                                {option.name}
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
               )}
-            />
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button type="button" variant="outline">
-                  Cancelar
+
+              <FormField
+                control={form.control}
+                name="paymentMethod"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-medium text-gray-700">
+                      Método de pagamento
+                    </FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <div className="relative">
+                          <Wallet className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                          <SelectTrigger className="rounded-lg border-gray-200 pl-10 focus:border-blue-500">
+                            <SelectValue placeholder="Selecione um método de pagamento..." />
+                          </SelectTrigger>
+                        </div>
+                      </FormControl>
+                      <SelectContent className="rounded-lg border-none shadow-lg">
+                        {TRANSACTION_PAYMENT_METHOD_OPTIONS.map((option) => (
+                          <SelectItem
+                            key={option.value}
+                            value={option.value}
+                            className="cursor-pointer hover:bg-blue-50"
+                          >
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage className="text-red-500" />
+                  </FormItem>
+                )}
+              />
+
+              {showCreditCardField && form.getValues("type") === "EXPENSE" && (
+                <FormField
+                  control={form.control}
+                  name="creditCardId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-medium text-gray-700">
+                        Cartão de Crédito
+                      </FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <div className="relative">
+                            <CreditCard className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                            <SelectTrigger className="rounded-lg border-gray-200 pl-10 focus:border-blue-500">
+                              <SelectValue placeholder="Selecione o cartão..." />
+                            </SelectTrigger>
+                          </div>
+                        </FormControl>
+                        <SelectContent className="rounded-lg border-none shadow-lg">
+                          {creditCards.map((card) => (
+                            <SelectItem
+                              key={card.id}
+                              value={card.id}
+                              className="cursor-pointer hover:bg-blue-50"
+                            >
+                              {card.description}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+              )}
+
+              {unableToSelectCreditCard() && (
+                <div className="flex items-start gap-2 rounded-lg border border-yellow-200 bg-yellow-50 p-3">
+                  <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-yellow-500" />
+                  <p className="text-sm text-yellow-800">
+                    Para selecionar um cartão de crédito, selecione o tipo de
+                    transação como despesa.
+                  </p>
+                </div>
+              )}
+
+              <DialogFooter className="mt-6 flex gap-3">
+                <DialogClose asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="flex-1 rounded-lg border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
+                  >
+                    Cancelar
+                  </Button>
+                </DialogClose>
+                <Button
+                  type="submit"
+                  className="flex-1 rounded-lg border-none bg-gradient-to-r from-red-500 to-pink-600 text-white hover:from-blue-600 hover:to-purple-600"
+                >
+                  {isUpdate ? "Atualizar" : "Adicionar"}
                 </Button>
-              </DialogClose>
-              <Button type="submit">
-                {isUpdate ? "Atualizar" : "Adicionar"}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
+              </DialogFooter>
+            </form>
+          </Form>
+        </div>
       </DialogContent>
     </Dialog>
   );

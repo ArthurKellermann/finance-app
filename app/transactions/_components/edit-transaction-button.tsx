@@ -3,7 +3,7 @@
 import { Button } from "@/app/_components/ui/button";
 import UpsertTransactionDialog from "@/app/_components/upsert-transaction-dialog";
 import { Transaction } from "@prisma/client";
-import { PencilIcon } from "lucide-react";
+import { Edit } from "lucide-react";
 import { useState } from "react";
 
 interface EditTransactionButtonProps {
@@ -18,10 +18,10 @@ const EditTransactionButton = ({ transaction }: EditTransactionButtonProps) => {
       <Button
         variant="ghost"
         size="icon"
-        className="text-muted-foreground"
+        className="rounded-full p-2 transition-colors hover:bg-blue-50"
         onClick={() => setDialogIsOpen(true)}
       >
-        <PencilIcon />
+        <Edit className="h-4 w-4 text-blue-500" />
       </Button>
       <UpsertTransactionDialog
         isOpen={dialogIsOpen}

@@ -24,7 +24,7 @@ const AddRevenueButton = ({ userCanAddTransaction }: AddRevenueButtonProps) => {
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
-              className="rounded-full bg-blue-500 font-bold text-white"
+              className="rounded-full bg-green-50 text-green-600 transition-colors hover:bg-green-100"
               onClick={() => setDialogIsOpen(true)}
               disabled={!userCanAddTransaction}
               variant="ghost"
