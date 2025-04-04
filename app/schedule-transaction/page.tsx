@@ -1,7 +1,22 @@
 import { CalendarClock } from "lucide-react";
-import AddScheduledTransactionButton from "./_components/add-schedule-transaction-button";
+import AddScheduledTransactionButton from "./_components/add-scheduled-transaction-button";
+import { prisma } from "../_lib/_prisma/prisma";
+import { auth } from "@clerk/nextjs/server";
+import { DataTable } from "./_columns/data-table/data-table";
+import { columns } from "./_columns/data-table/columns";
 
-const ScheduleTransaction = () => {
+const ScheduleTransaction = async () => {
+  const { userId } = auth();
+
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
+
+  const scheduledTransactions = await prisma.scheduledTransaction.findMany({
+    where: { userId },
+    orderBy: { startDate: "desc" },
+    include: { category: true },
+  });
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="">
@@ -22,7 +37,12 @@ const ScheduleTransaction = () => {
             </div>
           </div>
 
-          <div className="p-6"></div>
+          <div className="p-6">
+            <DataTable
+              columns={columns}
+              data={JSON.parse(JSON.stringify(scheduledTransactions))}
+            />
+          </div>
         </div>
       </div>
     </div>

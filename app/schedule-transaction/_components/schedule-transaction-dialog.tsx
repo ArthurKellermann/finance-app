@@ -84,7 +84,11 @@ const formSchema = z.object({
   type: z.nativeEnum(TransactionType, {
     required_error: "O tipo é obrigatório.",
   }),
-  categoryId: z.string().uuid(),
+  categoryId: z
+    .string({
+      message: "A categoria é obrigatória.",
+    })
+    .uuid(),
   subCategoryId: z.string().uuid().optional(),
   paymentMethod: z.nativeEnum(TransactionPaymentMethod, {
     required_error: "O método de pagamento é obrigatório.",

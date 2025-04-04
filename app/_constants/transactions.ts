@@ -1,4 +1,8 @@
-import { TransactionPaymentMethod, TransactionType } from "@prisma/client";
+import {
+  RecurrenceType,
+  TransactionPaymentMethod,
+  TransactionType,
+} from "@prisma/client";
 
 export const TRANSACTION_PAYMENT_METHOD_ICONS = {
   [TransactionPaymentMethod.CREDIT_CARD]: "credit-card.svg",
@@ -32,11 +36,18 @@ export const TRANSACTION_PAYMENT_METHOD_LABELS = {
   PIX: "Pix",
 };
 
-export const RECURRENCE_LABELS = {
+export const RECURRENCE_TYPE_LABELS = {
   DAILY: "Diariamente",
   WEEKLY: "Semanalmente",
   MONTHLY: "Mensalmente",
   YEARLY: "Anualmente",
+};
+
+export const SCHEDULED_TRANSACTION_STATUS_LABELS = {
+  ACTIVE: "Ativo",
+  PAUSED: "Pausado",
+  COMPLETED: "Concluido",
+  CANCELLED: "Cancelado",
 };
 
 export const TRANSACTION_TYPE_OPTIONS = [
@@ -56,19 +67,19 @@ export const TRANSACTION_TYPE_OPTIONS = [
 
 export const RECURRENCE_OPTIONS = [
   {
-    value: RECURRENCE_LABELS.DAILY,
+    value: RecurrenceType.DAILY,
     label: "Diariamente",
   },
   {
-    value: RECURRENCE_LABELS.WEEKLY,
+    value: RecurrenceType.WEEKLY,
     label: "Semanalmente",
   },
   {
-    value: RECURRENCE_LABELS.MONTHLY,
+    value: RecurrenceType.MONTHLY,
     label: "Mensalmente",
   },
   {
-    value: RECURRENCE_LABELS.YEARLY,
+    value: RecurrenceType.YEARLY,
     label: "Anualmente",
   },
 ];
