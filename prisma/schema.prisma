@@ -21,9 +21,11 @@ model Transaction {
   updatedAt     DateTime                 @updatedAt
   userId        String
 
-  category    Category     @relation(fields: [categoryId], references: [id])
-  subCategory SubCategory? @relation(fields: [subCategoryId], references: [id])
-  creditCard  CreditCard?  @relation(fields: [creditCardId], references: [id])
+  category               Category              @relation(fields: [categoryId], references: [id])
+  subCategory            SubCategory?          @relation(fields: [subCategoryId], references: [id])
+  creditCard             CreditCard?           @relation(fields: [creditCardId], references: [id])
+  scheduledTransactionId String?
+  scheduledTransaction   ScheduledTransaction? @relation("ScheduledTransactionToTransaction", fields: [scheduledTransactionId], references: [id])
 
   @@map("transactions")
 }
@@ -45,8 +47,9 @@ model Category {
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
 
-  subCategories SubCategory[]
-  transactions  Transaction[]
+  subCategories         SubCategory[]
+  transactions          Transaction[]
+  scheduledTransactions ScheduledTransaction[]
 
   @@map("categories")
 }
@@ -59,8 +62,9 @@ model SubCategory {
   createdAt  DateTime @default(now())
   updatedAi  DateTime @updatedAt
 
-  category     Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  transactions Transaction[]
+  category             Category               @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  transactions         Transaction[]
+  ScheduledTransaction ScheduledTransaction[]
 
   @@map("sub_category")
 }
@@ -90,7 +94,8 @@ model CreditCard {
   updatedAt         DateTime         @updatedAt
   userId            String
 
-  transactions Transaction[]
+  transactions          Transaction[]
+  scheduledTransactions ScheduledTransaction[]
 
   @@map("credit_cards")
 }
@@ -166,4 +171,70 @@ enum GoalStatus {
   COMPLETED
   FAILED
   CANCELLED
+}
+
+model CalendarEvent {
+  id          String   @id @default(uuid())
+  userId      String
+  title       String
+  date        String
+  endDate     String?
+  time        String
+  endTime     String?
+  category    String
+  description String
+  isAllDay    Boolean
+  reminder    String?
+  recurrence  String?
+  location    String?
+  attendees   String[]
+  color       String?
+
+  @@map("calendar_events")
+}
+
+enum RecurrenceType {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+enum ScheduledTransactionStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+  CANCELLED
+}
+
+model ScheduledTransaction {
+  id                 String                     @id @default(uuid())
+  userId             String
+  name               String
+  amount             Float
+  type               TransactionType
+  categoryId         String
+  subCategoryId      String?
+  paymentMethod      TransactionPaymentMethod
+  startDate          DateTime
+  endDate            DateTime?
+  isRecurring        Boolean                    @default(false)
+  recurrenceType     RecurrenceType?
+  recurrenceInterval Int?
+  creditCardId       String?
+  description        String?
+  status             ScheduledTransactionStatus @default(ACTIVE)
+  lastExecutionDate  DateTime?
+  createdAt          DateTime                   @default(now())
+  updatedAt          DateTime                   @updatedAt
+
+  category     Category      @relation(fields: [categoryId], references: [id])
+  subCategory  SubCategory?  @relation(fields: [subCategoryId], references: [id])
+  creditCard   CreditCard?   @relation(fields: [creditCardId], references: [id])
+  transactions Transaction[] @relation("ScheduledTransactionToTransaction")
+
+  @@index([userId])
+  @@index([categoryId])
+  @@index([startDate])
+  @@index([status])
 }

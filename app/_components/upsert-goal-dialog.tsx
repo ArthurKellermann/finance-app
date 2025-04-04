@@ -172,7 +172,10 @@ const UpsertGoalDialog = ({
       }}
     >
       <DialogTrigger asChild></DialogTrigger>
-      <DialogContent className="overflow-hidden rounded-xl border-none p-0 shadow-lg sm:max-w-md">
+      <DialogContent
+        className="overflow-hidden border-none p-0 shadow-lg sm:max-w-md"
+        style={{ borderRadius: "20px" }}
+      >
         <div className="bg-gradient-to-r from-gray-800 to-gray-500 p-6 text-white">
           <DialogHeader>
             <DialogTitle className="mb-1 text-xl font-bold">

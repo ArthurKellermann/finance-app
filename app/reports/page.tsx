@@ -14,10 +14,10 @@ import {
   Download,
   Share2,
   Lightbulb,
-  Filter,
   MoreHorizontal,
   FileText,
   Zap,
+  Menu,
 } from "lucide-react";
 import { Button } from "../_components/ui/button";
 import {
@@ -29,7 +29,6 @@ import {
 } from "../_components/ui/card";
 import TimeSelect from "../(home)/_components/time-select";
 import { AmountVisibilityProvider } from "../_contexts/amount-visibility-context";
-import AiInsightsCard from "./_components/ai-insights-card";
 
 interface AnalysisAndReportsProps {
   searchParams: {
@@ -201,8 +200,8 @@ const AnalysisAndReports = async ({
                     variant="secondary"
                     className="bg-white/20 text-white transition-colors hover:bg-white/30"
                   >
-                    <Filter className="mr-2 h-4 w-4" />
-                    Filtros
+                    <Menu className="mr-2 h-4 w-4" />
+                    Ver mais
                   </Button>
                 </CardHeader>
 
@@ -539,8 +538,6 @@ const AnalysisAndReports = async ({
                   </div>
                 </CardContent>
               </Card>
-
-              <AiInsightsCard />
             </div>
 
             {/* Coluna Direita - Cards Menores */}
@@ -713,89 +710,6 @@ const AnalysisAndReports = async ({
                 <CardFooter className="border-t bg-gray-50 p-4">
                   <Button variant="outline" className="w-full rounded-full">
                     Ver mais dicas
-                  </Button>
-                </CardFooter>
-              </Card>
-
-              {/* Card de Metas Financeiras */}
-              <Card className="overflow-hidden rounded-xl border-none bg-white shadow-lg">
-                <CardHeader className="bg-gradient-to-r from-blue-500 to-cyan-500 p-4 text-white">
-                  <CardTitle className="flex items-center gap-2 text-xl font-bold">
-                    <ChartBar className="h-6 w-6" />
-                    Metas Financeiras
-                  </CardTitle>
-                </CardHeader>
-
-                <CardContent className="p-4">
-                  <div className="space-y-4">
-                    <div>
-                      <div className="mb-1 flex items-center justify-between">
-                        <p className="text-sm font-medium text-gray-800">
-                          Reserva de Emergência
-                        </p>
-                        <p className="text-sm font-semibold text-blue-600">
-                          68%
-                        </p>
-                      </div>
-                      <div className="h-2 w-full rounded-full bg-gray-100">
-                        <div
-                          className="h-2 rounded-full bg-blue-600"
-                          style={{ width: "68%" }}
-                        ></div>
-                      </div>
-                      <div className="mt-1 flex justify-between text-xs text-gray-500">
-                        <span>R$ 6.800</span>
-                        <span>Meta: R$ 10.000</span>
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="mb-1 flex items-center justify-between">
-                        <p className="text-sm font-medium text-gray-800">
-                          Férias
-                        </p>
-                        <p className="text-sm font-semibold text-green-600">
-                          45%
-                        </p>
-                      </div>
-                      <div className="h-2 w-full rounded-full bg-gray-100">
-                        <div
-                          className="h-2 rounded-full bg-green-600"
-                          style={{ width: "45%" }}
-                        ></div>
-                      </div>
-                      <div className="mt-1 flex justify-between text-xs text-gray-500">
-                        <span>R$ 2.250</span>
-                        <span>Meta: R$ 5.000</span>
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="mb-1 flex items-center justify-between">
-                        <p className="text-sm font-medium text-gray-800">
-                          Novo Notebook
-                        </p>
-                        <p className="text-sm font-semibold text-purple-600">
-                          25%
-                        </p>
-                      </div>
-                      <div className="h-2 w-full rounded-full bg-gray-100">
-                        <div
-                          className="h-2 rounded-full bg-purple-600"
-                          style={{ width: "25%" }}
-                        ></div>
-                      </div>
-                      <div className="mt-1 flex justify-between text-xs text-gray-500">
-                        <span>R$ 1.250</span>
-                        <span>Meta: R$ 5.000</span>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-
-                <CardFooter className="border-t bg-gray-50 p-4">
-                  <Button variant="outline" className="w-full rounded-full">
-                    Gerenciar metas
                   </Button>
                 </CardFooter>
               </Card>

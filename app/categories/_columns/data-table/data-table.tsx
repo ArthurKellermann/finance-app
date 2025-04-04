@@ -31,8 +31,6 @@ import getDefaultCategories from "@/app/_actions/get-default-categories";
 import type { Category, SubCategory } from "@prisma/client";
 import DeleteSubCategoryButton from "../../_components/delete-sub-category-button";
 import EditSubCategoryButton from "../../_components/edit-sub-category-button";
-import AddCategoryButton from "../../_components/add-category-button";
-import { Menu } from "lucide-react";
 
 type CategoryWithSubs = Category & {
   subCategories?: SubCategory[];
@@ -106,21 +104,6 @@ export function DataTable<TData extends CategoryWithSubs>({
 
   return (
     <div className="mt-6 space-y-6">
-      <div className="flex items-center justify-between rounded-t-xl bg-gradient-to-r from-blue-500 to-purple-500 p-5 shadow-md">
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-2">
-            <Menu className="h-8 w-8 text-white" />
-            <h2 className="text-xl font-bold text-white">Categorias</h2>
-          </div>
-
-          <p className="text-sm text-white/80">
-            Gerencie suas categorias e subcategorias de transações
-          </p>
-        </div>
-
-        <AddCategoryButton onSuccess={refreshData} />
-      </div>
-
       <DataTableToolbar
         table={table}
         removeDeletedRows={removeDeletedRows}

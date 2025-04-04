@@ -32,6 +32,13 @@ export const TRANSACTION_PAYMENT_METHOD_LABELS = {
   PIX: "Pix",
 };
 
+export const RECURRENCE_LABELS = {
+  DAILY: "Diariamente",
+  WEEKLY: "Semanalmente",
+  MONTHLY: "Mensalmente",
+  YEARLY: "Anualmente",
+};
+
 export const TRANSACTION_TYPE_OPTIONS = [
   {
     value: TransactionType.EXPENSE,
@@ -44,6 +51,25 @@ export const TRANSACTION_TYPE_OPTIONS = [
   {
     value: TransactionType.INVESTMENT,
     label: "Investimento",
+  },
+];
+
+export const RECURRENCE_OPTIONS = [
+  {
+    value: RECURRENCE_LABELS.DAILY,
+    label: "Diariamente",
+  },
+  {
+    value: RECURRENCE_LABELS.WEEKLY,
+    label: "Semanalmente",
+  },
+  {
+    value: RECURRENCE_LABELS.MONTHLY,
+    label: "Mensalmente",
+  },
+  {
+    value: RECURRENCE_LABELS.YEARLY,
+    label: "Anualmente",
   },
 ];
 

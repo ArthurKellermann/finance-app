@@ -17,7 +17,6 @@ import {
   Zap,
   Menu,
   X,
-  MoveRight,
   ArrowDown,
   Star,
   LayoutDashboard,
@@ -26,8 +25,13 @@ import {
   Twitter,
   Linkedin,
 } from "lucide-react";
+import Image from "next/image";
+import { SignInButton, SignUpButton, useAuth } from "@clerk/nextjs";
+import { Button } from "../_components/ui/button";
+import UserProfileDropDown from "../_components/user-profile-drop-down";
 
 const GetStarted = () => {
+  const { userId } = useAuth();
   const [titleNumber, setTitleNumber] = useState(0);
   const [isOpen, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -225,7 +229,13 @@ const GetStarted = () => {
       >
         <div className="container mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center">
-            <div className="text-2xl font-bold text-blue-600">Fivest</div>
+            <Image
+              src="/logo.svg"
+              width={190}
+              height={39}
+              alt="Fivest"
+              className="mb-2"
+            />
           </div>
 
           <nav className="hidden items-center gap-8 md:flex">
@@ -240,14 +250,19 @@ const GetStarted = () => {
             ))}
           </nav>
 
-          <div className="hidden items-center gap-4 md:flex">
-            <button className="px-4 py-2 font-medium text-gray-700 transition-colors hover:text-blue-600">
-              Entrar
-            </button>
-            <button className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700">
-              Começar grátis
-            </button>
-          </div>
+          {!userId ? (
+            <div className="hidden items-center gap-4 md:flex">
+              <SignInButton mode="modal" fallbackRedirectUrl="/">
+                <Button variant="outline">Entrar</Button>
+              </SignInButton>
+            </div>
+          ) : (
+            <div className="hidden items-center gap-4 md:flex">
+              <div className="w-[230px]">
+                <UserProfileDropDown />
+              </div>
+            </div>
+          )}
 
           {/* Mobile menu button */}
           <div className="md:hidden">
@@ -329,10 +344,11 @@ const GetStarted = () => {
                 Conhecer recursos
                 <ArrowDown className="h-4 w-4" />
               </a>
-              <button className="flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-6 py-3 font-medium text-white transition-colors hover:bg-blue-700">
-                Começar gratuitamente
-                <MoveRight className="h-4 w-4" />
-              </button>
+              <SignUpButton fallbackRedirectUrl="/">
+                <Button className="h-14 rounded-lg border-none bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700">
+                  Começar gratuitamente
+                </Button>
+              </SignUpButton>
             </div>
           </div>
 
@@ -579,9 +595,11 @@ const GetStarted = () => {
                   {testimonial.content}
                 </p>
                 <div className="flex items-center gap-3">
-                  <img
+                  <Image
                     src={testimonial.avatar}
                     alt={testimonial.name}
+                    width={40}
+                    height={40}
                     className="h-10 w-10 rounded-full"
                   />
                   <div>
@@ -704,7 +722,13 @@ const GetStarted = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-4">
             <div>
-              <h3 className="mb-4 text-xl font-bold">Fivest</h3>
+              <Image
+                src="/logo-white.svg"
+                width={100}
+                height={39}
+                alt="Fivest"
+                className="mb-2"
+              />
               <p className="mb-4 text-gray-400">
                 Simplificando o gerenciamento financeiro para brasileiros com
                 tecnologia de ponta e insights inteligentes.

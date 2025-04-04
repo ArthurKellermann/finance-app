@@ -3,7 +3,6 @@ import { Mulish } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ptBR } from "@clerk/localizations";
-import { dark } from "@clerk/themes";
 import { TooltipProvider } from "./_components/ui/tooltip";
 import { auth } from "@clerk/nextjs/server";
 import Navbar from "./_components/navbar";
@@ -39,7 +38,7 @@ export default function RootLayout({
           defaultTheme="light"
           disableTransitionOnChange
         >
-          <ClerkProvider localization={ptBR} appearance={{ baseTheme: dark }}>
+          <ClerkProvider localization={ptBR}>
             <NotificationsProvider>
               <TooltipProvider>
                 <SidebarProvider>

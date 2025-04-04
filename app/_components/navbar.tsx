@@ -53,12 +53,12 @@ const data = {
       items: [
         {
           title: "Finanças",
-          url: "/transactions",
+          url: "/",
         },
-        {
-          title: "Investimentos",
-          url: "#",
-        },
+        // {
+        //   title: "Investimentos",
+        //   url: "#",
+        // },
         {
           title: "Análises e Relatórios",
           url: "/reports",
@@ -77,7 +77,7 @@ const data = {
         },
         {
           title: "Programar Transação",
-          url: "#",
+          url: "/schedule-transaction",
         },
         {
           title: "Cartões de Crédito",
@@ -94,25 +94,44 @@ const data = {
       url: "#",
       icon: DollarSign,
       items: [
-        {
-          title: "Carteira de Investimentos",
-          url: "#",
-        },
-        {
-          title: "Explorar Ativos",
-          url: "#",
-        },
+        // {
+        //   title: "Carteira de Investimentos",
+        //   url: "#",
+        // },
+        // {
+        //   title: "Explorar Ativos",
+        //   url: "#",
+        // },
         {
           title: "Simulador",
           url: "/investments/simulator",
         },
+        // {
+        //   title: "Recomentações de IA",
+        //   url: "#",
+        // },
+        // {
+        //   title: "Projeções de Mercado",
+        //   url: "#",
+        // },
+      ],
+    },
+    {
+      title: "Planejmanto",
+      url: "#",
+      icon: Calendar,
+      items: [
         {
-          title: "Recomentações de IA",
+          title: "Criar Planjejamento",
           url: "#",
         },
         {
-          title: "Projeções de Mercado",
-          url: "#",
+          title: "Calendário",
+          url: "/calendar",
+        },
+        {
+          title: "Metas Financeiras",
+          url: "/goals",
         },
       ],
     },
@@ -126,11 +145,7 @@ const data = {
           url: "#",
         },
         {
-          title: "Ativos",
-          url: "#",
-        },
-        {
-          title: "Ordens",
+          title: "Política",
           url: "#",
         },
       ],
@@ -142,38 +157,11 @@ const data = {
       items: [
         {
           title: "Insights Financeiros",
+          url: "/insights",
+        },
+        {
+          title: "PoupAI",
           url: "#",
-        },
-        {
-          title: "Meu Desempenho",
-          url: "#",
-        },
-        {
-          title: "Padrões de Gasto",
-          url: "#",
-        },
-        {
-          title: "Alertas de Economia",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Planejmanto",
-      url: "#",
-      icon: Calendar,
-      items: [
-        {
-          title: "Calendário",
-          url: "/calendar",
-        },
-        {
-          title: "Lista de Tarefas",
-          url: "#",
-        },
-        {
-          title: "Metas Financeiras",
-          url: "/goals",
         },
       ],
     },
@@ -218,6 +206,8 @@ const Navbar = () => {
 
   const [isOpen, setOpen] = useState(false);
 
+  if (pathname === "/get-started") return null;
+
   return (
     <header className="">
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg">
@@ -230,7 +220,6 @@ const Navbar = () => {
                 width={140}
                 height={39}
                 alt="Fivest"
-                className="brightness-0 invert"
               />
             </Link>
           </div>

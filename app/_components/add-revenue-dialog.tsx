@@ -72,7 +72,11 @@ const formSchema = z.object({
     .positive({
       message: "O valor deve ser positivo.",
     }),
-  categoryId: z.string().uuid(),
+  categoryId: z
+    .string({
+      message: "A categoria é obrigatória.",
+    })
+    .uuid(),
   subCategoryId: z.string().uuid().optional(),
   paymentMethod: z.nativeEnum(TransactionPaymentMethod, {
     required_error: "O método de pagamento é obrigatório.",
@@ -174,7 +178,10 @@ const AddRevenueDialog = ({
       }}
     >
       <DialogTrigger asChild></DialogTrigger>
-      <DialogContent className="overflow-hidden rounded-xl border-none p-0 shadow-lg sm:max-w-md">
+      <DialogContent
+        className="overflow-hidden border-none p-0 shadow-lg sm:max-w-md"
+        style={{ borderRadius: "20px" }}
+      >
         <div className="bg-gradient-to-r from-green-500 to-teal-600 p-6 text-white">
           <DialogHeader>
             <DialogTitle className="mb-1 text-xl font-bold">

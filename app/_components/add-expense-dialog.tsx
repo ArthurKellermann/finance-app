@@ -79,7 +79,11 @@ const formSchema = z.object({
   type: z.nativeEnum(TransactionType, {
     required_error: "O tipo é obrigatório.",
   }),
-  categoryId: z.string().uuid(),
+  categoryId: z
+    .string({
+      message: "A categoria é obrigatória.",
+    })
+    .uuid(),
   subCategoryId: z.string().uuid().optional(),
   paymentMethod: z.nativeEnum(TransactionPaymentMethod, {
     required_error: "O método de pagamento é obrigatório.",
@@ -217,7 +221,10 @@ const AddExpenseDialog = ({
       }}
     >
       <DialogTrigger asChild></DialogTrigger>
-      <DialogContent className="overflow-hidden rounded-xl border-none p-0 shadow-lg sm:max-w-md">
+      <DialogContent
+        className="overflow-hidden border-none p-0 shadow-lg sm:max-w-md"
+        style={{ borderRadius: "20px" }}
+      >
         <div className="bg-gradient-to-r from-red-500 to-pink-600 p-6 text-white">
           <DialogHeader>
             <DialogTitle className="mb-1 text-xl font-bold">

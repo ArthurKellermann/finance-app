@@ -38,7 +38,7 @@ const SummaryCard = ({
 
   return (
     <Card className="overflow-hidden rounded-xl border-none bg-white shadow-lg">
-      <CardHeader className="flex flex-row items-center justify-between p-4">
+      <CardHeader className="flex flex-row items-center p-4">
         <div className="flex items-center gap-3">
           <div className="rounded-lg bg-white/20 p-2">{icon}</div>
           <CardTitle className="text-lg font-bold">{title}</CardTitle>
@@ -50,9 +50,9 @@ const SummaryCard = ({
             className="cursor-pointer rounded-full p-2 transition-colors"
           >
             {isAmountVisible ? (
-              <EyeIcon className="h-5 w-5" />
+              <EyeIcon className="mb-1 h-5 w-5" />
             ) : (
-              <EyeOffIcon className="h-5 w-5" />
+              <EyeOffIcon className="mb-1 h-5 w-5" />
             )}
           </div>
         )}

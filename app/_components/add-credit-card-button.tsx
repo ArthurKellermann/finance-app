@@ -26,10 +26,10 @@ const AddCreditCardButton = ({
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
-              className="rounded-full"
+              variant="secondary"
+              className="rounded-full bg-white/20 text-white transition-colors hover:bg-white/30"
               onClick={() => setDialogIsOpen(true)}
               disabled={!userCanAddCreditCard}
-              variant="outline"
             >
               Adicionar
               <CreditCardIcon />

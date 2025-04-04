@@ -55,7 +55,7 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
 
   return (
     <Card className="overflow-hidden rounded-xl border-none bg-white shadow-lg">
-      <CardHeader className="flex flex-row items-center justify-between p-4">
+      <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-blue-600 to-purple-600 p-4 text-white">
         <div>
           <CardTitle className="flex items-center gap-2 text-xl font-bold">
             <CreditCard className="h-6 w-6" />
@@ -63,7 +63,11 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
           </CardTitle>
           <p className="text-sm">Visão Geral Recente</p>
         </div>
-        <Button variant="outline" className="rounded-full" asChild>
+        <Button
+          variant="secondary"
+          className="rounded-full bg-white/20 text-white transition-colors hover:bg-white/30"
+          asChild
+        >
           <Link href="/transactions" className="flex items-center gap-2">
             <MoreHorizontal className="h-4 w-4" />
             Detalhes

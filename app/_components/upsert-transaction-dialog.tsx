@@ -207,7 +207,10 @@ const UpsertTransactionDialog = ({
       }}
     >
       <DialogTrigger asChild></DialogTrigger>
-      <DialogContent className="overflow-hidden rounded-xl border-none p-0 shadow-lg sm:max-w-md">
+      <DialogContent
+        className="overflow-hidden border-none p-0 shadow-lg sm:max-w-md"
+        style={{ borderRadius: "20px" }}
+      >
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
           <DialogHeader>
             <DialogTitle className="mb-1 text-xl font-bold">
