@@ -15,8 +15,8 @@ import {
   TrendingUp,
   TrendingDown,
   CreditCard,
-  ChartBar,
   MoreHorizontal,
+  CalendarClock,
 } from "lucide-react";
 
 interface LastTransactionsProps {
@@ -55,7 +55,7 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
 
   return (
     <Card className="overflow-hidden rounded-xl border-none bg-white shadow-lg">
-      <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-blue-600 to-purple-600 p-4 text-white">
+      <CardHeader className="flex flex-row items-center justify-between p-4">
         <div>
           <CardTitle className="flex items-center gap-2 text-xl font-bold">
             <CreditCard className="h-6 w-6" />
@@ -63,11 +63,7 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
           </CardTitle>
           <p className="text-sm">Visão Geral Recente</p>
         </div>
-        <Button
-          variant="secondary"
-          className="rounded-full bg-white/20 text-white transition-colors hover:bg-white/30"
-          asChild
-        >
+        <Button variant="outline" className="rounded-full" asChild>
           <Link href="/transactions" className="flex items-center gap-2">
             <MoreHorizontal className="h-4 w-4" />
             Detalhes
@@ -135,9 +131,9 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
             className="flex flex-1 items-center justify-center gap-2 rounded-full border-blue-500 text-blue-600 hover:bg-blue-50"
             asChild
           >
-            <Link href="/transactions">
-              <ChartBar className="h-4 w-4" />
-              Mostrar gráficos
+            <Link href="/schedule-transaction">
+              <CalendarClock className="h-4 w-4" />
+              Programar transação
             </Link>
           </Button>
           <Button

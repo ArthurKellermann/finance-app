@@ -77,7 +77,7 @@ const TransactionsPieChart = ({
     title: string;
     value: number;
   }) => (
-    <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3 transition-colors hover:bg-gray-100">
+    <div className="flex items-center justify-between rounded-lg bg-gray-50 p-2 transition-colors hover:bg-gray-100">
       <div className="flex items-center gap-3">
         <div className="rounded-lg bg-white p-2 shadow-sm">{icon}</div>
         <span className="text-sm font-medium text-gray-700">{title}</span>

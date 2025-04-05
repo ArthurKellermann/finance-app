@@ -15,12 +15,7 @@ import {
 } from "@/app/_components/ui/card";
 import { Button } from "@/app/_components/ui/button";
 import Link from "next/link";
-import {
-  TrendingUp,
-  TrendingDown,
-  Wallet,
-  BarChart as BarChartIcon,
-} from "lucide-react";
+import { Wallet, BarChart as BarChartIcon } from "lucide-react";
 
 const chartConfig = {
   desktop: {
@@ -43,13 +38,13 @@ export function ExpensesRevenuesSemestralFlowChart() {
     { month: "Junho", desktop: 214, mobile: 140 },
   ];
 
-  const calculateTotals = () => {
-    const totalRevenue = chartData.reduce((sum, item) => sum + item.desktop, 0);
-    const totalExpenses = chartData.reduce((sum, item) => sum + item.mobile, 0);
-    return { totalRevenue, totalExpenses };
-  };
+  // const calculateTotals = () => {
+  //   const totalRevenue = chartData.reduce((sum, item) => sum + item.desktop, 0);
+  //   const totalExpenses = chartData.reduce((sum, item) => sum + item.mobile, 0);
+  //   return { totalRevenue, totalExpenses };
+  // };
 
-  const { totalRevenue, totalExpenses } = calculateTotals();
+  // const { totalRevenue, totalExpenses } = calculateTotals();
 
   return (
     <Card className="overflow-hidden rounded-xl border-none bg-white shadow-lg">
@@ -70,28 +65,6 @@ export function ExpensesRevenuesSemestralFlowChart() {
       </CardHeader>
 
       <CardContent className="space-y-6 p-6">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="rounded-lg bg-green-50 p-4">
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-600">Receita Total</p>
-              <TrendingUp className="h-5 w-5 text-green-500" />
-            </div>
-            <p className="text-2xl font-bold text-green-700">
-              R$ {totalRevenue.toLocaleString()}
-            </p>
-          </div>
-
-          <div className="rounded-lg bg-red-50 p-4">
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-600">Despesa Total</p>
-              <TrendingDown className="h-5 w-5 text-red-500" />
-            </div>
-            <p className="text-2xl font-bold text-red-700">
-              R$ {totalExpenses.toLocaleString()}
-            </p>
-          </div>
-        </div>
-
         <ChartContainer
           config={chartConfig}
           className="min-h-[250px] w-full rounded-lg bg-gray-50 p-4"

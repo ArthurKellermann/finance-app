@@ -61,7 +61,7 @@ const CreditCards = ({
 
   return (
     <Card className="overflow-hidden rounded-xl border-none bg-white shadow-lg">
-      <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-blue-600 to-purple-600 p-4 text-white">
+      <CardHeader className="flex flex-row items-center justify-between p-4">
         <div>
           <CardTitle className="flex items-center gap-2 text-xl font-bold">
             <CreditCardIcon className="h-6 w-6" />

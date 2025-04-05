@@ -25,10 +25,17 @@ import {
   Trash2,
   Edit,
   Tag,
-  Info,
   Search,
   Layers,
   Download,
+  Calendar,
+  Repeat,
+  Bell,
+  FileText,
+  MapPin,
+  Clock,
+  CalendarCheck,
+  CalendarPlus,
 } from "lucide-react";
 
 import { Button } from "@/app/_components/ui/button";
@@ -65,6 +72,11 @@ import {
   PopoverTrigger,
 } from "@/app/_components/ui/popover";
 import { Switch } from "@/app/_components/ui/switch";
+import { DatePicker } from "../_components/ui/date-picker";
+import addEvent from "./_actions/add-event";
+import { useAuth } from "@clerk/nextjs";
+import getEvents from "./_actions/get-events";
+import deleteEvent from "./_actions/delete-event";
 
 interface CalendarEvent {
   id: string;
@@ -140,6 +152,11 @@ const CalendarPage = () => {
   );
   const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
   const { toast } = useToast();
+  const { userId } = useAuth();
+
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
 
   // Estado do evento novo/editado
   const [eventForm, setEventForm] = useState<Omit<CalendarEvent, "id">>({
@@ -159,21 +176,24 @@ const CalendarPage = () => {
 
   // Carregar eventos do localStorage ao iniciar
   useEffect(() => {
-    const storedEvents = localStorage.getItem("calendarEvents");
-    if (storedEvents) {
-      try {
-        const parsedEvents = JSON.parse(storedEvents);
-        setEvents(parsedEvents);
-        setFilteredEvents(parsedEvents);
-      } catch (error) {
-        console.error("Erro ao carregar eventos:", error);
-        toast({
-          title: "Erro ao carregar eventos",
-          description: "Ocorreu um erro ao carregar seus eventos salvos.",
-          variant: "destructive",
-        });
+    const fetchEvents = async () => {
+      const { events } = await getEvents();
+      if (events) {
+        try {
+          setEvents(events as CalendarEvent[]);
+          setFilteredEvents(events as CalendarEvent[]);
+        } catch (error) {
+          console.error("Erro ao carregar eventos:", error);
+          toast({
+            title: "Erro ao carregar eventos",
+            description: "Ocorreu um erro ao carregar seus eventos salvos.",
+            variant: "destructive",
+          });
+        }
       }
-    }
+    };
+
+    fetchEvents();
   }, [toast]);
 
   useEffect(() => {
@@ -248,7 +268,7 @@ const CalendarPage = () => {
   }, [currentDate]);
 
   // Funções para gerenciar eventos
-  const handleAddOrUpdateEvent = () => {
+  const handleAddOrUpdateEvent = async () => {
     if (!eventForm.title || !eventForm.date) {
       toast({
         title: "Campos obrigatórios",
@@ -279,7 +299,7 @@ const CalendarPage = () => {
         title: "Horário inválido",
         description:
           "O horário final não pode ser anterior ao horário inicial no mesmo dia",
-        variant: "destructive",
+        variant: "default",
       });
       return;
     }
@@ -304,6 +324,24 @@ const CalendarPage = () => {
         ...eventForm,
       };
 
+      await addEvent({
+        attendees: newEvent.attendees || [],
+        category: newEvent.category,
+        date: newEvent.date,
+        description: newEvent.description,
+        endDate: newEvent.endDate || null,
+        endTime: newEvent.endTime || null,
+        isAllDay: newEvent.isAllDay,
+        location: newEvent.location || null,
+        title: newEvent.title,
+        userId: userId,
+        color: newEvent.color || null,
+        id: newEvent.id,
+        recurrence: newEvent.recurrence || null,
+        reminder: newEvent.reminder || null,
+        time: newEvent.time,
+      });
+
       setEvents([...events, newEvent]);
 
       toast({
@@ -319,9 +357,10 @@ const CalendarPage = () => {
     setIsViewEventOpen(false);
   };
 
-  const handleDeleteEvent = (id: string) => {
+  const handleDeleteEvent = async (id: string) => {
     setEvents(events.filter((event) => event.id !== id));
     setIsViewEventOpen(false);
+    await deleteEvent(id);
 
     toast({
       title: "Evento removido",
@@ -498,7 +537,7 @@ const CalendarPage = () => {
 
     toast({
       title: "Eventos exportados",
-      description: `Seus eventos foram exportados no formato ${format.toString().toUpperCase()}`,
+      description: `Seus eventos foram exportados no formato ${formatType.toUpperCase()}.`,
     });
 
     setIsExportMenuOpen(false);
@@ -952,233 +991,333 @@ const CalendarPage = () => {
   const renderAddEventModal = () => {
     return (
       <Dialog open={isAddEventOpen} onOpenChange={setIsAddEventOpen}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle>
-              {isEditMode ? "Editar evento" : "Adicionar evento"}
-            </DialogTitle>
-            <DialogDescription>
-              {isEditMode
-                ? "Edite os detalhes do evento existente"
-                : "Preencha os detalhes para adicionar um novo evento ao calendário"}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="title" className="text-right">
-                Título
-              </Label>
-              <Input
-                id="title"
-                value={eventForm.title}
-                onChange={(e) =>
-                  setEventForm({ ...eventForm, title: e.target.value })
-                }
-                className="col-span-3"
-                placeholder="Título do evento"
-                required
-              />
-            </div>
-
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label className="text-right">Dia inteiro</Label>
-              <div className="col-span-3">
-                <Switch
-                  checked={eventForm.isAllDay}
-                  onCheckedChange={(checked) =>
-                    setEventForm({ ...eventForm, isAllDay: checked })
-                  }
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="date" className="text-right">
-                Data
-              </Label>
-              <div className="col-span-3 grid grid-cols-2 gap-2">
-                <div>
-                  <Input
-                    id="date"
-                    type="date"
-                    value={eventForm.date}
-                    onChange={(e) =>
-                      setEventForm({ ...eventForm, date: e.target.value })
-                    }
-                    required
-                  />
-                  <span className="mt-1 text-xs text-gray-500">Início</span>
+        <DialogContent
+          className="overflow-hidden border-none p-0 shadow-lg sm:max-w-2xl" // Aumentado para sm:max-w-2xl
+          style={{ borderRadius: "20px" }}
+        >
+          <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-6 text-white">
+            <DialogHeader>
+              <DialogTitle className="mb-1 text-xl font-bold">
+                <div className="flex items-center gap-2">
+                  {isEditMode ? (
+                    <CalendarCheck className="h-6 w-6" />
+                  ) : (
+                    <CalendarPlus className="h-6 w-6" />
+                  )}
+                  {isEditMode ? "Editar evento" : "Adicionar evento"}
                 </div>
-                <div>
-                  <Input
-                    id="endDate"
-                    type="date"
-                    value={eventForm.endDate}
-                    onChange={(e) =>
-                      setEventForm({ ...eventForm, endDate: e.target.value })
-                    }
-                  />
-                  <span className="mt-1 text-xs text-gray-500">
-                    Fim (opcional)
-                  </span>
-                </div>
-              </div>
-            </div>
+              </DialogTitle>
+              <DialogDescription className="text-white/80">
+                {isEditMode
+                  ? "Edite os detalhes do evento existente"
+                  : "Preencha os detalhes para adicionar um novo evento ao calendário"}
+              </DialogDescription>
+            </DialogHeader>
+          </div>
 
-            {!eventForm.isAllDay && (
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="time" className="text-right">
-                  Horário
-                </Label>
-                <div className="col-span-3 grid grid-cols-2 gap-2">
-                  <div>
+          <div className="space-y-4 p-6">
+            <div className="space-y-4">
+              {/* Linha 1: Título e Categoria */}
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="title" className="font-medium text-gray-700">
+                    Título
+                  </Label>
+                  <div className="relative">
+                    <Tag className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
                     <Input
-                      id="time"
-                      type="time"
-                      value={eventForm.time}
+                      id="title"
+                      value={eventForm.title}
                       onChange={(e) =>
-                        setEventForm({ ...eventForm, time: e.target.value })
+                        setEventForm({ ...eventForm, title: e.target.value })
                       }
+                      className="rounded-lg border-gray-200 pl-10 focus:border-blue-500"
+                      placeholder="Título do evento"
+                      required
                     />
-                    <span className="mt-1 text-xs text-gray-500">Início</span>
                   </div>
-                  <div>
-                    <Input
-                      id="endTime"
-                      type="time"
-                      value={eventForm.endTime}
-                      onChange={(e) =>
-                        setEventForm({ ...eventForm, endTime: e.target.value })
+                </div>
+
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="category"
+                    className="font-medium text-gray-700"
+                  >
+                    Categoria
+                  </Label>
+                  <div className="relative">
+                    <Tag className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                    <Select
+                      value={eventForm.category}
+                      onValueChange={(value) =>
+                        setEventForm({ ...eventForm, category: value })
                       }
+                    >
+                      <SelectTrigger className="rounded-lg border-gray-200 pl-10 focus:border-blue-500">
+                        <SelectValue placeholder="Selecione uma categoria" />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-lg border-none shadow-lg">
+                        {eventCategories.map((category) => (
+                          <SelectItem
+                            key={category.id}
+                            value={category.id}
+                            className="cursor-pointer hover:bg-blue-50"
+                          >
+                            <div className="flex items-center gap-2">
+                              <span
+                                className="h-3 w-3 rounded-full"
+                                style={{ backgroundColor: category.color }}
+                              ></span>
+                              {category.name}
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Linha 2: Dia inteiro e Local */}
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="flex flex-row items-center justify-between rounded-lg border p-3">
+                  <Label className="font-medium text-gray-700">
+                    Dia inteiro
+                  </Label>
+                  <Switch
+                    checked={eventForm.isAllDay}
+                    onCheckedChange={(checked) =>
+                      setEventForm({ ...eventForm, isAllDay: checked })
+                    }
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="location"
+                    className="font-medium text-gray-700"
+                  >
+                    Local
+                  </Label>
+                  <div className="relative">
+                    <MapPin className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                    <Input
+                      id="location"
+                      value={eventForm.location || ""}
+                      onChange={(e) =>
+                        setEventForm({ ...eventForm, location: e.target.value })
+                      }
+                      className="rounded-lg border-gray-200 pl-10 focus:border-blue-500"
+                      placeholder="Local do evento (opcional)"
                     />
-                    <span className="mt-1 text-xs text-gray-500">
+                  </div>
+                </div>
+              </div>
+
+              {/* Linha 3: Datas */}
+              <div className="space-y-2">
+                <Label htmlFor="date" className="font-medium text-gray-700">
+                  Data
+                </Label>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div className="space-y-1">
+                    <DatePicker
+                      value={
+                        eventForm.date ? new Date(eventForm.date) : undefined
+                      }
+                      onChange={(date) => {
+                        if (date) {
+                          const isoDate = date.toISOString().split("T")[0];
+                          setEventForm({ ...eventForm, date: isoDate });
+                        }
+                      }}
+                    />
+                    <span className="text-xs text-gray-500">Início</span>
+                  </div>
+                  <div className="space-y-1">
+                    <DatePicker
+                      value={
+                        eventForm.endDate
+                          ? new Date(eventForm.endDate)
+                          : undefined
+                      }
+                      onChange={(date) => {
+                        if (date) {
+                          const isoDate = date.toISOString().split("T")[0];
+                          setEventForm({ ...eventForm, endDate: isoDate });
+                        } else {
+                          setEventForm({ ...eventForm, endDate: "" });
+                        }
+                      }}
+                    />
+                    <span className="text-xs text-gray-500">
                       Fim (opcional)
                     </span>
                   </div>
                 </div>
               </div>
-            )}
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="category" className="text-right">
-                Categoria
-              </Label>
-              <Select
-                value={eventForm.category}
-                onValueChange={(value) =>
-                  setEventForm({ ...eventForm, category: value })
-                }
-              >
-                <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="Selecione uma categoria" />
-                </SelectTrigger>
-                <SelectContent>
-                  {eventCategories.map((category) => (
-                    <SelectItem key={category.id} value={category.id}>
-                      <div className="flex items-center gap-2">
-                        <span
-                          className="h-3 w-3 rounded-full"
-                          style={{ backgroundColor: category.color }}
-                        ></span>
-                        {category.name}
+              {/* Linha 4: Horários (se não for dia inteiro) */}
+              {!eventForm.isAllDay && (
+                <div className="space-y-2">
+                  <Label htmlFor="time" className="font-medium text-gray-700">
+                    Horário
+                  </Label>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div className="space-y-1">
+                      <div className="relative">
+                        <Clock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                        <Input
+                          id="time"
+                          type="time"
+                          value={eventForm.time}
+                          onChange={(e) =>
+                            setEventForm({ ...eventForm, time: e.target.value })
+                          }
+                          className="rounded-lg border-gray-200 pl-10 focus:border-blue-500"
+                        />
                       </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                      <span className="text-xs text-gray-500">Início</span>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="relative">
+                        <Clock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                        <Input
+                          id="endTime"
+                          type="time"
+                          value={eventForm.endTime}
+                          onChange={(e) =>
+                            setEventForm({
+                              ...eventForm,
+                              endTime: e.target.value,
+                            })
+                          }
+                          className="rounded-lg border-gray-200 pl-10 focus:border-blue-500"
+                        />
+                      </div>
+                      <span className="text-xs text-gray-500">
+                        Fim (opcional)
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Linha 5: Lembrete e Repetição */}
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="reminder"
+                    className="font-medium text-gray-700"
+                  >
+                    Lembrete
+                  </Label>
+                  <div className="relative">
+                    <Bell className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                    <Select
+                      value={eventForm.reminder}
+                      onValueChange={(value) =>
+                        setEventForm({ ...eventForm, reminder: value })
+                      }
+                    >
+                      <SelectTrigger className="rounded-lg border-gray-200 pl-10 focus:border-blue-500">
+                        <SelectValue placeholder="Lembrete" />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-lg border-none shadow-lg">
+                        {reminderOptions.map((option) => (
+                          <SelectItem
+                            key={option.id}
+                            value={option.id}
+                            className="cursor-pointer hover:bg-blue-50"
+                          >
+                            {option.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="recurrence"
+                    className="font-medium text-gray-700"
+                  >
+                    Repetição
+                  </Label>
+                  <div className="relative">
+                    <Repeat className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                    <Select
+                      value={eventForm.recurrence}
+                      onValueChange={(value) =>
+                        setEventForm({ ...eventForm, recurrence: value })
+                      }
+                    >
+                      <SelectTrigger className="rounded-lg border-gray-200 pl-10 focus:border-blue-500">
+                        <SelectValue placeholder="Repetição" />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-lg border-none shadow-lg">
+                        {recurrenceOptions.map((option) => (
+                          <SelectItem
+                            key={option.id}
+                            value={option.id}
+                            className="cursor-pointer hover:bg-blue-50"
+                          >
+                            {option.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Linha 6: Descrição (full width) */}
+              <div className="space-y-2">
+                <Label
+                  htmlFor="description"
+                  className="font-medium text-gray-700"
+                >
+                  Descrição
+                </Label>
+                <div className="relative">
+                  <FileText className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Textarea
+                    id="description"
+                    value={eventForm.description}
+                    onChange={(e) =>
+                      setEventForm({
+                        ...eventForm,
+                        description: e.target.value,
+                      })
+                    }
+                    className="rounded-lg border-gray-200 pl-10 focus:border-blue-500"
+                    placeholder="Descrição do evento (opcional)"
+                    rows={3}
+                  />
+                </div>
+              </div>
             </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="location" className="text-right">
-                Local
-              </Label>
-              <Input
-                id="location"
-                value={eventForm.location || ""}
-                onChange={(e) =>
-                  setEventForm({ ...eventForm, location: e.target.value })
-                }
-                className="col-span-3"
-                placeholder="Local do evento (opcional)"
-              />
-            </div>
-
-            <div className="grid grid-cols-4 items-start gap-4">
-              <Label htmlFor="description" className="text-right">
-                Descrição
-              </Label>
-              <Textarea
-                id="description"
-                value={eventForm.description}
-                onChange={(e) =>
-                  setEventForm({ ...eventForm, description: e.target.value })
-                }
-                className="col-span-3"
-                placeholder="Descrição do evento (opcional)"
-                rows={3}
-              />
-            </div>
-
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="reminder" className="text-right">
-                Lembrete
-              </Label>
-              <Select
-                value={eventForm.reminder}
-                onValueChange={(value) =>
-                  setEventForm({ ...eventForm, reminder: value })
-                }
+            <DialogFooter className="mt-6 flex gap-3">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsAddEventOpen(false);
+                  resetEventForm();
+                }}
+                className="flex-1 rounded-lg border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
               >
-                <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="Lembrete" />
-                </SelectTrigger>
-                <SelectContent>
-                  {reminderOptions.map((option) => (
-                    <SelectItem key={option.id} value={option.id}>
-                      {option.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="recurrence" className="text-right">
-                Repetição
-              </Label>
-              <Select
-                value={eventForm.recurrence}
-                onValueChange={(value) =>
-                  setEventForm({ ...eventForm, recurrence: value })
-                }
+                Cancelar
+              </Button>
+              <Button
+                onClick={handleAddOrUpdateEvent}
+                className="flex-1 rounded-lg border-none bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:from-blue-600 hover:to-indigo-700"
               >
-                <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="Repetição" />
-                </SelectTrigger>
-                <SelectContent>
-                  {recurrenceOptions.map((option) => (
-                    <SelectItem key={option.id} value={option.id}>
-                      {option.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+                {isEditMode ? "Atualizar" : "Adicionar"}
+              </Button>
+            </DialogFooter>
           </div>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setIsAddEventOpen(false);
-                resetEventForm();
-              }}
-            >
-              Cancelar
-            </Button>
-            <Button onClick={handleAddOrUpdateEvent}>
-              {isEditMode ? "Atualizar" : "Adicionar"}
-            </Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
     );
@@ -1189,108 +1328,181 @@ const CalendarPage = () => {
 
     return (
       <Dialog open={isViewEventOpen} onOpenChange={setIsViewEventOpen}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <div className="flex items-center gap-2">
-              <div
-                className="h-4 w-4 rounded-full"
-                style={{
-                  backgroundColor: getCategoryColor(selectedEvent.category),
-                }}
-              ></div>
-              <DialogTitle className="text-xl">
-                {selectedEvent.title}
-              </DialogTitle>
-            </div>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="flex items-start gap-2">
-              <CalendarIcon className="h-5 w-5 flex-shrink-0 text-gray-500" />
-              <div>
-                <div className="font-medium">
-                  {format(
-                    parseISO(selectedEvent.date),
-                    "dd 'de' MMMM 'de' yyyy",
-                    { locale: ptBR },
+        <DialogContent
+          className="overflow-hidden border-none p-0 shadow-lg sm:max-w-md"
+          style={{ borderRadius: "20px" }}
+        >
+          {/* Cabeçalho com gradiente */}
+          <div
+            className="bg-gradient-to-r from-purple-500 to-indigo-600 p-6 text-white"
+            style={{
+              backgroundImage: `linear-gradient(to right, ${adjustColor(getCategoryColor(selectedEvent.category), -20)}, ${adjustColor(getCategoryColor(selectedEvent.category), 20)})`,
+            }}
+          >
+            <DialogHeader>
+              <div className="flex items-center gap-3">
+                <div
+                  className="flex h-10 w-10 items-center justify-center rounded-full"
+                  style={{
+                    backgroundColor: "rgba(255, 255, 255, 0.2)",
+                  }}
+                >
+                  <div
+                    className="h-6 w-6 rounded-full"
+                    style={{
+                      backgroundColor: getCategoryColor(selectedEvent.category),
+                    }}
+                  ></div>
+                </div>
+                <div>
+                  <DialogTitle className="mb-1 text-xl font-bold">
+                    {selectedEvent.title}
+                  </DialogTitle>
+                  <div className="flex items-center text-sm text-white/80">
+                    <CalendarIcon className="mr-1 h-4 w-4" />
+                    {format(
+                      parseISO(selectedEvent.date),
+                      "dd 'de' MMMM 'de' yyyy",
+                      { locale: ptBR },
+                    )}
+                  </div>
+                </div>
+              </div>
+            </DialogHeader>
+          </div>
+
+          {/* Conteúdo */}
+          <div className="p-6">
+            <div className="space-y-5">
+              {/* Data e hora */}
+              <div className="flex items-start gap-4 rounded-xl bg-gray-50 p-4">
+                <div className="flex-shrink-0 rounded-full bg-indigo-100 p-2.5">
+                  <CalendarIcon className="h-5 w-5 text-indigo-600" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-900">
+                    {format(
+                      parseISO(selectedEvent.date),
+                      "dd 'de' MMMM 'de' yyyy",
+                      { locale: ptBR },
+                    )}
+                    {selectedEvent.endDate &&
+                      selectedEvent.endDate !== selectedEvent.date && (
+                        <>
+                          {" - "}
+                          {format(
+                            parseISO(selectedEvent.endDate),
+                            "dd 'de' MMMM 'de' yyyy",
+                            {
+                              locale: ptBR,
+                            },
+                          )}
+                        </>
+                      )}
+                  </div>
+                  {selectedEvent.isAllDay ? (
+                    <div className="mt-1 text-sm text-gray-500">
+                      Dia inteiro
+                    </div>
+                  ) : (
+                    selectedEvent.time && (
+                      <div className="mt-1 text-sm text-gray-500">
+                        {getEventDuration(selectedEvent)}
+                      </div>
+                    )
                   )}
-                  {selectedEvent.endDate &&
-                    selectedEvent.endDate !== selectedEvent.date && (
-                      <>
-                        {" - "}
-                        {format(
-                          parseISO(selectedEvent.endDate),
-                          "dd 'de' MMMM 'de' yyyy",
-                          {
-                            locale: ptBR,
-                          },
-                        )}
-                      </>
+                </div>
+              </div>
+
+              {/* Local */}
+              {selectedEvent.location && (
+                <div className="flex items-start gap-4 rounded-xl p-4">
+                  <div className="flex-shrink-0 rounded-full bg-orange-100 p-2.5">
+                    <MapPin className="h-5 w-5 text-orange-600" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-900">Local</div>
+                    <div className="mt-1 text-gray-700">
+                      {selectedEvent.location}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Descrição */}
+              {selectedEvent.description && (
+                <div className="flex gap-4 rounded-xl p-4">
+                  <div className="flex-shrink-0 rounded-full bg-blue-100 p-2.5">
+                    <FileText className="h-5 w-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-900">Descrição</div>
+                    <div className="mt-1 whitespace-pre-wrap text-gray-700">
+                      {selectedEvent.description}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Tags/Badges */}
+              <div className="mt-6 border-t border-gray-100 pt-4">
+                <div className="mb-3 text-sm font-medium text-gray-500">
+                  Detalhes do evento
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Badge className="border-none bg-gradient-to-r from-purple-500 to-indigo-600 px-3 py-1 hover:from-purple-600 hover:to-indigo-700">
+                    {getCategoryName(selectedEvent.category)}
+                  </Badge>
+
+                  {selectedEvent.recurrence &&
+                    selectedEvent.recurrence !== "none" && (
+                      <Badge
+                        variant="outline"
+                        className="border-gray-200 px-3 py-1 font-normal text-gray-700"
+                      >
+                        <Repeat className="mr-1.5 h-3.5 w-3.5" />
+                        {getRecurrenceName(selectedEvent.recurrence)}
+                      </Badge>
+                    )}
+
+                  {selectedEvent.reminder &&
+                    selectedEvent.reminder !== "none" && (
+                      <Badge
+                        variant="outline"
+                        className="border-gray-200 px-3 py-1 font-normal text-gray-700"
+                      >
+                        <Bell className="mr-1.5 h-3.5 w-3.5" />
+                        {getReminderName(selectedEvent.reminder)}
+                      </Badge>
                     )}
                 </div>
-                {selectedEvent.isAllDay ? (
-                  <div className="text-sm text-gray-500">Dia inteiro</div>
-                ) : (
-                  selectedEvent.time && (
-                    <div className="text-sm text-gray-500">
-                      {getEventDuration(selectedEvent)}
-                    </div>
-                  )
-                )}
               </div>
-            </div>
-
-            {selectedEvent.location && (
-              <div className="flex items-start gap-2">
-                <Tag className="h-5 w-5 flex-shrink-0 text-gray-500" />
-                <div className="font-medium">{selectedEvent.location}</div>
-              </div>
-            )}
-
-            {selectedEvent.description && (
-              <div className="flex gap-2">
-                <Info className="h-5 w-5 flex-shrink-0 text-gray-500" />
-                <div className="whitespace-pre-wrap">
-                  {selectedEvent.description}
-                </div>
-              </div>
-            )}
-
-            <div className="flex flex-wrap gap-2">
-              <Badge>{getCategoryName(selectedEvent.category)}</Badge>
-
-              {selectedEvent.recurrence &&
-                selectedEvent.recurrence !== "none" && (
-                  <Badge variant="outline">
-                    {getRecurrenceName(selectedEvent.recurrence)}
-                  </Badge>
-                )}
-
-              {selectedEvent.reminder && selectedEvent.reminder !== "none" && (
-                <Badge variant="outline">
-                  Lembrete: {getReminderName(selectedEvent.reminder)}
-                </Badge>
-              )}
             </div>
           </div>
-          <DialogFooter className="flex justify-between sm:justify-between">
-            <div>
-              <Button
-                variant="destructive"
-                onClick={() => handleDeleteEvent(selectedEvent.id)}
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Excluir
-              </Button>
-            </div>
-            <div className="flex gap-2">
+
+          {/* Footer */}
+          <DialogFooter className="flex justify-between border-t border-gray-100 px-6 py-4 sm:justify-between">
+            <Button
+              variant="destructive"
+              onClick={() => handleDeleteEvent(selectedEvent.id)}
+              className="gap-2 bg-red-50 text-red-600 hover:bg-red-100"
+            >
+              <Trash2 className="h-4 w-4" />
+              Excluir
+            </Button>
+            <div className="flex gap-3">
               <Button
                 variant="outline"
                 onClick={() => setIsViewEventOpen(false)}
+                className="border-gray-200 text-gray-700 hover:bg-gray-50"
               >
                 Fechar
               </Button>
-              <Button onClick={handleEditEvent}>
-                <Edit className="mr-2 h-4 w-4" />
+              <Button
+                onClick={handleEditEvent}
+                className="gap-2 border-none bg-gradient-to-r from-purple-500 to-indigo-600 text-white hover:from-purple-600 hover:to-indigo-700"
+              >
+                <Edit className="h-4 w-4" />
                 Editar
               </Button>
             </div>
@@ -1300,168 +1512,207 @@ const CalendarPage = () => {
     );
   };
 
+  // Função auxiliar para ajustar a cor - deve ser adicionada junto com o componente
+  const adjustColor = (color: string, amount: number) => {
+    // Função que permite escurecer ou clarear uma cor
+    // Se a cor for um nome como "blue", esta função não funcionará
+    if (!color.startsWith("#")) {
+      // Para cores nomeadas, retorne uma cor padrão do mesmo tom
+      if (amount > 0) {
+        return color === "purple" ? "#9333ea" : "#818cf8";
+      } else {
+        return color === "purple" ? "#7e22ce" : "#6366f1";
+      }
+    }
+
+    let r = parseInt(color.substring(1, 3), 16);
+    let g = parseInt(color.substring(3, 5), 16);
+    let b = parseInt(color.substring(5, 7), 16);
+
+    r = Math.max(0, Math.min(255, r + amount));
+    g = Math.max(0, Math.min(255, g + amount));
+    b = Math.max(0, Math.min(255, b + amount));
+
+    return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+  };
+
   return (
-    <div className="container mx-auto py-6">
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Calendário</h1>
-          <p className="text-gray-500">
-            Gerencie seus eventos e compromissos de forma eficiente
-          </p>
-        </div>
-        <div className="flex flex-col gap-2 sm:flex-row">
-          <Button
-            variant="outline"
-            className="justify-between"
-            onClick={() => setIsExportMenuOpen(!isExportMenuOpen)}
-          >
-            <Download className="mr-2 h-4 w-4" />
-            Exportar
-          </Button>
-          <Popover open={isExportMenuOpen} onOpenChange={setIsExportMenuOpen}>
-            <PopoverTrigger asChild>
-              <span />
-            </PopoverTrigger>
-            <PopoverContent className="w-56" align="end">
-              <div className="space-y-1">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start"
-                  onClick={() => exportEvents("csv")}
-                >
-                  Exportar como CSV
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start"
-                  onClick={() => exportEvents("json")}
-                >
-                  Exportar como JSON
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start"
-                  onClick={() => exportEvents("ics")}
-                >
-                  Exportar como iCalendar
-                </Button>
-              </div>
-            </PopoverContent>
-          </Popover>
-          <Button onClick={() => setIsAddEventOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" />
-            Novo evento
-          </Button>
-        </div>
-      </div>
-
-      <Card className="mb-6">
-        <CardContent className="p-6">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="icon" onClick={navigatePrevious}>
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <Button variant="outline" size="icon" onClick={navigateNext}>
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" onClick={navigateToday}>
-                Hoje
-              </Button>
-              <h2 className="text-xl font-bold">
-                {activeView === "month" &&
-                  format(currentDate, "MMMM yyyy", { locale: ptBR })}
-                {activeView === "week" &&
-                  `${format(getDaysForWeekView[0], "dd MMM", { locale: ptBR })} - ${format(
-                    getDaysForWeekView[6],
-                    "dd MMM",
-                    { locale: ptBR },
-                  )}, ${format(currentDate, "yyyy")}`}
-                {activeView === "day" &&
-                  format(currentDate, "EEEE, dd 'de' MMMM 'de' yyyy", {
-                    locale: ptBR,
-                  })}
-                {activeView === "agenda" && "Visualização de Agenda"}
-              </h2>
-            </div>
-
-            <div className="flex flex-col gap-2 sm:flex-row">
-              <div className="flex items-center rounded-md border pl-2">
-                <Search className="h-4 w-4 text-gray-400" />
-                <Input
-                  type="text"
-                  placeholder="Buscar eventos..."
-                  className="border-0 focus-visible:ring-0"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-
-              <Select value={activeView} onValueChange={setActiveView}>
-                <SelectTrigger className="w-[120px]">
-                  <SelectValue placeholder="Visualização" />
-                </SelectTrigger>
-                <SelectContent>
-                  {calendarViews.map((view) => (
-                    <SelectItem key={view.id} value={view.id}>
-                      {view.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline">
-                    <Layers className="mr-2 h-4 w-4" />
-                    Categorias
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56">
-                  {eventCategories.map((category) => (
-                    <DropdownMenuItem
-                      key={category.id}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setActiveCategories((prev) =>
-                          prev.includes(category.id)
-                            ? prev.filter((id) => id !== category.id)
-                            : [...prev, category.id],
-                        );
-                      }}
-                    >
-                      <div className="flex w-full items-center">
-                        <div className="flex flex-1 items-center gap-2">
-                          <div
-                            className="h-3 w-3 rounded-full"
-                            style={{ backgroundColor: category.color }}
-                          ></div>
-                          {category.name}
-                        </div>
-                        <input
-                          type="checkbox"
-                          checked={activeCategories.includes(category.id)}
-                          onChange={() => {}}
-                          className="h-4 w-4 rounded border-gray-300"
-                        />
-                      </div>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="overflow-hidden rounded-xl shadow-lg">
+        <div className="flex items-center justify-between bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white shadow-lg">
+          <div className="flex items-center gap-4">
+            <Calendar className="h-8 w-8" />
+            <div>
+              <h1 className="text-2xl font-bold">Calendário</h1>
+              <p className="text-sm">
+                Gerencie seus eventos e compromissos de forma eficiente
+              </p>
             </div>
           </div>
-        </CardContent>
-      </Card>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Button
+              variant="secondary"
+              className="rounded-full bg-white/20 text-white transition-colors hover:bg-white/30"
+              onClick={() => setIsExportMenuOpen(!isExportMenuOpen)}
+            >
+              <Download className="mr-2 h-4 w-4" />
+              Exportar
+            </Button>
+            <Popover open={isExportMenuOpen} onOpenChange={setIsExportMenuOpen}>
+              <PopoverTrigger asChild>
+                <span />
+              </PopoverTrigger>
+              <PopoverContent className="w-56" align="end">
+                <div className="space-y-1">
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start"
+                    onClick={() => exportEvents("csv")}
+                  >
+                    Exportar como CSV
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start"
+                    onClick={() => exportEvents("json")}
+                  >
+                    Exportar como JSON
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start"
+                    onClick={() => exportEvents("ics")}
+                  >
+                    Exportar como iCalendar
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
+            <Button
+              onClick={() => setIsAddEventOpen(true)}
+              variant="secondary"
+              className="rounded-full bg-white/20 text-white transition-colors hover:bg-white/30"
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Novo evento
+            </Button>
+          </div>
+        </div>
 
-      <Card>
-        <CardContent className="p-6">
-          <AnimatePresence mode="wait">{renderCalendarView()}</AnimatePresence>
-        </CardContent>
-      </Card>
+        <Card className="mb-6">
+          <CardContent className="p-6">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={navigatePrevious}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <Button variant="outline" size="icon" onClick={navigateNext}>
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" onClick={navigateToday}>
+                  Hoje
+                </Button>
+                <h2 className="text-xl font-bold">
+                  {activeView === "month" &&
+                    format(currentDate, "MMMM yyyy", { locale: ptBR })}
+                  {activeView === "week" &&
+                    `${format(getDaysForWeekView[0], "dd MMM", { locale: ptBR })} - ${format(
+                      getDaysForWeekView[6],
+                      "dd MMM",
+                      { locale: ptBR },
+                    )}, ${format(currentDate, "yyyy")}`}
+                  {activeView === "day" &&
+                    format(currentDate, "EEEE, dd 'de' MMMM 'de' yyyy", {
+                      locale: ptBR,
+                    })}
+                  {activeView === "agenda" && "Visualização de Agenda"}
+                </h2>
+              </div>
 
-      {renderAddEventModal()}
-      {renderViewEventModal()}
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <div className="flex items-center rounded-md border pl-2">
+                  <Search className="h-4 w-4 text-gray-400" />
+                  <Input
+                    type="text"
+                    placeholder="Buscar eventos..."
+                    className="border-0 focus-visible:ring-0"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+
+                <Select value={activeView} onValueChange={setActiveView}>
+                  <SelectTrigger className="w-[120px]">
+                    <SelectValue placeholder="Visualização" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {calendarViews.map((view) => (
+                      <SelectItem key={view.id} value={view.id}>
+                        {view.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline">
+                      <Layers className="mr-2 h-4 w-4" />
+                      Categorias
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56">
+                    {eventCategories.map((category) => (
+                      <DropdownMenuItem
+                        key={category.id}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setActiveCategories((prev) =>
+                            prev.includes(category.id)
+                              ? prev.filter((id) => id !== category.id)
+                              : [...prev, category.id],
+                          );
+                        }}
+                      >
+                        <div className="flex w-full items-center">
+                          <div className="flex flex-1 items-center gap-2">
+                            <div
+                              className="h-3 w-3 rounded-full"
+                              style={{ backgroundColor: category.color }}
+                            ></div>
+                            {category.name}
+                          </div>
+                          <input
+                            type="checkbox"
+                            checked={activeCategories.includes(category.id)}
+                            onChange={() => {}}
+                            className="h-4 w-4 rounded border-gray-300"
+                          />
+                        </div>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <AnimatePresence mode="wait">
+              {renderCalendarView()}
+            </AnimatePresence>
+          </CardContent>
+        </Card>
+
+        {renderAddEventModal()}
+        {renderViewEventModal()}
+      </div>
     </div>
   );
 };

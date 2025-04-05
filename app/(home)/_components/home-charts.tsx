@@ -32,7 +32,7 @@ const HomeCharts = ({ month, dashboard }: HomeProps) => {
 
   return (
     <>
-      <div className="grid h-full grid-cols-3 grid-rows-1 gap-6 overflow-hidden">
+      <div className="grid grid-cols-3 grid-rows-1 gap-6 overflow-hidden">
         {selectedCharts.includes("Fluxo Semestral de Despesas e Receitas") && (
           <div className="col-span-2">
             <ExpensesRevenuesSemestralFlowChart />
