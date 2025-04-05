@@ -15,7 +15,7 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import {
   AudioWaveform,
-  Bot,
+  // Bot,
   Calendar,
   Command,
   DollarSign,
@@ -142,7 +142,7 @@ const data = {
       items: [
         {
           title: "Bancos",
-          url: "#",
+          url: "/banks",
         },
         {
           title: "Política",
@@ -150,21 +150,21 @@ const data = {
         },
       ],
     },
-    {
-      title: "Análise Inteligentes",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Insights Financeiros",
-          url: "/insights",
-        },
-        {
-          title: "PoupAI",
-          url: "#",
-        },
-      ],
-    },
+    // {
+    //   title: "Análise Inteligentes",
+    //   url: "#",
+    //   icon: Bot,
+    //   items: [
+    //     {
+    //       title: "Insights Financeiros",
+    //       url: "/insights",
+    //     },
+    //     {
+    //       title: "PoupAI",
+    //       url: "#",
+    //     },
+    //   ],
+    // },
   ],
 };
 

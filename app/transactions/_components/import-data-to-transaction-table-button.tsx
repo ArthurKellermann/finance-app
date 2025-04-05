@@ -141,7 +141,6 @@ const ImportDataToTransactionTableDialog = () => {
       // Simulação do processamento do arquivo
       await new Promise((resolve) => setTimeout(resolve, 6000));
 
-      // Envio da notificação quando concluído
       const response = await axios.post(
         "http://localhost:3001/notifications",
         {
@@ -200,8 +199,8 @@ const ImportDataToTransactionTableDialog = () => {
           >
             <DialogTrigger asChild>
               <Button
-                variant="outline"
-                className="rounded-full bg-white/90 transition-all hover:bg-white hover:shadow-md focus-visible:ring-2 focus-visible:ring-blue-500"
+                variant="secondary"
+                className="rounded-full bg-white/20 text-white transition-colors hover:bg-white/30"
               >
                 <Import className="mr-2 h-4 w-4 text-blue-600" />
                 Importar

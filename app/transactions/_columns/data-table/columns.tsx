@@ -115,7 +115,7 @@ export const columns: ColumnDef<TransactionWithCategory>[] = [
             color: category.color,
           }}
         >
-          <Tag className="h-4 w-4" style={{ color: category.color }} />
+          <Tag className="h-4 w-auto" style={{ color: category.color }} />
           <span className="text-sm font-medium">
             {TRANSACTION_CATEGORY_LABELS[
               category.name as keyof typeof TRANSACTION_CATEGORY_LABELS

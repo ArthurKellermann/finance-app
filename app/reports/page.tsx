@@ -186,20 +186,15 @@ const AnalysisAndReports = async ({
             <div className="space-y-6">
               {/* Card de Insights Principais */}
               <Card className="overflow-hidden rounded-xl border-none bg-white shadow-lg">
-                <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-blue-600 to-purple-600 p-4 text-white">
+                <CardHeader className="flex flex-row items-center justify-between p-4">
                   <div>
                     <CardTitle className="flex items-center gap-2 text-xl font-bold">
                       <Zap className="h-6 w-6" />
                       Insights IA
                     </CardTitle>
-                    <p className="text-sm text-white/80">
-                      Análise de {monthName}
-                    </p>
+                    <p className="text-sm">Análise de {monthName}</p>
                   </div>
-                  <Button
-                    variant="secondary"
-                    className="bg-white/20 text-white transition-colors hover:bg-white/30"
-                  >
+                  <Button variant="secondary">
                     <Menu className="mr-2 h-4 w-4" />
                     Ver mais
                   </Button>
@@ -332,15 +327,13 @@ const AnalysisAndReports = async ({
 
               {/* Card de Análise de Gastos por Categoria */}
               <Card className="overflow-hidden rounded-xl border-none bg-white shadow-lg">
-                <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-blue-600 to-purple-600 p-4 text-white">
+                <CardHeader className="flex flex-row items-center justify-between p-4">
                   <div>
                     <CardTitle className="flex items-center gap-2 text-xl font-bold">
                       <ChartBar className="h-6 w-6" />
                       Análise de Gastos por Categoria
                     </CardTitle>
-                    <p className="text-sm text-white/80">
-                      Comparativo dos últimos 3 meses
-                    </p>
+                    <p className="text-sm">Comparativo dos últimos 3 meses</p>
                   </div>
                   <Button
                     variant="secondary"
@@ -544,7 +537,7 @@ const AnalysisAndReports = async ({
             <div className="space-y-6">
               {/* Card de Pontuação Financeira */}
               <Card className="overflow-hidden rounded-xl border-none bg-white shadow-lg">
-                <CardHeader className="bg-gradient-to-r from-green-600 to-blue-600 p-4 text-white">
+                <CardHeader className="p-4">
                   <CardTitle className="flex items-center gap-2 text-xl font-bold">
                     <ChartBar className="h-6 w-6" />
                     Pontuação Financeira
@@ -600,7 +593,7 @@ const AnalysisAndReports = async ({
 
               {/* Card de Previsão de Gastos */}
               <Card className="overflow-hidden rounded-xl border-none bg-white shadow-lg">
-                <CardHeader className="bg-gradient-to-r from-purple-600 to-pink-600 p-4 text-white">
+                <CardHeader className="p-4">
                   <CardTitle className="flex items-center gap-2 text-xl font-bold">
                     <Calendar className="h-6 w-6" />
                     Próximos Pagamentos
@@ -665,7 +658,7 @@ const AnalysisAndReports = async ({
 
               {/* Card de Dicas */}
               <Card className="overflow-hidden rounded-xl border-none bg-white shadow-lg">
-                <CardHeader className="bg-gradient-to-r from-yellow-500 to-orange-500 p-4 text-white">
+                <CardHeader className="p-4">
                   <CardTitle className="flex items-center gap-2 text-xl font-bold">
                     <Lightbulb className="h-6 w-6" />
                     Dicas Personalizadas
@@ -706,12 +699,6 @@ const AnalysisAndReports = async ({
                     </div>
                   </div>
                 </CardContent>
-
-                <CardFooter className="border-t bg-gray-50 p-4">
-                  <Button variant="outline" className="w-full rounded-full">
-                    Ver mais dicas
-                  </Button>
-                </CardFooter>
               </Card>
             </div>
           </div>
